@@ -1,0 +1,13 @@
+{
+  "name": "Dualless",
+  "version": "0.1.1",
+  "description": "Dualless - For those who don't have dual monitor.",
+  "browser_action": {
+    "default_icon": "logo.png",
+    "popup": "popup.html"
+  },
+  "permissions": [
+    "tabs"
+  ],
+  "background_page" : "background.html"
+}

@@ -1,0 +1,260 @@
+<style>
+body {
+  overflow-x:hidden;
+  width : 180px;
+}
+
+#menu {
+    display: none;
+};
+
+.item {
+    display: block;
+    margin-bottom : 5px;
+}
+
+.label {
+    display: inline-block;
+    width: 2em;
+    border-right: 1px solid #DDD;
+    margin-right: 5px;
+
+    height: 40px;
+    vertical-align:top;
+}
+
+.label span {
+    line-height : 40px;
+}
+
+.screen {
+    height: 50px;
+    display: inline-block;
+}
+
+.win {
+    display: inline-block;
+    border-color: #4B8CDC;
+    border-style:solid;
+    border-width : 1px 1px 1px 1px;
+    height : 40px;
+    margin-right : 5px;
+}
+
+.win:hover {
+    background-color : yellow;
+}
+
+.win30 {
+    width : 30px;
+}
+
+.win40 {
+    width : 40px;
+}
+
+.win50 {
+    width : 50px;
+}
+
+.win60 {
+    width : 60px;
+}
+
+.win70 {
+    width : 70px;
+}
+
+#message {
+    display : none;
+};
+
+</style>
+
+<script src="jquery-1.7.1.min.js"></script>
+<script>
+
+/// The current tab
+var currentTab;
+
+/// The current win
+var currentWin;
+
+/// The background page
+var bg = chrome.extension.getBackgroundPage(); 
+
+/// Calculate the rectangle based on the information of ratio and order
+function calcRect(ratio,order) {
+    var left = 0;
+    var top = 0;
+    var width = parseInt(window.screen.width * ratio / 10);
+    var height = window.screen.height;;
+
+    if (order == 0 ){
+        left = 0;
+        top = 0;
+    } else {
+        left = window.screen.width - width;
+        top = 0;
+    }
+
+    var rect = {
+        left : left,
+        top : top,
+        width : width,
+        height : height
+    };
+
+    return rect;
+}
+
+/// Save current tab information
+function save(){
+    bg.lastTab = currentTab;
+}
+
+/// Create a window and move the current tab to the new window. 
+function createAndMove(ratio,order) {
+    var rect;
+    var winId = currentTab.windowId;
+
+    rect = calcRect(10 - ratio,1 - order);
+    chrome.windows.update(winId,rect);
+
+    rect = calcRect(ratio,order); 
+    rect["tabId"] = currentTab.id;
+    chrome.windows.create(rect);
+}
+
+/// Move two windows according to the ratio
+function move(win1,win2,ratio,order) {
+    var rect;
+  
+    rect = calcRect(10 - ratio,1 - order);
+    chrome.windows.update(win1,rect,function() {
+        rect = calcRect(ratio,order);
+        chrome.windows.update(win2,rect);
+    });
+}
+
+/// Split the window into two
+function splitWin(ratio,order) {
+    if (bg.lastTab == undefined) {
+        // It is the first time for this tab to use this function
+        createAndMove(ratio,order);save();
+    } else {
+        var oldTab = bg.lastTab;
+        var oldWin = oldTab.windowId;
+
+        move(oldWin,currentTab.windowId,ratio,order);        
+    }
+}
+
+/// Report the current status (for debugging)
+function report() {
+    $(document.createElement("div")).text("Last Tab: " + String(bg.lastTab) ).prependTo("body"); 
+}
+
+/// Verify the last tab. Remove it if it is invalid
+function verify(callback) {
+   var handled = true;
+   
+   if (bg.lastTab != undefined) {
+       if (bg.lastTab.windowId == currentTab.windowId ||
+           bg.lastTab.id != currentTab.id){
+           bg.lastTab = undefined;
+       } else {
+           handled = false;
+           chrome.windows.get(bg.lastTab.windowId,function(win){
+               if (win == undefined) {
+                   bg.lastTab = undefined;
+               }
+               callback();
+           });
+       }
+   }
+   
+   if (handled){
+       callback();
+   }
+}
+
+/// Setup the popup content
+function setup() {
+    // Array of available ratio with order = 0
+    var arr = [5,7,6,3,4];      
+   
+    $(arr).each(function(idx,ratio) {
+        var id = "#split" + ratio + "_0";
+        $(id).click(function() { splitWin(ratio,0);});      
+        id = "#split" + ratio + "_1";
+        $(id).click(function() { splitWin(ratio,1);});      
+    });   
+   
+    if (currentWin.left == 0 &&
+        currentWin.width == window.screen.availWidth) { 
+       // I would like to know a better way to detect the maximized state.
+        $("#message").css("display","block");
+    } else {    
+        $("#menu").css("display","block");
+    }
+
+    //report();
+}
+
+$(document).ready(function() {
+    chrome.tabs.getSelected(null,function(tab) {
+       chrome.windows.get(tab.windowId,function(win) {
+            currentTab = tab;
+            currentWin = win;
+            verify(function() {
+                setup();
+            });
+       });
+    });
+});
+
+</script>
+
+<body>
+
+<div id="menu">
+
+<div class="item">
+<div class="label"><span>7:3</span></div>
+<div class="screen">
+<div class="win win70" id="split7_0"></div> <div class="win win30" id="split3_1"></div>
+</div>
+</div>
+
+<div class="item">
+<div class="label"><span>6:4</span></div>
+<div class="screen">
+<div class="win win60" id="split6_0"></div> <div class="win win40" id="split4_1"></div>
+</div>
+</div>
+
+<div class="item">
+<div class="label"><span>5:5</span></div>
+<div class="screen"><div class="win win50" id="split5_0"></div> <div class="win win50" id="split5_1"></div></div>
+</div>
+
+<div class="item">
+<div class="label"><span>4:6</span></div>
+<div class="screen">
+<div class="win win40" id="split4_0"></div> <div class="win win60" id="split6_1"></div>
+</div>
+</div>
+
+<div class="item">
+<div class="label"><span>3:7</span></div>
+<div class="screen">
+<div class="win win30" id="split3_0"></div> <div class="win win70" id="split7_1"></div>
+</div>
+</div>
+
+</div> <!-- End of menu -->
+
+<div id="message"> Dualless do not support maximized window. Please un-maximize it first.</div>
+
+</body>

@@ -83,29 +83,28 @@ var currentWin;
 /// The background page
 var bg = chrome.extension.getBackgroundPage(); 
 
-/// Calculate the rectangle based on the information of ratio and order
+/// Calculate the rectangles of screen aftered splitted with ratio
 function calcRect(ratio,order) {
     var left = 0;
     var top = 0;
     var width = parseInt(window.screen.width * ratio / 10);
-    var height = window.screen.height;;
+    var height = window.screen.height;
 
-    if (order == 0 ){
-        left = 0;
-        top = 0;
-    } else {
-        left = window.screen.width - width;
-        top = 0;
-    }
-
-    var rect = {
+    var rect1 = {
         left : left,
         top : top,
         width : width,
         height : height
     };
 
-    return rect;
+    var rect2 = {
+        left : width + 1,
+        top : top,
+        width : window.screen.width - width,
+        height : height
+    };
+
+    return [rect1,rect2];
 }
 
 /// Save current tab information
@@ -117,22 +116,24 @@ function save(){
 function createAndMove(ratio,order) {
     var rect;
     var winId = currentTab.windowId;
+    var rects = calcRect(ratio);
 
-    rect = calcRect(10 - ratio,1 - order);
+    rect = rects[1 - order];
     chrome.windows.update(winId,rect);
 
-    rect = calcRect(ratio,order); 
+    rect = rects[order];
     rect["tabId"] = currentTab.id;
     chrome.windows.create(rect);
 }
 
 /// Move two windows according to the ratio
 function move(win1,win2,ratio,order) {
-    var rect;
+    var rects = calcRect(ratio);
+	var rect;
   
-    rect = calcRect(10 - ratio,1 - order);
+    rect = rects[1 - order];
     chrome.windows.update(win1,rect,function() {
-        rect = calcRect(ratio,order);
+        rect = rects[order];
         chrome.windows.update(win2,rect);
     });
 }
@@ -188,7 +189,7 @@ function setup() {
         var id = "#split" + ratio + "_0";
         $(id).click(function() { splitWin(ratio,0);});      
         id = "#split" + ratio + "_1";
-        $(id).click(function() { splitWin(ratio,1);});      
+        $(id).click(function() { splitWin(10 - ratio,1);});      
     });   
    
     if (currentWin.left == 0 &&

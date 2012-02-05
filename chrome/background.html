@@ -2,4 +2,15 @@
 
 var lastTab;
 
+var lastWindows = [-1,-1];
+
+/// Save the last window moved
+function save(win1,win2){
+    lastWindows = [win1,win2];
+}
+
+function load() {
+    return lastWindows;
+}
+
 </script>

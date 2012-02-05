@@ -107,11 +107,6 @@ function calcRect(ratio) {
     return [rect1,rect2];
 }
 
-/// Save current tab information
-function save(){
-    bg.lastTab = currentTab;
-}
-
 /// Create a window and move the current tab to the new window. 
 function createAndMove(ratio,order) {
     var rect;
@@ -125,18 +120,6 @@ function createAndMove(ratio,order) {
     rect["tabId"] = currentTab.id;
     chrome.windows.create(rect,function(win2) {
         bg.save(winId,win2.id);
-    });
-}
-
-/// Move two windows according to the ratio
-function move(win1,win2,ratio,order) {
-    var rects = calcRect(ratio);
-	var rect;
-  
-    rect = rects[1 - order];
-    chrome.windows.update(win1,rect,function() {
-        rect = rects[order];
-        chrome.windows.update(win2,rect);
     });
 }
 
@@ -191,18 +174,6 @@ function splitWin(ratio,order) {
            arrange(ratio,order,list);
        }
     });
-    
-    /*
-    if (bg.lastTab == undefined) {
-        // It is the first time for this tab to use this function
-        save();
-    } else {
-        var oldTab = bg.lastTab;
-        var oldWin = oldTab.windowId;
-
-        move(oldWin,currentTab.windowId,ratio,order);        
-    }
-    */
 }
 
 /// Report the current status (for debugging)
@@ -212,30 +183,6 @@ function report() {
     chrome.windows.getAll({} , function(list) {
         $(document.createElement("div")).text("No. of windows: " + String(list.length) ).prependTo("body"); 
     });
-}
-
-/// Verify the last tab. Remove it if it is invalid
-function verify(callback) {
-   var handled = true;
-   
-   if (bg.lastTab != undefined) {
-       if (bg.lastTab.windowId == currentTab.windowId ||
-           bg.lastTab.id != currentTab.id){
-           bg.lastTab = undefined;
-       } else {
-           handled = false;
-           chrome.windows.get(bg.lastTab.windowId,function(win){
-               if (win == undefined) {
-                   bg.lastTab = undefined;
-               }
-               callback();
-           });
-       }
-   }
-   
-   if (handled){
-       callback();
-   }
 }
 
 /// Setup the popup content
@@ -266,9 +213,7 @@ $(document).ready(function() {
        chrome.windows.get(tab.windowId,function(win) {
             currentTab = tab;
             currentWin = win;
-            verify(function() {
-                setup();
-            });
+            setup();
        });
     });
 });

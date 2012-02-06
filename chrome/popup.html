@@ -155,17 +155,23 @@ function arrange(ratio,order,list) {
             targetWinId = win.id;
             break;
         }
-    }
+    }    
 
-    rect = rects[1 - order];
-    rect.focused = true;
-    chrome.windows.update(targetWinId,rect,function() {
-        rect = rects[order];
-        rect.focused = true;
-        chrome.windows.update(currWinId,rect,function() {
+    var targetWinRect = rects[1 - order];
+    targetWinRect.focused = true;
+    var currentWinRect = rects[order];
+    currentWinRect.focused = true;
+
+	chrome.windows.update(targetWinId,targetWinRect);
+	chrome.windows.update(currWinId,currentWinRect);
+	// Nested call after update() do not works on windows Chrome.. It is wierd..
+	/*
+    chrome.windows.update(targetWinId,targetWinRect,function() {
+        chrome.windows.update(currWinId,currentWinRect,function() {
            bg.save(currWinId,targetWinId);
         });
     });
+	*/
 }
 
 /// Split the window into two
@@ -190,12 +196,21 @@ function splitWin(ratio,order) {
 
 /// Report the current status (for debugging)
 function report() {
-    $(document.createElement("div")).text("Last Tab: " + String(bg.lastTab) ).prependTo("body"); 
+    //$(document.createElement("div")).text("Last Tab: " + String(bg.lastTab) ).prependTo("body"); 
     $(document.createElement("div")).text("Last Window: " + String(bg.lastWindows) ).prependTo("body"); 
-    $(document.createElement("div")).text("Window Rect: " + currentWin.left + " "  +  currentWin.width + " " + String(window.screen.width) + " " + String(window.screen.height) ).prependTo("body");
+    $(document.createElement("div")).text("Current Window ID: " + String(currentWin.id) ).prependTo("body");
+    $(document.createElement("div")).text("Window Rect: " + currentWin.left + " "  +  currentWin.top + " " + String(currentWin.width) + " " + String(currentWin.height) ).prependTo("body");
     $(document.createElement("div")).text("Window Avail Size: " + String(window.screen.availWidth) + " " + String(window.screen.availHeight) ).prependTo("body");
     chrome.windows.getAll({} , function(list) {
-        $(document.createElement("div")).text("No. of windows: " + String(list.length) ).prependTo("body"); 
+        $(document.createElement("div")).text("No. of windows: " + String(list.length) ).prependTo("body");
+        var filtered = [];
+        var i = 0;
+        for ( i = 0 ; i < list.length;i++){
+            if (!isMaximized(list[i]))
+                filtered.push(list[i]);
+        }
+        $(document.createElement("div")).text("No. of unmaximized windows: " + String(filtered.length) ).prependTo("body");
+
     });
 }
 

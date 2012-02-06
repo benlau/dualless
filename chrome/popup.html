@@ -92,8 +92,8 @@ function isMaximized(win) {
 function calcRect(ratio) {
     var left = 0;
     var top = 0;
-    var width = parseInt(window.screen.width * ratio / 10);
-    var height = window.screen.height;
+    var width = parseInt(window.screen.availWidth * ratio / 10);
+    var height = window.screen.availHeight;
 
     var rect1 = {
         left : left,
@@ -105,7 +105,7 @@ function calcRect(ratio) {
     var rect2 = {
         left : width + 1,
         top : top,
-        width : window.screen.width - width,
+        width : window.screen.availWidth - width,
         height : height
     };
 
@@ -163,7 +163,7 @@ function arrange(ratio,order,list) {
         rect = rects[order];
         rect.focused = true;
         chrome.windows.update(currWinId,rect,function() {
-           save(currWinId,targetWinId);
+           bg.save(currWinId,targetWinId);
         });
     });
 }
@@ -192,6 +192,8 @@ function splitWin(ratio,order) {
 function report() {
     $(document.createElement("div")).text("Last Tab: " + String(bg.lastTab) ).prependTo("body"); 
     $(document.createElement("div")).text("Last Window: " + String(bg.lastWindows) ).prependTo("body"); 
+    $(document.createElement("div")).text("Window Rect: " + currentWin.left + " "  +  currentWin.width + " " + String(window.screen.width) + " " + String(window.screen.height) ).prependTo("body");
+    $(document.createElement("div")).text("Window Avail Size: " + String(window.screen.availWidth) + " " + String(window.screen.availHeight) ).prependTo("body");
     chrome.windows.getAll({} , function(list) {
         $(document.createElement("div")).text("No. of windows: " + String(list.length) ).prependTo("body"); 
     });

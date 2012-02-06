@@ -83,6 +83,11 @@ var currentWin;
 /// The background page
 var bg = chrome.extension.getBackgroundPage(); 
 
+function isMaximized(win) {
+    // I would like to know a better way to detect the maximized state...
+    return win.left == 0 && win.width == window.screen.availWidth;
+}
+
 /// Calculate the rectangles of screen aftered splitted with ratio
 function calcRect(ratio) {
     var left = 0;
@@ -197,9 +202,7 @@ function setup() {
         $(id).click(function() { splitWin(10 - ratio,1);});      
     });   
    
-    if (currentWin.left == 0 &&
-        currentWin.width == window.screen.availWidth) { 
-       // I would like to know a better way to detect the maximized state.
+    if (isMaximized(currentWin)) { 
         $("#message").css("display","block");
     } else {    
         $("#menu").css("display","block");

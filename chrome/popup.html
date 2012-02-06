@@ -83,9 +83,31 @@ var currentWin;
 /// The background page
 var bg = chrome.extension.getBackgroundPage(); 
 
+/// Detect the current OS
+function detectOS() {
+	var os;
+
+	if (navigator.appVersion.indexOf("Win")!=-1) os="Windows";
+	if (navigator.appVersion.indexOf("Mac")!=-1) os="MacOS";
+	if (navigator.appVersion.indexOf("X11")!=-1) os="Unix";
+	if (navigator.appVersion.indexOf("Linux")!=-1) os="Linux";
+	
+	return os;
+}
+
 function isMaximized(win) {
+	var res;
+
+	var os = detectOS();
+
     // I would like to know a better way to detect the maximized state...
-    return win.left == 0 && win.width == window.screen.availWidth;
+	if (os == "Windows") {
+		res = (win.left == -8 && win.top == -8 && win.width == window.screen.availWidth + 16);
+	} else {
+		res = (win.left == 0 && win.width == window.screen.availWidth);
+	}
+	
+    return res;
 }
 
 /// Calculate the rectangles of screen aftered splitted with ratio
@@ -196,7 +218,8 @@ function splitWin(ratio,order) {
 
 /// Report the current status (for debugging)
 function report() {
-    //$(document.createElement("div")).text("Last Tab: " + String(bg.lastTab) ).prependTo("body"); 
+    //$(document.createElement("div")).text("Last Tab: " + String(bg.lastTab) ).prependTo("body");
+    $(document.createElement("div")).text("OS: " + String(detectOS()) ).prependTo("body");
     $(document.createElement("div")).text("Last Window: " + String(bg.lastWindows) ).prependTo("body"); 
     $(document.createElement("div")).text("Current Window ID: " + String(currentWin.id) ).prependTo("body");
     $(document.createElement("div")).text("Window Rect: " + currentWin.left + " "  +  currentWin.top + " " + String(currentWin.width) + " " + String(currentWin.height) ).prependTo("body");

@@ -171,12 +171,19 @@ function arrange(ratio,order,list) {
 /// Split the window into two
 function splitWin(ratio,order) {
     chrome.windows.getAll({},function(list) {
-       if (list.length == 1 ) { 
+       var filtered = [];
+       var i = 0;
+       for ( i = 0 ; i < list.length;i++){
+           if (!isMaximized(list[i]))
+               filtered.push(list[i]);
+       }
+        
+       if (filtered.length == 1 ) { 
            // If no. of window is one , it could create new window
            createAndMove(ratio,order);   
        } else {
            // More than one window. It should reuse the already existed windows.
-           arrange(ratio,order,list);
+           arrange(ratio,order,filtered);
        }
     });
 }

@@ -65,6 +65,10 @@ body {
     width : 70px;
 }
 
+.win100 {
+    width : 111px;
+}
+
 #message {
     display : none;
 };
@@ -216,6 +220,49 @@ function splitWin(ratio,order) {
     });
 }
 
+/// Merge windows. An opposite operation of splitWin
+function mergeWin() {
+    chrome.windows.getAll({populate : true},function(windows) {
+
+        var list = [];
+        
+        var saved = bg.load();
+        var i,j ;
+        
+        var other;
+        var current; // the current window. Unlike currentWin. It did contains the tabs information
+        
+        for (i = 0 ; i  < windows.length;i++) {
+            if (currentWin.id == windows[i].id) {
+                current = windows[i];
+                continue;
+            }
+            for (j = 0 ; j < saved.length;j++){
+                if (windows[i].id == saved[j]) {
+                    other = windows[i];
+                }
+            }
+        }
+        
+        var rect = {
+            left : 1,
+            top : 1,
+            width : window.screen.availWidth - 2,
+            height : window.screen.availHeight - 2
+        }; // not really maximized. Call isMaximized() of resized window will return false
+        
+        chrome.windows.update(currentWin.id , rect);
+        
+        if (other != undefined) {
+            var tabs = []
+            $(other.tabs).each(function(idx,tab) {
+                tabs.push(tab.id);
+            });
+            chrome.tabs.move(tabs,{windowId: currentWin.id , index: current.tabs.length} );
+        }
+    });
+}
+
 /// Report the current status (for debugging)
 function report() {
     //$(document.createElement("div")).text("Last Tab: " + String(bg.lastTab) ).prependTo("body");
@@ -248,6 +295,8 @@ function setup() {
         id = "#split" + ratio + "_1";
         $(id).click(function() { splitWin(10 - ratio,1);});      
     });   
+    
+    $("#merge").click(mergeWin);
    
     if (isMaximized(currentWin)) { 
         $("#message").css("display","block");
@@ -304,6 +353,13 @@ $(document).ready(function() {
 <div class="label"><span>3:7</span></div>
 <div class="screen">
 <div class="win win30" id="split3_0"></div> <div class="win win70" id="split7_1"></div>
+</div>
+</div>
+
+<div class="item">
+<div class="label" align="center"><span>1</span></div>
+<div class="screen">
+<div class="win win100" id="merge"></div> 
 </div>
 </div>
 

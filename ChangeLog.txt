@@ -1,0 +1,22 @@
+Next
+=============
+
+ * Supported to merge browser windows into one
+ * Press on Dualless icon will move the paired windows into front
+
+Release 0.1.2
+=============
+
+ * Enhanced the algorithm. The split will only happen when a single browser
+   window was found. If multiple window was found, it will not do split,
+   just use arrange of position and size.   
+
+
+Release 0.1.1
+=============
+
+ * Initial Release
+ * Support to split windows by moving the current tab into a new window.
+   Then change the position and size of newly created and original window
+   according to the ratio specificed by user.
+   

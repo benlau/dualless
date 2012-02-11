@@ -1,5 +1,6 @@
 <script>
 
+/// The windows moved in previous action
 var lastWindows = [chrome.windows.WINDOW_ID_NONE,chrome.windows.WINDOW_ID_NONE];
 
 /// Save the last window moved
@@ -25,6 +26,43 @@ function detectOS() {
 	if (navigator.appVersion.indexOf("Linux")!=-1) os="Linux";
 	
 	return os;
+}
+
+/* When one of the saved window get activied , it will show the other paired window */
+if (detectOS() != "MacOS") {
+
+    // MacOS don't need the function
+    var frozen = false;
+
+    chrome.windows.onFocusChanged.addListener(function (winId) {
+        if (frozen || winId == chrome.windows.WINDOW_ID_NONE)
+            return;
+       
+        var i = 0;
+        var j = -1;
+        for (i = 0 ; i < lastWindows.length;i++){
+            if (lastWindows[i] == winId){
+                j = i;
+                break;
+            }
+        }
+        
+        if (j != -1){
+            chrome.windows.get(lastWindows[1 - j] , function(win) {
+                if (win != undefined) {
+                    frozen = true;
+                    chrome.windows.update(lastWindows[1 - j] , {focused: true});
+                    chrome.windows.update(lastWindows[j] , {focused: true});
+                    setTimeout(function() {
+                        // Prevent the action is called for multiple time. 
+                        // As the flow of focus change is not documented, 
+                        // the method is dump but solved the problem effectively
+                        frozen = false; 
+                    },1000);
+                }
+            });
+        }                
+    });
 }
 
 </script>

@@ -248,6 +248,8 @@ function mergeWin() {
             });
             chrome.tabs.move(tabs,{windowId: currentWin.id , index: current.tabs.length} );
         }
+        
+        bg.clear();
     });
 }
 
@@ -282,9 +284,7 @@ function showPair(id) {
             j = i;
             break;
         }
-    }
-    
-    console.log(j);
+    }   
     
     if (j!=-1){
         chrome.windows.get(list[1 - j] , function(win) {
@@ -315,7 +315,7 @@ function setup() {
         $("#message").css("display","block");
     } else {    
         $("#menu").css("display","block");        
-        showPair(currentWin.id);
+        //showPair(currentWin.id);
     }
 
     //report();

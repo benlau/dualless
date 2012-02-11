@@ -87,22 +87,10 @@ var currentWin;
 /// The background page
 var bg = chrome.extension.getBackgroundPage(); 
 
-/// Detect the current OS
-function detectOS() {
-	var os;
-
-	if (navigator.appVersion.indexOf("Win")!=-1) os="Windows";
-	if (navigator.appVersion.indexOf("Mac")!=-1) os="MacOS";
-	if (navigator.appVersion.indexOf("X11")!=-1) os="Unix";
-	if (navigator.appVersion.indexOf("Linux")!=-1) os="Linux";
-	
-	return os;
-}
-
 function isMaximized(win) {
 	var res;
 
-	var os = detectOS();
+	var os = bg.detectOS();
 
     // I would like to know a better way to detect the maximized state...
 	if (os == "Windows") {
@@ -266,7 +254,7 @@ function mergeWin() {
 /// Report the current status (for debugging)
 function report() {
     //$(document.createElement("div")).text("Last Tab: " + String(bg.lastTab) ).prependTo("body");
-    $(document.createElement("div")).text("OS: " + String(detectOS()) ).prependTo("body");
+    $(document.createElement("div")).text("OS: " + String(bg.detectOS()) ).prependTo("body");
     $(document.createElement("div")).text("Last Window: " + String(bg.lastWindows) ).prependTo("body"); 
     $(document.createElement("div")).text("Current Window ID: " + String(currentWin.id) ).prependTo("body");
     $(document.createElement("div")).text("Window Rect: " + currentWin.left + " "  +  currentWin.top + " " + String(currentWin.width) + " " + String(currentWin.height) ).prependTo("body");
@@ -296,7 +284,9 @@ function showPair(id) {
         }
     }
     
-    if (j!=undefined){
+    console.log(j);
+    
+    if (j!=-1){
         chrome.windows.get(list[1 - j] , function(win) {
             if (win!=undefined) {
                 chrome.windows.update(list[1 - j] , {focused: true});

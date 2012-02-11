@@ -1,6 +1,6 @@
 <script>
 
-var lastWindows = [-1,-1];
+var lastWindows = [chrome.windows.WINDOW_ID_NONE,chrome.windows.WINDOW_ID_NONE];
 
 /// Save the last window moved
 function save(win1,win2){
@@ -9,6 +9,22 @@ function save(win1,win2){
 
 function load() {
     return lastWindows;
+}
+
+function clear() {
+    lastWindows = [chrome.windows.WINDOW_ID_NONE , chrome.windows.WINDOW_ID_NONE];
+}
+
+/// Detect the current OS
+function detectOS() {
+	var os;
+
+	if (navigator.appVersion.indexOf("Win")!=-1) os="Windows";
+	if (navigator.appVersion.indexOf("Mac")!=-1) os="MacOS";
+	if (navigator.appVersion.indexOf("X11")!=-1) os="Unix";
+	if (navigator.appVersion.indexOf("Linux")!=-1) os="Linux";
+	
+	return os;
 }
 
 </script>

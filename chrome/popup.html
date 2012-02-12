@@ -178,6 +178,7 @@ function arrange(ratio,order,list) {
 
 	chrome.windows.update(targetWinId,targetWinRect);
 	chrome.windows.update(currWinId,currentWinRect);
+    bg.save(currWinId,targetWinId);
 	// Nested call after update() do not works on windows Chrome.. It is wierd..
 	/*
     chrome.windows.update(targetWinId,targetWinRect,function() {

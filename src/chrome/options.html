@@ -32,8 +32,8 @@ body {
             <hr></hr>
             <table class="table table-striped table-bordered">
             <tr><td><p>Pairing Mode (MacOS X Simulation)</p>
-                       Pairing mode provides MacOS X like windows management. When one of the splitted windows got focused, the other in pair will be shown together. The pair of windows always occupy the whole screen without missed another one.<br>
-                       <br>Remarks: It is useless in MacOS X.
+                       Pairing mode provides MacOS X like windows management. When one of the splitted windows got focused, the other in pair will be shown together. The pair of windows always occupy the viewport without missed another one.<br>
+                       <br><i>Remarks: It is useless in MacOS X.</i>
                 </td>
                 <td><div"><ul class="nav nav-pills">
                         <li class="{{pairingButtonState[0]}}"><a ng-click="setPairingMode(1)">Enable</a></li>
@@ -41,6 +41,14 @@ body {
                     </ul>
                     </div>
                 </td></tr>
+            <tr><td><p>Viewport - The maximum screen size</p>
+                       Viewport is the maximum space that your browser could use. Dualless detect the viewport by non-standard method.
+                       , but it may be wrong. You may press the "reset" button to restore the viewport to default value.      
+                    <br>
+                    <br> The current viewport is {{viewport}}</br>
+                    <br><i>Remarks: Future version may allow to set custom viewport</i>   
+                <td><a class="btn" ng-click="resetViewport()">Reset</a></td>
+            </tr>
          </table>
             
 	    </div>

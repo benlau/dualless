@@ -99,7 +99,6 @@ define(["module",
 			closeAllOtherWindow(current,function() { 
 				// It must pass "current" to this function. Otherwise it will not works on MacOS
 				
-				console.log("Callback level1");
 				chrome.windows.getAll({populate : true},function(windows) {
 					ok(windows.length == 1 , 
 					   "After called closeAllOtherWindow(). It should have only 1 window leave , Nnow has " + windows.length + " windows");
@@ -259,7 +258,28 @@ define(["module",
 		
 		console.log(rects);
 		intersected = rects[0].intersect(rects[1]);
-		ok(intersected.isNull() , "No intersection");		
+		ok(intersected.isNull() , "No intersection");
+		
+		viewport.reset();
+		var calledOnResize = false;
+		function onResize(){
+			calledOnResize = true;
+		};
+		viewport.bind(onResize);
+		
+		viewport.setSize(rect);
+		ok(calledOnResize,"Resize is called");
+		
+		calledOnResize = false;
+		viewport.setSize(rect);
+		ok(!calledOnResize,"Resize should not be called");
+		
+		viewport.reset();
+		viewport.unbind(onResize);
+		calledOnResize = false;
+		
+		viewport.setSize(rect);
+		ok(!calledOnResize,"Test unbind");
 	});
 	
 	asyncTest("ResizeWindow", function testViewportResize() {

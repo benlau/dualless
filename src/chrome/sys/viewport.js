@@ -8,6 +8,7 @@ define(["dualless/util/rect"],
 	function Viewport(options) {
 		this._screen; // The detected screen size
 		this._size; // The actual viewport
+		this._listeners = [] // An array of resize event listener
 		this.reset();
 		
 		if (options != undefined) {
@@ -25,7 +26,7 @@ define(["dualless/util/rect"],
 			width : window.screen.availWidth,
 			height : window.screen.availHeight	});
 		this._screen = rect;
-		this._size = rect;
+		this.setSize(rect);
 	};
 	
 	/** Detect the current screen size, if it is changed. The viewport size will be set to the screen size automatically.
@@ -56,16 +57,22 @@ define(["dualless/util/rect"],
 	};
 	
 	Viewport.prototype.setSize = function() {
+		var newSize;
 		if (arguments.length == 2) {
-			this._size = arguments[0].unite(arguments[1]);
-			
+			newSize = arguments[0].unite(arguments[1]);
 		} else if (arguments.length == 1){
-			this._size = arguments[0];
+			newSize = arguments[0];
 		} else {
 			throw "Viewport.setSize() - Invalid argument";
 		}
-//		console.log("Viewport.setSize()" , this._size);
+		console.log("Viewport.setSize()" , this._size , newSize);
 
+		if (this._size == undefined || !newSize.equal(this._size) ){
+			this._size = newSize;
+			$(this._listeners).each(function(idx,callback){
+				callback(newSize);
+			});
+		}	
 	};
 
 	
@@ -299,7 +306,21 @@ define(["dualless/util/rect"],
 		lastSize = new Rect();
 		
 		chrome.windows.update(winId, updateInfo , checker);
-	}
+	};
+	
+	Viewport.prototype.bind = function(callback) {
+		this._listeners.push(callback);
+	};
+	
+	Viewport.prototype.unbind = function(callback) {
+		var viewport = this;
+		$(this._listeners).each(function(idx,func){
+			if (func == callback){
+				viewport._listeners.splice(idx,1);
+				return false;
+			}
+		});
+	};
 	
 	
 	return Viewport;

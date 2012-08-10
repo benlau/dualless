@@ -16,9 +16,14 @@ function OptionsController($scope) {
 	}
 	
 	function updateViewport(){
-		$scope.viewport = manager.viewport().size().toString();	
+		var geom = manager.viewport().size().toString();
+		if (geom != $scope.viewport){
+			$scope.$apply("viewport = " + geom);
+		}
 	}
-
+	
+	$scope.viewport = manager.viewport().size().toString();
+	
 	$scope.setPairingMode = function(val){
 		localStorage.pairingModeEnabled = val;
 		updatePairingButton(val);
@@ -26,9 +31,13 @@ function OptionsController($scope) {
 	
 	$scope.resetViewport = function(){
 		manager.viewport().reset();
-		updateViewport();
-	};
-		
-	updateViewport();
+		$scope.viewport = manager.viewport().size().toString();
+	};	
+
 	updatePairingButton(localStorage.pairingModeEnabled);
+	manager.viewport().bind(updateViewport);
+	
+	$scope.$on("$destroy",function() {
+		manager.viewport().unbind(updateViewport);	
+	});
 }

@@ -1,4 +1,17 @@
-Next
+0.2.1 (Development Version)
+============
+
+Feature Changes
+ * Options page is added. User may enable/disable pairing mode(MacOS simulation)
+ * Vertical split is added.
+ * It works better in Ubuntu / Unity
+
+Architecture changes
+ * Reorganize the source tree.
+  * jquery is moved to lib
+ * Rewritten most of the code by using Angular.js and Require.js
+  
+Release 0.2
 =============
 
  * Supported to merge browser windows into one

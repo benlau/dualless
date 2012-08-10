@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dualless Options</title>
+</head>
+<link  href="lib/bootstrap-2.0.4/css/bootstrap.min.css" rel="stylesheet">
+<script src="lib/jquery-1.7.1.min.js"></script>
+<script src="lib/require.js"></script>
+<script src="options.js"></script>
+<script src="lib/angular-1.0.1.min.js"></script>
+<style>
+
+body {
+    padding-top : 60px; /* Used with bootstrap header bar*/
+}
+
+</style>
+<body ng-controller="OptionsController">
+    <!-- Header -->
+    <div class="navbar navbar-fixed-top">
+      <div class="brand">Dualless Options</div>
+      <div class="navbar-inner">
+      </div>
+    </div>
+
+    <div class="container">
+	    <div class="hero-unit">
+	        <h1>Options</h1>
+            <hr></hr>
+            <table class="table table-striped table-bordered">
+            <tr><td><p>Pairing Mode (MacOS X Simulation)</p>
+                       Pairing mode provides MacOS X like windows management. When one of the splitted windows got focused, the other in pair will be shown together. The pair of windows always occupy the whole screen without missed another one.<br>
+                       <br>Remarks: It is useless in MacOS X.
+                </td>
+                <td><div"><ul class="nav nav-pills">
+                        <li class="{{pairingButtonState[0]}}"><a ng-click="setPairingMode(1)">Enable</a></li>
+                        <li class="{{pairingButtonState[1]}}"><a ng-click="setPairingMode(0)">Disable</a></li>
+                    </ul>
+                    </div>
+                </td></tr>
+         </table>
+            
+	    </div>
+    </div>
+
+</body>
+</html>

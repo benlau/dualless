@@ -1,68 +1,44 @@
+<script src="lib/require.js"></script>
+<script src="lib/jquery-1.7.1.min.js"></script>
 <script>
 
-/// The windows moved in previous action
-var lastWindows = [chrome.windows.WINDOW_ID_NONE,chrome.windows.WINDOW_ID_NONE];
+var _manager;
+var _display;
 
-/// Save the last window moved
-function save(win1,win2){
-    lastWindows = [win1,win2];
+function manager() {
+	return _manager;
 }
 
-function load() {
-    return lastWindows;
-}
+requirejs.config({
+    paths : {
+        "dualless" : "."
+    }
+});
 
-function clear() {
-    lastWindows = [chrome.windows.WINDOW_ID_NONE , chrome.windows.WINDOW_ID_NONE];
-}
+require(["sys/windowmanager",
+         "sys/pairdisplay"],
+		function(WindowManager,PairDisplay) {
 
-/// Detect the current OS
-function detectOS() {
-	var os;
-
-	if (navigator.appVersion.indexOf("Win")!=-1) os="Windows";
-	if (navigator.appVersion.indexOf("Mac")!=-1) os="MacOS";
-	if (navigator.appVersion.indexOf("X11")!=-1) os="Unix";
-	if (navigator.appVersion.indexOf("Linux")!=-1) os="Linux";
+	if (localStorage.pairingModeEnabled == undefined)
+		localStorage.pairingModeEnabled = 1;
 	
-	return os;
+	_manager = new WindowManager();
+	_display = new PairDisplay();
+	_display.start(_manager);
+});
+
+var _log = [];
+
+function log(message) {
+	_log.unshift(message);
+	if (_log.length > 20)
+		_log.shift();
 }
 
-/* When one of the saved window get activied , it will show the other paired window */
-if (detectOS() != "MacOS") {
-
-    // MacOS don't need the function
-    var frozen = false;
-
-    chrome.windows.onFocusChanged.addListener(function (winId) {
-        if (frozen || winId == chrome.windows.WINDOW_ID_NONE)
-            return;
-       
-        var i = 0;
-        var j = -1;
-        for (i = 0 ; i < lastWindows.length;i++){
-            if (lastWindows[i] == winId){
-                j = i;
-                break;
-            }
-        }
-        
-        if (j != -1){
-            chrome.windows.get(lastWindows[1 - j] , function(win) {
-                if (win != undefined) {
-                    frozen = true;
-                    chrome.windows.update(lastWindows[1 - j] , {focused: true});
-                    chrome.windows.update(lastWindows[j] , {focused: true});
-                    setTimeout(function() {
-                        // Prevent the action is called for multiple time. 
-                        // As the flow of focus change is not documented, 
-                        // the method is dump but solved the problem effectively
-                        frozen = false; 
-                    },1000);
-                }
-            });
-        }                
-    });
+function fullLog() {
+	return _log;
 }
+
+log("Dualless launched");
 
 </script>

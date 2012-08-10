@@ -1,0 +1,40 @@
+<div class="container">
+    <div class="hero-unit">
+        <h1>Running Information</h1>
+        <p></p><p></p>
+        
+        <h2>Basic</h2>
+        <p></p>
+        <table class="table table-striped table-bordered">
+             <tr ng-repeat="pair in basic">
+                <td ng-repeat="item in pair">{{item}}</td>
+            </tr>
+        </table>
+        
+        <h2>Screen</h2>
+        <p></p>
+        <table class="table table-striped table-bordered">
+             <tr ng-repeat="pair in screen">
+                <td ng-repeat="item in pair">{{item}}</td>
+            </tr>
+        </table>
+        
+         <h2>Current Window</h2>
+         <table class="table table-striped table-bordered">
+            <tr><td>Is Maximized?</td><td>{{window.isMaximized}}</td></tr>
+            <tr><td>Geometry</td><td>{{window.geometry}}</td></tr>
+            <tr><td>Viewport</td><td>{{window.viewport}}</td></tr>
+         </table>
+         
+         <h2>Managed Window</h2>
+         <table class="table table-striped table-bordered">
+            <tr><td rowspan=2>Managed Windows</td><td>{{managed.win1}}</td></tr>
+            <tr><td>{{managed.win2}}</td></tr>
+         </table>
+        
+         <h2>Running Log</h2>
+         <textarea style="height:100px;width:500px">{{log}}</textarea>
+        
+     </div>     
+
+</div>

@@ -1,0 +1,36 @@
+
+<style>
+#components .span6 {
+    background-color: rgb(238, 238, 238);
+    border-radius : 3px 3px 3px 3px;
+}
+</style>
+
+<div class="container">
+    <div class="hero-unit">
+        <h1>Components</h1>
+        <p>Show available components(directive) for Dualless</p>
+     </div>
+     
+     <div id="components" class="row show-grid">
+        <div class="span6">
+            <h2>Horizontal Split Panel</h2>
+            <hsplitpanel id="hsplitpanel">
+            </hsplitpanel>
+            <p></p>
+            <p>Your have chosen - {{hpanelLastAction}}</p>
+
+        </div>
+       
+        <div class="span6">
+            <h2>Vertical Split Panel</h2>
+            <vsplitpanel id="vsplitpanel">
+            </vsplitpanel>
+            
+            <p></p>
+            <p>Your have chosen - {{vpanelLastAction}}</p>
+
+        </div>        
+        
+     </div>
+</div>

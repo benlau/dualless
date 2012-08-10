@@ -1,0 +1,101 @@
+.split-panel-box {
+    display: block;
+    height : 50px;
+    margin-bottom : 5px;
+}
+
+.split-panel-label {
+    display: inline-block;
+    width: 2em;
+    border-right: 1px solid #DDD;
+    margin-right: 5px;
+
+    height: 40px;
+    vertical-align:top;
+}
+
+.split-panel-label span {
+    line-height : 40px;
+}
+
+.split-panel-screen {
+    height: 50px;
+    display: inline-block;
+}
+
+.split-panel-win {
+    border-color: #4B8CDC;
+    border-style:solid;
+    border-width : 1px 1px 1px 1px;
+    height : 40px;
+    width : 111px;
+    margin-right : 5px;
+}
+
+.split-panel-win:hover {
+    background-color : yellow;
+}
+
+/** Horizontal windows */
+
+.hsplit-panel-win {
+    display: inline-block;
+}
+
+.hsplit-panel-win30 {
+    width : 30px;
+}
+
+.hsplit-panel-win40 {
+    width : 40px;
+}
+
+.hsplit-panel-win50 {
+    width : 50px;
+}
+
+.hsplit-panel-win60 {
+    width : 60px;
+}
+
+.hsplit-panel-win70 {
+    width : 70px;
+}
+
+.hsplit-panel-win100 {
+    width : 111px;
+}
+
+/* Vertical Window */
+
+.vsplit-panel-win {
+	padding : 0px 0px 0px 0px;
+}
+
+.vsplit-panel-win-top {
+    margin-bottom : 5px;
+}
+
+.vsplit-panel-win30 {
+    height : 9px;
+}
+
+.vsplit-panel-win40 {
+    height : 14px;
+}
+
+.vsplit-panel-win50 {
+    height : 18px;
+}
+
+.vsplit-panel-win60 {
+    height : 22px;
+}
+
+.vsplit-panel-win70 {
+    height : 22px;
+}
+
+.vsplit-panel-win100 {
+    height : 38px;
+}

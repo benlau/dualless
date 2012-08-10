@@ -1,0 +1,10 @@
+*-build*
+*.user
+docs
+bin
+*.jar
+.settings
+.project
+.classpath
+target
+

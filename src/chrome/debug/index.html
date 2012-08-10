@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dualless Debug Panel</title>
+</head>
+<link  href="../lib/bootstrap-2.0.4/css/bootstrap.min.css" rel="stylesheet">
+<script src="../lib/jquery-1.7.1.min.js"></script>
+<script src="../lib/angular-1.0.1.min.js"></script>
+<script src="../lib/require.js" data-main="app.js"></script>
+<style>
+
+body {
+    padding-top : 60px; /* Used with bootstrap header bar*/
+}
+
+</style>
+<body>
+    <!-- Header -->
+    <div class="navbar navbar-fixed-top">
+      <div class="brand">Dualless Debug Panel</div>
+      <div class="navbar-inner">
+        <div class="container">
+            <ul class="nav">
+                 <li class="active"><a href="#/info">Running Information</a></li>            
+                 <li class="active"><a href="#/component">UI Components</a></li>
+                 <li class="active"><a href="#/preparetest">Automated Test</a></li>
+            </ul>
+        </div>
+      </div>
+    </div>
+
+    <div ng-view>
+    </div>
+
+</body>
+</html>

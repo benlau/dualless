@@ -1,7 +1,5 @@
 
 function OptionsController($scope) {
-	console.log("OptionsController");
-	
 	/* Pairing Mode */
 	
 	function updatePairingButton(val) {

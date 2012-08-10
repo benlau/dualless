@@ -1,6 +1,9 @@
 /* Information View */
 
-define(["module"],function info(self) {
+define(["module",
+        "dualless/util/rect"],
+		function info(self,
+						Rect) {
 	var uri = self.uri;
 	var arr = uri.split("/");
 	arr.pop();
@@ -33,22 +36,18 @@ define(["module"],function info(self) {
 		function update() {
 
 			manager.updateWindows({},function(windows) {
-				var list =[];
-	        	$(windows).each(function (idx,win) {
-	        		var geom = "[" + win.top + "," + win.left + "," + win.width + "," + win.height + "]";
-	        		list.push(geom)
-	        	});
-				
-	        	for (var i = 1 ; i <= 2;i++) {
-	        		var exp = "managed.win" + i + " = ";
-	        		if (list[i] != undefined) {
-	        			exp = exp + list[i];	
-	        		} else {
-	        			exp = exp + "' '";
-	        		}
-//	        		bg.log(exp);
-	        		$scope.$apply(exp);
-	        	}
+			
+				for (var i = 0 ; i < 2;i++) {
+					var exp;
+					var win = windows[i];
+					if (win !=undefined) {
+						var rect = new Rect(win);
+						exp = "managed.win" + (i + 1) + " = " + rect.toString();
+					} else {
+						exp = "managed.win" + (i + 1) + " = ''";
+					}				
+					$scope.$apply(exp);
+				}
 			});
 
 			manager.currentWindow(function(win) {

@@ -15,7 +15,7 @@ Release 0.2
 =============
 
  * Supported to merge browser windows into one
- * Press on Dualless icon will move the paired windows into front
+ * Pairing mode is added. Focus on a splitted window will show another pair automatically. Simulate the behaviour of MacOS X.
 
 Release 0.1.2
 =============

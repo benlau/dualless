@@ -33,14 +33,11 @@ function SplitController($scope,$location) {
 	});
 	
 	$scope.$on("merge",function(event) {
-		console.log("merge1");
 		event.stopPropagation();
 		var args = {};
 		args.window = win;
 		args.tab = tab;
-		console.log("merge2");
 		manager.merge(args);
-		console.log("merge3");
 	});
 	
 	$scope.$on("$destroy",function(event) {

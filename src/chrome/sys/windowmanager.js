@@ -262,7 +262,14 @@ define(["dualless/sys/viewport"],
 				createData["tabId"] = tab.id;
 	            chrome.windows.create(createData,function(newWin) {
 	        		manager._windows = [newWin,win];
-	        		manager._viewport.layout(options, manager._windows, bridge);
+	        		if (manager._os == "Linux") {
+	        			// Extra delay for Linux. Otherwise , the newly created window size may not be correct.
+	        			setTimeout(function() {
+	        				manager._viewport.layout(options, manager._windows, bridge);	        				
+	        			},100);
+	        		} else {
+	        			manager._viewport.layout(options, manager._windows, bridge);
+	        		}
 	            });
 			
 			}

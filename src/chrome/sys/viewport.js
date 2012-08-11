@@ -263,8 +263,15 @@ define(["dualless/util/rect"],
 		$.extend(updateInfo,this._size.toData());
 		$.extend(updateInfo,rect.toData());
 	
-		if (win.state == "maximized" || win.state == "minimized")
-			updateInfo.state = "normal";
+//		if (win.state == "maximized" || win.state == "minimized")
+		
+		updateInfo.state = "normal"; 
+		/* Remarks:
+		 * 
+		 * Sometimes Chrome on Ubuntu/Unity may not report the current state correctly.
+		 * So set to "normal" by default. Otherwise, it may not be able to resize maximized window
+		 *  
+		 */  
 		
 		if (this._os == "MacOS") {
 			delete updateInfo.state; // Don't set normal in MacOS. The animation will be mad

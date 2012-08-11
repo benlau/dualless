@@ -2,6 +2,7 @@
 ============
 
 Feature Changes
+ * Dualless is now work with maximized window!
  * Options page is added. User may enable/disable pairing mode(MacOS simulation)
  * Vertical split is added.
  * It works better in Ubuntu / Unity

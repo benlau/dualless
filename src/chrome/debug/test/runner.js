@@ -467,7 +467,7 @@ define(["module",
 		});
 	});
 	
-	asyncTest("Arrange",function testArrange() {
+	asyncTest("Two Windows , H Split then VSplit",function testTwoWindowsHSplitVSplit() {
 		/* Condition. Two windows. Arrange into a pair
 		 * 
 		 * */
@@ -638,13 +638,57 @@ define(["module",
 		});
 		
 		runner.run(function() {
-			ok(runner.size() == 0);
+			ok(runner.size() == 0, "All the step is finished");
 			QUnit.start();
 		});
 		
 	});
 	
-	asyncTest("Merge with multie windows",function() {
+	asyncTest("Maximum Window , Split it", function testMaxWindowSplit(){
+		var runner = new TaskRunner();
+		var currentWin = undefined;
+		var currentTab = undefined;
+
+		runner.step(function(){
+			manager.currentWindowTab(function(win,tab) {
+				currentWin = win;
+				currentTab = tab;
+				runner.next();
+			});
+		});
+		
+		runner.step(function() {
+			chrome.windows.update(currentWin.id,{state : "maximized"} , runner.listener());
+		});	
+		
+		runner.step(function() {
+			manager.split({window: currentWin,
+							param1 : 3,
+							param2 : 7,
+							position : 1,
+							orientation : "H"},runner.listener());
+		});
+		
+		runner.step(function() {
+			manager.updateWindows({},function (windows){
+				ok(windows.length == 2,"Splitted into same window");
+				var rect1 = new Rect(windows[0]);
+				var rect2 = new Rect(windows[1]);
+				$("#qunit-fixture").append("<p>" + rect1.toString() + "</p>")
+				$("#qunit-fixture").append("<p>" + rect2.toString() + "</p>")
+				
+				ok(rect1.intersect(rect2).size() == 0, "Not intersect");
+				runner.next();
+			});
+		});
+		
+		runner.run(function(){
+			ok(runner.size() == 0, "All the step is finished");
+			QUnit.start();			
+		});
+	});
+	
+	asyncTest("Merge with multie windows",function testMerge() {
 		var runner = new TaskRunner();
 		var currentWin = undefined;
 		var currentTab = undefined;
@@ -693,6 +737,7 @@ define(["module",
 		});
 		
 	});
+	
 	
 	QUnit.start();
 

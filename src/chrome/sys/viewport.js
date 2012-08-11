@@ -9,11 +9,12 @@ define(["dualless/util/rect"],
 		this._screen; // The detected screen size
 		this._size; // The actual viewport
 		this._listeners = [] // An array of resize event listener
-		this.reset();
 		
 		if (options != undefined) {
 			this._os = options.os;
 		}	
+
+        this.reset();
 	}
 	
 	/** Reset viewport to initialize status.
@@ -40,7 +41,7 @@ define(["dualless/util/rect"],
 			height : window.screen.availHeight	});
 		if (!this._screen.equal(rect) ) {
 			this._screen = rect;
-			this._size = rect;
+			this.setSize(rect);
 		}
 	};
 	
@@ -50,7 +51,7 @@ define(["dualless/util/rect"],
 	
 	Viewport.prototype.isModified = function() {
 		return !this._size.equal(this._screen);
-	}
+	};
 	
 	Viewport.prototype.size = function(){
 		return this._size;
@@ -74,7 +75,21 @@ define(["dualless/util/rect"],
 			});
 		}	
 	};
-
+	
+	/** Calculate the viewport size based on two rectangles. The calculation is OS depended.
+	 * 
+	 * @param rect1
+	 * @param rect2
+	 */
+	
+	Viewport.prototype.calc = function(rect1,rect2) {
+	    var newSize;
+        newSize = rect1.unite(rect2);
+	    if (this._os == "MacOS") {
+	        newSize.height = newSize.height + newSize.top; 
+	    }
+	    this.setSize(newSize);
+	};
 	
 	/** Given a split parameter. Return the rectangles of splitted windows.
 	 * 
@@ -169,7 +184,6 @@ define(["dualless/util/rect"],
 			});
 			
 			var intersected = updatedWindowsRect[0].intersect(updatedWindowsRect[1]);
-			var unite = new Rect();
 			var inprefect = false; // The result is inprefect
 			var accept = true; // TRUE if the result is accepted. Call the callback function.
 			
@@ -187,7 +201,7 @@ define(["dualless/util/rect"],
 				} else if (!viewport.isModified()) {
 					if (viewport._os == "Linux")
 						retry = 1; // Reset retry count.
-					viewport.setSize(unite);
+					viewport.calc(updatedWindowsRect[0], updatedWindowsRect[1]);
 					rects = viewport.split(options);
 					accept = false;
 					arrange();

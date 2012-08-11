@@ -332,7 +332,6 @@ define(["module",
 		});
 		
 	});
-
 	
 	module("WindowManager");
 	
@@ -391,7 +390,7 @@ define(["module",
 		});
 		
 	});
-
+	
 	asyncTest("Split vertically",function testSplitVertically(){
 		/** Condition: Single window , multiple tabs. The current tab should be moved into a new window.
 		 *
@@ -409,15 +408,16 @@ define(["module",
 		});
 
 		runner.step(function() {
-			manager.split({ param1 : 3 , param2 : 7 , 
+			manager.split({ param1 : 5 , param2 : 5 , 
 							orientation :"V" , position:1,window: currentWin},
 							runner.listener());
+			// 3:7 Vertical split must overlap in MBA (1440 * 900) . So 5:5 is more friendly for MBA
 		});
 		
-//		runner.step(function(windows){
-//			ok(windows.length == 2);
-//			manager.updateWindows({}, runner.listener()); // Update again for latest information
-//		});
+		runner.step(function(windows){
+			ok(windows.length == 2);
+			manager.updateWindows({window: currentWin}, runner.listener()); // Update again for latest information
+		});
 		
 		runner.step(function(windows){
 			ok(windows.length == 2);
@@ -433,6 +433,10 @@ define(["module",
 													    ". Second Window = " + rect2.toString() +
 													    ". Overlapped Window = " + intersect.toString());
 			runner.next();
+		});
+		
+		runner.step(function(){
+		   chrome.windows.update(currentWin.id,{focused : true} , runner.listener());
 		});
 		
 		runner.run(function(){

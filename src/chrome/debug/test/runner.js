@@ -391,8 +391,58 @@ define(["module",
 		});
 		
 	});
+
+	asyncTest("Split vertically",function testSplitVertically(){
+		/** Condition: Single window , multiple tabs. The current tab should be moved into a new window.
+		 *
+		 */
+		var runner = new TaskRunner();
+		var currentWin;
+		var currentTab;
+		
+		runner.step(function(){
+			manager.currentWindowTab(function(win,tab) {
+				currentWin = win;
+				currentTab = tab;
+				runner.next();
+			});
+		});
+
+		runner.step(function() {
+			manager.split({ param1 : 3 , param2 : 7 , 
+							orientation :"V" , position:1,window: currentWin},
+							runner.listener());
+		});
+		
+//		runner.step(function(windows){
+//			ok(windows.length == 2);
+//			manager.updateWindows({}, runner.listener()); // Update again for latest information
+//		});
+		
+		runner.step(function(windows){
+			ok(windows.length == 2);
+			var current = windows[0];
+			var paired = windows[1];
+			ok(current.top > paired.top,"The current window should be in the bottom of screen");
+			var rect1 = new Rect(windows[0]);
+			var rect2 = new Rect(windows[1]);
+			var intersect = rect1.intersect(rect2);
+			
+			ok(intersect.size() == 0,"It should have no intersect between managed windows. First window = " + 
+													    rect1.toString() + 
+													    ". Second Window = " + rect2.toString() +
+													    ". Overlapped Window = " + intersect.toString());
+			runner.next();
+		});
+		
+		runner.run(function(){
+			ok(runner.size() == 0, "All the step is finished");
+			QUnit.start();			
+		});
+
+	});
 	
-	asyncTest("Single Window with multiple tab",function testSingleWindowMultipleTab(){
+	asyncTest("Single Window with multiple tab. Split horizontally",function testSingleWindowMultipleTab(){
 		/** Condition: Single window , multiple tabs. The current tab should be moved into a new window.
 		 *
 		 */
@@ -467,7 +517,7 @@ define(["module",
 		});
 	});
 	
-	asyncTest("Two Windows , H Split then VSplit",function testTwoWindowsHSplitVSplit() {
+	asyncTest("Two Windows , HSplit then VSplit",function testTwoWindowsHSplitVSplit() {
 		/* Condition. Two windows. Arrange into a pair
 		 * 
 		 * */

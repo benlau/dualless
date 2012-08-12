@@ -184,7 +184,7 @@ define(["dualless/util/rect"],
 					chrome.tabs.create({windowId : winId,
 										  url : url},
 										  callback);					
-				},150);
+				},100);
 			} else {
 				chrome.tabs.create({windowId : winId,
 									  url : url},

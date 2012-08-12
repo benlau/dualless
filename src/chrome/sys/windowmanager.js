@@ -236,7 +236,7 @@ define(["dualless/sys/viewport"],
 		});
 	};
 
-	/** Create a new window and move the current window.
+	/** Create a new window and move the current tab to the new window is needed.
 	 * 
 	 * @param rects
 	 */
@@ -250,11 +250,28 @@ define(["dualless/sys/viewport"],
 				callback(manager._windows);
 		}
 		
+		function layout() {
+    		if (manager._os == "Linux") {
+    			// Extra delay for Linux. Otherwise , the newly created window size may not be correct.
+    			setTimeout(function() {
+    				manager._viewport.layout(options, manager._windows,bridge);	        				
+    			},100);
+    		} else {
+    			manager._viewport.layout(options, manager._windows,bridge);
+    		}
+		}
+		
 		function _merge(win,tab) {
 			if (win.tabs.length == 1) {
-				chrome.windows.create({},function(newWin) {
+				createData = {};
+				if (options.duplicate) {
+					createData.url = options.tab.url;
+					delete options.duplicate;
+				}
+				
+				chrome.windows.create(createData,function(newWin) {
 	            	manager._windows = [win,newWin];
-	            	manager._viewport.layout(options, manager._windows, bridge);
+	            	layout();
 	            });
 				
 			} else {
@@ -262,14 +279,7 @@ define(["dualless/sys/viewport"],
 				createData["tabId"] = tab.id;
 	            chrome.windows.create(createData,function(newWin) {
 	        		manager._windows = [newWin,win];
-	        		if (manager._os == "Linux") {
-	        			// Extra delay for Linux. Otherwise , the newly created window size may not be correct.
-	        			setTimeout(function() {
-	        				manager._viewport.layout(options, manager._windows, bridge);	        				
-	        			},100);
-	        		} else {
-	        			manager._viewport.layout(options, manager._windows, bridge);
-	        		}
+	        		layout();
 	            });
 			
 			}

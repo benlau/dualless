@@ -3,8 +3,9 @@
 
 Feature Changes
  * Dualless is now work with maximized window!
- * Options page is added. User may enable/disable pairing mode(MacOS simulation)
  * Vertical split is added.
+ * Press middle key on split window button will duplicate the current window.
+ * Options page is added. User may enable/disable pairing mode(MacOS simulation)
  * It works better in Ubuntu / Unity
 
 Architecture changes

@@ -13,15 +13,25 @@ define(["module"],
 	console.log(manager);
 	console.log(manager.os());
 	
+	var currentWin;
+	var currentTab;
+	
+	manager.currentWindowTab(function(win,tab){
+		currentWin = win;
+		currentTab = tab;
+	});
+	
 	function Controller($scope) {	
 		$scope.$on("split",function(event,args) {
 			event.stopPropagation();
 			
 			var manager = chrome.extension.getBackgroundPage().manager();
+			args.window = currentWin;
+			args.tab = currentTab;
 			
-			var rects = manager.split(args);
-			
-			
+			manager.split(args,function(){
+				currentWin = windows[0];
+			});
 		});
 		
 		$scope.$on("merge",function(event) {

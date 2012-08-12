@@ -16,11 +16,16 @@ define(["module",
 			
 		$scope.choices = arr;
 
-		$scope.split = function (param1,param2,position) {		
-			$scope.$emit("split",{param1: param1,
-		   						    param2: param2,
-		   						    position : position,
-								    orientation : "V"});
+		$scope.split = function (param1,param2,position,event) {		
+			var args = {param1: param1,
+				        param2: param2,
+					    position : position,
+				        orientation : "V"}
+		
+			if (event.button == 1)
+				args.duplicate = true;
+			
+			$scope.$emit("split",args);
 		};
 
 		$scope.merge = function() {

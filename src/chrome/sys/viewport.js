@@ -176,6 +176,22 @@ define(["dualless/util/rect"],
 		
 		rects = this.split(options); // The rectangles of window.
 		
+		// Create a new tab on specific window.
+		function createTab(winId,url,callback) {
+			if (viewport._os == "Linux") {
+				// Extra delay is needed for Ubuntu/Unity when there has only one single window and single tab 
+				setTimeout(function(){
+					chrome.tabs.create({windowId : winId,
+										  url : url},
+										  callback);					
+				},150);
+			} else {
+				chrome.tabs.create({windowId : winId,
+									  url : url},
+									  callback);
+			}
+		}
+		
 		function validate() { // Validate the result
 			var updatedWindowsRect = []; // The rect object of the updated window
 			$(updatedWindows).each(function(idx,win) {
@@ -184,15 +200,15 @@ define(["dualless/util/rect"],
 			});
 			
 			var intersected = updatedWindowsRect[0].intersect(updatedWindowsRect[1]);
-			var inprefect = false; // The result is inprefect
-			var accept = true; // TRUE if the result is accepted. Call the callback function.
+			var imperfect = false; // The result is imperfect
+			var accept = true; // TRUE if the result is accepted event it is imperfect. Call the callback function.
 			
 			if (intersected.size() > 0 ) { // Prove that it is intersected!
-				inprefect = true;
+				imperfect = true;
 				unite = updatedWindowsRect[0].unite(updatedWindowsRect[1]);
 			}
 			
-			if (inprefect) {
+			if (imperfect) {
 
 				if (retry > 0) { // Just retry without touch the viewport size
 					retry--;
@@ -210,11 +226,16 @@ define(["dualless/util/rect"],
 			}
 		
 			if (accept) {
-				if (callback!=undefined)
-					callback();
+				if (options.duplicate) {
+					createTab(windows[1].id,options.tab.url,callback);
+				} else {			
+					if (callback!=undefined)
+						callback();
+				}
 			}
 		
 		};
+	
 		
 		function collector(win) { // Collect updated window
 			updatedWindows.push(win);

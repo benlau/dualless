@@ -1,11 +1,13 @@
 define(["module",
         "dualless/util/taskrunner",
         "dualless/util/rect",
-        "dualless/sys/viewport"],
+        "dualless/sys/viewport",
+        "testlib"],
 		function testViewport(self,
 						TaskRunner,
 						Rect,
-						Viewport) {
+						Viewport,
+						testlib) {
 
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
@@ -369,6 +371,21 @@ define(["module",
 			});
 		});
 		
+		runner.step(function(){
+			manager.currentWindowTab(function(win,tab) {
+				currentWin = win;
+				currentTab = tab;
+				
+				if (testlib.currentWindow() != undefined &&
+			 		testlib.currentWindow().id != currentWin.id ) {
+					ok(false,"It is not focusing on test window");
+					runner.stop();
+				} else {
+					runner.next();
+				}
+			});
+		});
+		
 		runner.run(function() {
 			ok(runner.size() == 0, "All the step is finished");
 			QUnit.start();
@@ -401,16 +418,33 @@ define(["module",
 							orientation : "H"},runner.listener());
 		});
 		
-		runner.step(function() {
-			manager.updateWindows({},function (windows){
-				ok(windows.length == 2,"Splitted into same window");
-				var rect1 = new Rect(windows[0]);
-				var rect2 = new Rect(windows[1]);
-				$("#qunit-fixture").append("<p>" + rect1.toString() + "</p>")
-				$("#qunit-fixture").append("<p>" + rect2.toString() + "</p>")
+//		runner.step(function() {
+//			manager.updateWindows({},runner.listener());
+//		});
+		
+		runner.step(function(windows){
+			ok(windows.length == 2,"Splitted into same window");
+			ok(windows[0].focused,"It should focus on the first window");
+			
+			var rect1 = new Rect(windows[0]);
+			var rect2 = new Rect(windows[1]);
+		
+			ok(rect1.intersect(rect2).size() == 0, "No intersection");
+			runner.next();		
+		});
+		
+		runner.step(function(){
+			manager.currentWindowTab(function(win,tab) {
+				currentWin = win;
+				currentTab = tab;
 				
-				ok(rect1.intersect(rect2).size() == 0, "Not intersect");
-				runner.next();
+				if (testlib.currentWindow() != undefined &&
+			 		testlib.currentWindow().id != currentWin.id ) {
+					ok(false,"It is not focusing on test window");
+					runner.stop();
+				} else {
+					runner.next();
+				}
 			});
 		});
 		
@@ -430,7 +464,14 @@ define(["module",
 			manager.currentWindowTab(function(win,tab) {
 				currentWin = win;
 				currentTab = tab;
-				runner.next();
+				
+				if (testlib.currentWindow() != undefined &&
+			 		testlib.currentWindow().id != currentWin.id ) {
+					ok(false,"It is not focusing on test window");
+					runner.stop();
+				} else {
+					runner.next();
+				}
 			});
 		});
 
@@ -464,7 +505,7 @@ define(["module",
 		});
 		
 		runner.run(function() {
-			ok(runner.size() == 0);		
+			ok(runner.size() == 0,"All step is finished");		
 			QUnit.start();
 		});
 		

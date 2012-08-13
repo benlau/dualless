@@ -34,11 +34,17 @@ define(["dualless/util/rect"],
 	 * 
 	 */
 	
-	Viewport.prototype.detect = function() { 
+	Viewport.prototype.detect = function(scr) {
 		var rect = new Rect({ top : 0,
 			left : 0,
 			width : window.screen.availWidth,
 			height : window.screen.availHeight	});
+		
+		if (scr!= undefined) {
+			rect.width = scr.availWidth;
+			rect.height = scr.availHeight;
+		}
+		
 		if (!this._screen.equal(rect) ) {
 			this._screen = rect;
 			this.setSize(rect);
@@ -167,7 +173,7 @@ define(["dualless/util/rect"],
 		var count = 2; // No. of windows waiting for resize
 		var updatedWindows = []; // Result of processed windows
 		
-		this.detect(); // Detect the screen size and update viewport is needed
+		this.detect(options.screen); // Detect the screen size and update viewport is needed
 		
 		if (viewport._os == "Linux") {
 			retry = 1; // "Linux" should retry one for time without update the viewport.
@@ -277,6 +283,8 @@ define(["dualless/util/rect"],
 		var rect = this._size.toData();
 		var master = options.windows[0]; // master window ; which will be resized to max viewport size
 		var tabs = [];// Tabs from other managed windows. All the tab inside will be moved to master window
+		
+		this.detect(options.screen);
 		
 		for (var i =1 ; i < options.windows.length;i++) {
 			$(options.windows[i].tabs).each(function(idx,tab){

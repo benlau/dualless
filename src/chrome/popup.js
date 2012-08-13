@@ -10,6 +10,9 @@ function SplitController($scope,$location) {
 	
 	var win; // The current window
 	var tab; // The current tab
+
+	var scr = {};
+	$.extend(scr,window.screen); // Make a copy of the screen object
 	
 	manager.currentWindowTab(function (val1,val2){
 		win = val1;
@@ -20,6 +23,10 @@ function SplitController($scope,$location) {
 		event.stopPropagation();
 		args.window = win;
 		args.tab = tab;
+		
+		// Manager alive in the background page. The screen object is not updated. So it may to pass the screen object from external
+		args.screen = scr; 	
+		
 		manager.split(args,function(windows){
 			win = windows[0]; 
 			// Current window could be changed for some condition
@@ -37,6 +44,7 @@ function SplitController($scope,$location) {
 		var args = {};
 		args.window = win;
 		args.tab = tab;
+		args.screen = scr;
 		manager.merge(args);
 	});
 	

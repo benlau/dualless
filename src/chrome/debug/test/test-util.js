@@ -8,7 +8,8 @@
 define(["module",
         "dualless/util/taskrunner",
         "dualless/util/rect",
-        "dualless/sys/viewport"],
+        "dualless/sys/viewport",
+        "testlib"],
 		function testUtil(self,
 						TaskRunner,
 						Rect,
@@ -121,7 +122,7 @@ define(["module",
 				var rect1 = new Rect(target);
 				var rect2 = new Rect(win);
 				console.log(target,win)
-				ok(rect1.equal(rect2));
+				ok(rect1.equal(rect2),"The resize is completed");
 				runner.next();
 			});
 		});

@@ -302,10 +302,10 @@ define(["module",
 							console.log(current);
 							console.log(windows[1]);
 						}
+						testlib.currentWindow(windows[0]); // Update the current window , as it is changed in this test case
 						runner.next();						
 					});
 				},500);
-				
 
 			});
 		});
@@ -348,17 +348,18 @@ define(["module",
 		runner.step(function() {
 			manager.currentWindow(function(win){
 				ok(win.tabs.length == 1,"Only one tab leave");
-				runner.next();
+				runner.next(win);
 			});
 		});
 		
-		runner.step(function() {
+		runner.step(function(win) {
 			manager.split({ param1 : 3,
 						    param2 : 7,
 						    orientation : "H",
-						    position : 1  
+						    position : 1,
+						    window : win
 						  },function(windows){
-							  ok(windows.length == 2);
+							  ok(windows.length == 2,"It should have two windows after split");
 							  console.log(windows);
 							  runner.next();
 						  });
@@ -378,7 +379,9 @@ define(["module",
 				
 				if (testlib.currentWindow() != undefined &&
 			 		testlib.currentWindow().id != currentWin.id ) {
-					ok(false,"It is not focusing on test window");
+					ok(false,"It is not focusing on test window. The test window ID is " + 
+							   testlib.currentWindow().id + 
+							   ". But current is " + currentWin.id);
 					runner.stop();
 				} else {
 					runner.next();

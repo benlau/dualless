@@ -53,8 +53,13 @@ define(function() {
 	var current;
 	
 	function currentWindow(){
-		return current;
+		if (arguments.length == 0) {
+			return current;
+		} else {
+			current = arguments[0];
+		}
 	}
+	
 	
 	chrome.windows.getCurrent({populate: true}, function(win){
 		current = win;

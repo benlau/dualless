@@ -248,13 +248,20 @@ define(["dualless/util/rect"],
 		function arrange() {
 			count = 2;
 			updatedWindows = [];
-			
-			$(windows).each(function(idx,win) {
-//				console.log("resize",win.id,rects[idx]);
-				viewport.resize(rects[idx],win,collector); 
+//			console.log(rects[0].__proto__.constructor.name);
+			for (var i = 1 ; i >= 0 ; i--) {
+				var updateInfo = {};
+				$.extend(updateInfo,rects[i].toData());
+				
+				if (i == 0)
+					updateInfo.focused = true;
+//				console.log("Resize",windows[i].id,updateInfo,windows[i]);
+				
+				viewport.resize(updateInfo,windows[i],collector);
 				// Call resize in parallel.
-				// Nested call do not work well on windows. Moreover, the response time may be slow
-			});		
+				// Nested call do not work well on windows. Moreover, the response time may be slow					
+			}
+			
 		}
 		
 		arrange();
@@ -296,7 +303,12 @@ define(["dualless/util/rect"],
 		var winId = win.id;
 		
 		$.extend(updateInfo,this._size.toData());
-		$.extend(updateInfo,rect.toData());
+		
+		if (rect.__proto__.constructor.name == "Rect"){
+			$.extend(updateInfo,rect.toData());	
+		} else {
+			$.extend(updateInfo,rect);
+		}
 	
 //		if (win.state == "maximized" || win.state == "minimized")
 		

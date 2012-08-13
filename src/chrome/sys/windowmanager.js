@@ -242,7 +242,7 @@ define(["dualless/sys/viewport"],
 	 */
 	
 	WindowManager.prototype._createAndMove = function(options,callback) {
-//		console.log("WindowManager._createAndMove");
+//		console.log("WindowManager._createAndMove",this._windows);
 		var manager = this;
 		
 		function bridge(){
@@ -251,6 +251,7 @@ define(["dualless/sys/viewport"],
 		}
 		
 		function layout() {
+//			console.log("WindowManager._createAndMove.layout",manager._windows);
     		if (manager._os == "Linux") {
     			// Extra delay for Linux. Otherwise , the newly created window size may not be correct.
     			setTimeout(function() {
@@ -261,7 +262,8 @@ define(["dualless/sys/viewport"],
     		}
 		}
 		
-		function _merge(win,tab) {
+		function create(win,tab) {
+//			console.log("WindowManager._createAndMove.create",win.tabs);
 			if (win.tabs.length == 1) {
 				createData = {};
 				if (options.duplicate) {
@@ -286,9 +288,9 @@ define(["dualless/sys/viewport"],
 		};
 		
 		if (options.window != undefined && options.tab != undefined) {
-			_merge(options.window , options.tab);
+			create(options.window , options.tab);
 		} else {
-			manager.currentWindowTab(_merge);			
+			manager.currentWindowTab(create);			
 		}
 		
 	};

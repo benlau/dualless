@@ -57,6 +57,20 @@ define(["dualless/util/rect"],
 		return !this._size.equal(this._screen);
 	};
 	
+	/** Return TRUE if the viewport is detectable. The system can provide enough information
+	 * to determine the viewport 
+	 * 
+	 */
+	
+	Viewport.prototype.isDetectable = function() {
+	    var res = true;
+	    
+	    if (this._os == "Linux")
+	        res = false;
+	    
+	    return res;
+	}
+	
 	Viewport.prototype.size = function(){
 		return this._size;
 	};
@@ -170,6 +184,7 @@ define(["dualless/util/rect"],
 		var retry = 0; // May retry for layout depend on the OS without resize the viewport
 		var count = 2; // No. of windows waiting for resize
 		var updatedWindows = []; // Result of processed windows
+		var recalculated = false;
 		
 		this.detect(options.screen); // Detect the screen size and update viewport if needed
 		
@@ -218,9 +233,12 @@ define(["dualless/util/rect"],
 					retry--;
 					accept = false;
 					arrange();
-				} else if (!viewport.isModified()) {
+				} else if (!viewport.isModified()
+				           && !viewport.isDetectable()
+				           && !recalculated) {
 					if (viewport._os == "Linux")
 						retry = 1; // Reset retry count.
+					recalculated = true;
 					viewport.calc(updatedWindowsRect[0], updatedWindowsRect[1]);
 					rects = viewport.split(options);
 					accept = false;

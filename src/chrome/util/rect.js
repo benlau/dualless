@@ -118,7 +118,7 @@ define(function util() {
 	};
 	
 	Rect.prototype.toString = function() {
-		var string = "[" + this.top + "," + this.left + "," + this.width + "," + this.height + "]";
+		var string = "[" + this.left + "," + this.top + " " + this.width + "x" + this.height + "]";
 		return string;
 	};
 	

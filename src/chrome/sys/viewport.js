@@ -173,7 +173,7 @@ define(["dualless/util/rect"],
 		var count = 2; // No. of windows waiting for resize
 		var updatedWindows = []; // Result of processed windows
 		
-		this.detect(options.screen); // Detect the screen size and update viewport is needed
+		this.detect(options.screen); // Detect the screen size and update viewport if needed
 		
 		if (viewport._os == "Linux") {
 			retry = 1; // "Linux" should retry one for time without update the viewport.

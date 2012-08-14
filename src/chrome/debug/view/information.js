@@ -17,6 +17,8 @@ define(["module",
 		$scope.basic.push( ["OS", manager.os() ] );
 		
 		$scope.screen = [];
+        $scope.screen.push([ "window.screen.availLeft", window.screen.availLeft]);
+        $scope.screen.push([ "window.screen.availTop", window.screen.availTop]);
 		$scope.screen.push([ "window.screen.availWidth", window.screen.availWidth]);
 		$scope.screen.push([ "window.screen.availHeight", window.screen.availHeight]);
 		$scope.screen.push([ "window.screen.width", window.screen.width]);
@@ -24,8 +26,8 @@ define(["module",
 
 		$scope.window = {};
 		$scope.window.isMaximized;
-		$scope.window.geometry;
-		$scope.window.viewport = manager.viewport().toString();
+		$scope.window.geometry = "";
+		$scope.window.viewport = manager.viewport().size().toString();
 		
 		$scope.managed = {}; // Managed window information
 		$scope.managed.win1;
@@ -52,12 +54,10 @@ define(["module",
 
 			manager.currentWindow(function(win) {
 	        	$scope.$apply("window.isMaximized = " + manager.isMaximized(win));
-	        	
-	        	var geom = "[" + win.top + "," + win.left + "," + win.width + "," + win.height + "]"; 
-	        	$scope.$apply("window.geometry = " + geom);
-        	
-	        	$scope.$apply("window.viewport = " + manager.viewport().size().toString());
-	        });
+	        	var geom = new Rect(win);
+	        	$scope.$apply("window.geometry = '" + geom.toString() + "'");        	
+	        	$scope.$apply("window.viewport = '" + manager.viewport().size().toString()+ "'");
+			});
 
 			$scope.log = bg.fullLog().join("\n");
 

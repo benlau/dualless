@@ -149,8 +149,8 @@ define(["module",
 		r3 = r1.unite(r2);
 		r4 = new Rect({top: 24, left:65,width : 1983,height: 807+345 -24});
 		ok(r3.equal(r4));
-		
-		ok(r3.toString() === "[24,65,1983,1128]");
+		console.log(r3.toString());
+		ok(r3.toString() == "[65,24 1983x1128]");
 	});
 	
 	test("Rect Data #2", function testRect2(){

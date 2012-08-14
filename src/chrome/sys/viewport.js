@@ -22,8 +22,8 @@ define(["dualless/util/rect"],
 	 */
 	
 	Viewport.prototype.reset = function() {
-		var rect = new Rect({ top : 0,
-			left : 0,
+		var rect = new Rect({ top : window.screen.availTop,
+			left : window.screen.availLeft,
 			width : window.screen.availWidth,
 			height : window.screen.availHeight	});
 		this._screen = rect;
@@ -35,16 +35,14 @@ define(["dualless/util/rect"],
 	 */
 	
 	Viewport.prototype.detect = function(scr) {
-		var rect = new Rect({ top : 0,
-			left : 0,
-			width : window.screen.availWidth,
-			height : window.screen.availHeight	});
-		
-		if (scr!= undefined) {
-			rect.width = scr.availWidth;
-			rect.height = scr.availHeight;
-		}
-		
+	    if (scr == undefined)
+	        scr = window.screen;
+	    
+		var rect = new Rect({top    : scr.availTop,
+                			 left   : scr.availLeft,
+                		  	 width  : scr.availWidth,
+                			 height : scr.availHeight	});
+                				
 		if (!this._screen.equal(rect) ) {
 			this._screen = rect;
 			this.setSize(rect);
@@ -91,9 +89,9 @@ define(["dualless/util/rect"],
 	Viewport.prototype.calc = function(rect1,rect2) {
 	    var newSize;
         newSize = rect1.unite(rect2);
-	    if (this._os == "MacOS") {
-	        newSize.height = newSize.height + newSize.top; 
-	    }
+//	    if (this._os == "MacOS") {
+//	        newSize.height = newSize.height + newSize.top; 
+//	    }
 	    this.setSize(newSize);
 	};
 	

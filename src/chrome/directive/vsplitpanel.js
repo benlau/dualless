@@ -22,8 +22,10 @@ define(["module",
 					    position : position,
 				        orientation : "V"}
 		
-			if (event.button == 1)
+			if (event.button == 1) {
 				args.duplicate = true;
+				args.position = 1 - args.position;
+			}
 			
 			$scope.$emit("split",args);
 		};

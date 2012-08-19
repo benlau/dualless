@@ -1,7 +1,3 @@
-<script src="lib/require.js"></script>
-<script src="lib/jquery-1.7.1.min.js"></script>
-<script>
-
 var _manager;
 var _display;
 
@@ -41,4 +37,6 @@ function fullLog() {
 
 log("Dualless launched");
 
-</script>
+window.log = log;
+window.fullLog = fullLog;
+window.manager = manager;

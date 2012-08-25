@@ -44,7 +44,7 @@ define(["module",
 					var win = windows[i];
 					if (win !=undefined) {
 						var rect = new Rect(win);
-						exp = "managed.win" + (i + 1) + " = " + rect.toString();
+						exp = "managed.win" + (i + 1) + " = '" + rect.toString() +  "'";
 					} else {
 						exp = "managed.win" + (i + 1) + " = ''";
 					}				

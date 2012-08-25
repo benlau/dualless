@@ -1,4 +1,6 @@
 
+QUnit.config.autostart = false;
+
 requirejs.config({
 	paths : {
 		"dualless" : "../.."

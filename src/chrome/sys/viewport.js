@@ -1,5 +1,7 @@
-define(["dualless/util/rect"], 
-		function sys(Rect) {
+define(["dualless/util/rect",
+        "dualless/sys/os"], 
+		function sys(Rect,
+					  os) {
 	
 	/** Viewport controller
 	 * 
@@ -10,11 +12,9 @@ define(["dualless/util/rect"],
 		this._size; // The actual viewport
 		this._callbacks = $.Callbacks('memory');
 		
-		if (options != undefined) {
-			this._os = options.os;
-		}	
+  		this._os = os();
 
-        this.reset();
+       this.reset();
 	}
 	
 	/** Reset viewport to initialize status.

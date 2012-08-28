@@ -9,16 +9,23 @@ define(["module",
         "dualless/util/taskrunner",
         "dualless/util/rect",
         "dualless/sys/viewport",
+        "dualless/sys/os",
         "testlib"],
 		function testUtil(self,
 						TaskRunner,
 						Rect,
-						Viewport) {
+						Viewport,
+						os) {
 	
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
 	
-	module("Utility and misc Test"); 
+	module("Utility and misc Test");
+	
+	test("os",function() {
+		ok(os != undefined);
+		ok(typeof os == "function");
+	});
 	
 	asyncTest("closeAllOtherWindow", function test_closeAllOtherWindow(){
 		expect(2);

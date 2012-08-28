@@ -5,20 +5,14 @@
  * 
  * */
 
-define(["dualless/sys/viewport"], 
-		function sys(Viewport) {
+define(["dualless/sys/viewport",
+		 "dualless/sys/os"], 
+		function sys(Viewport,
+					   os) {
 
 	WindowManager = function() {
-		// Detect the current OS
-		var os = "unknown";
-
-		if (navigator.appVersion.indexOf("Win")!=-1) os="Windows";
-		if (navigator.appVersion.indexOf("Mac")!=-1) os="MacOS";
-		if (navigator.appVersion.indexOf("X11")!=-1) os="Unix";
-		if (navigator.appVersion.indexOf("Linux")!=-1) os="Linux";
-
-		this._os = os;
-		this._viewport = new Viewport({os: os});
+		this._os = os();
+		this._viewport = new Viewport();
 		this._windows = []; // Managed windows
 		
 		var manager = this;

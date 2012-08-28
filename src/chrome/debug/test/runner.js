@@ -16,5 +16,13 @@ define([
         ],
 		function runner() {
 	
+	window.onbeforeunload = function(){
+		return "Unexpected behaviour during testing!";
+	};
+	
+	QUnit.done(function() {
+		window.onbeforeunload = function(){ return;};
+	});
+	
 	QUnit.start();
 });

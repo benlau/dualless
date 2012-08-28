@@ -72,6 +72,7 @@ define(["module",
 	});
 	
 	asyncTest("Split vertically",function testSplitVertically(){
+		console.log("Test case : Split vertically");
 		/** Condition: Single window , multiple tabs. The current tab should be moved into a new window.
 		 *
 		 */

@@ -12,6 +12,30 @@ define(["module",
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
 	manager.reset();
+	
+	/** Insert a focus test case to the runner
+	 * 
+	 * @param runner
+	 */
+	
+	function insertFocusTest(runner) {
+		runner.step(function(){
+			manager.currentWindowTab(function(win,tab) {
+				currentWin = win;
+				currentTab = tab;
+				
+				if (testlib.currentWindow() != undefined &&
+			 		testlib.currentWindow().id != currentWin.id ) {
+					ok(false,"It is not focusing on test window.");
+					runner.stop();
+				} else {
+					ok(true,"The focus is on the test window.");
+					runner.next();
+				}
+			});
+		});		
+	};
+	
 
 	module("WindowManager");
 	
@@ -77,27 +101,19 @@ define(["module",
 		 *
 		 */
 		var runner = new TaskRunner();
-		var currentWin;
-		var currentTab;
-		
-		runner.step(function(){
-			manager.currentWindowTab(function(win,tab) {
-				currentWin = win;
-				currentTab = tab;
-				runner.next();
-			});
-		});
 
 		runner.step(function() {
 			manager.split({ param1 : 5 , param2 : 5 , 
-							orientation :"V" , position:1,window: currentWin},
+							orientation :"V" , position:1,
+							window: testlib.currentWindow()},
 							runner.listener());
 			// 3:7 Vertical split must overlap in MBA (1440 * 900) . So 5:5 is more friendly for MBA
 		});
 		
 		runner.step(function(windows){
 			ok(windows.length == 2);
-			manager.updateWindows({window: currentWin}, runner.listener()); // Update again for latest information
+			manager.updateWindows({window: testlib.currentWindow()}, 
+									  runner.listener()); // Update again for latest information
 		});
 		
 		runner.step(function(windows){
@@ -116,12 +132,15 @@ define(["module",
 			runner.next();
 		});
 		
+		insertFocusTest(runner);
+		
 		runner.step(function(){
 		   chrome.windows.update(currentWin.id,{focused : true} , runner.listener());
 		});
 		
 		runner.run(function(){
 			ok(runner.size() == 0, "All the step is finished");
+			console.log("Test case finished : Split vertically");
 			QUnit.start();			
 		});
 

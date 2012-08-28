@@ -8,7 +8,7 @@ define(["dualless/util/rect"],
 	function Viewport(options) {
 		this._screen; // The detected screen size
 		this._size; // The actual viewport
-		this._listeners = [] // An array of resize event listener
+		this._callbacks = $.Callbacks('memory');
 		
 		if (options != undefined) {
 			this._os = options.os;
@@ -69,7 +69,7 @@ define(["dualless/util/rect"],
 	        res = false;
 	    
 	    return res;
-	}
+	};
 	
 	Viewport.prototype.size = function(){
 		return this._size;
@@ -87,11 +87,10 @@ define(["dualless/util/rect"],
 		console.log("Viewport.setSize()" , this._size , newSize);
 
 		if (this._size == undefined || !newSize.equal(this._size) ){
-			this._size = newSize;
-			$(this._listeners).each(function(idx,callback){
-				callback(newSize);
-			});
-		}	
+			this._size = new Rect(newSize);
+//			this._size = newSize;
+			this._callbacks.fire(newSize);
+		}
 	};
 	
 	/** Calculate the viewport size based on two rectangles. The calculation is OS depended.
@@ -387,17 +386,11 @@ define(["dualless/util/rect"],
 	};
 	
 	Viewport.prototype.bind = function(callback) {
-		this._listeners.push(callback);
+		this._callbacks.add(callback);
 	};
 	
 	Viewport.prototype.unbind = function(callback) {
-		var viewport = this;
-		$(this._listeners).each(function(idx,func){
-			if (func == callback){
-				viewport._listeners.splice(idx,1);
-				return false;
-			}
-		});
+		this._callbacks.remove(callback);
 	};
 	
 	

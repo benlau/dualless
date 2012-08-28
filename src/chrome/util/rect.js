@@ -114,7 +114,10 @@ define(function util() {
 	};
 	
 	Rect.prototype.equal = function(other) {
-		return this.left == other.left && this.top == other.top && this.width == other.width && this.height == other.height;
+		return this.left == other.left && 
+			   this.top == other.top && 
+			   this.width == other.width && 
+			   this.height == other.height;
 	};
 	
 	Rect.prototype.toString = function() {

@@ -57,24 +57,29 @@ define(["module",
 		
 		viewport.reset();
 		var calledOnResize = false;
-		function onResize(){
+		function onResize(size){
 			calledOnResize = true;
 		};
 		viewport.bind(onResize);
 		
 		viewport.setSize(rect);
 		ok(calledOnResize,"Resize is called");
-		
+
 		calledOnResize = false;
 		viewport.setSize(rect);
 		ok(!calledOnResize,"Resize should not be called");
+
+		rect.width = 777;
+		viewport.setSize(rect);
+		ok(calledOnResize,"Callback should be able to call for multiple time");
 		
 		viewport.reset();
+		
 		viewport.unbind(onResize);
 		calledOnResize = false;
 		
 		viewport.setSize(rect);
-		ok(!calledOnResize,"Test unbind");
+		ok(!calledOnResize,"Test do unbind really works");
 	});
 	
 	asyncTest("ResizeWindow", function testViewportResize() {

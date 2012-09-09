@@ -1,7 +1,8 @@
 
 define(["module",
         "dualless/directive/splitpanel"],
-		function hsplitpanel(self) {
+		function hsplitpanel(self,
+		                     splitpanel) {
 	var uri = self.uri;
 	var arr = uri.split("/");
 	arr.pop();
@@ -17,16 +18,13 @@ define(["module",
 		$scope.choices = arr;
 
 		$scope.split = function (param1,param2,position,event) {
-			var args = {param1: param1,
-					     param2: param2,
-						  position : position,
-					     orientation : "H"}
-			
-			if (event.button == 1) {
-				args.duplicate = true;
-				args.position = 1 - args.position;
-			}
-			
+		    var args = {param1: param1,
+                        param2: param2,
+                        position : position,
+                        orientation : "H"};
+		    
+		    splitpanel.update(args,event);
+
 			$scope.$emit("split",args);
 		};
 

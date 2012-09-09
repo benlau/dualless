@@ -1,7 +1,8 @@
 
 define(["module",
         "dualless/directive/splitpanel"],
-		function vsplitpanel(self) {
+		function vsplitpanel(self,
+		                     splitpanel) {
 	var uri = self.uri;
 	var arr = uri.split("/");
 	arr.pop();
@@ -22,10 +23,7 @@ define(["module",
 					    position : position,
 				        orientation : "V"}
 		
-			if (event.button == 1) {
-				args.duplicate = true;
-				args.position = 1 - args.position;
-			}
+            splitpanel.update(args,event);
 			
 			$scope.$emit("split",args);
 		};

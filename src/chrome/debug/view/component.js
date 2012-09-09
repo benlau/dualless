@@ -29,7 +29,7 @@ define(["module"],
 			args.window = currentWin;
 			args.tab = currentTab;
 			
-			manager.split(args,function(){
+			manager.split(args,function(windows){
 				currentWin = windows[0];
 			});
 		});

@@ -5,11 +5,13 @@ define(["dualless/util/rect",
 	
 	/** Viewport controller
 	 * 
+	 * @constructor
+	 * 
 	 */
 	
 	function Viewport(options) {
 		this._screen; // The detected screen size
-		this._size; // The actual viewport
+		this._size; // The actual viewport size
 		this._callbacks = $.Callbacks('memory');
 		
   		this._os = os();
@@ -32,6 +34,7 @@ define(["dualless/util/rect",
 	
 	/** Detect the current screen size, if it is changed. The viewport size will be set to the screen size automatically.
 	 * 
+	 * @param scr The current screen object. It can not use window.screen for all case. The popup's window.screen can not provide correct information   
 	 */
 	
 	Viewport.prototype.detect = function(scr) {
@@ -65,8 +68,10 @@ define(["dualless/util/rect",
 	Viewport.prototype.isDetectable = function() {
 	    var res = true;
 	    
-	    if (this._os == "Linux")
+	    if (this._os == "Linux") {
+	    	// The viewport detection from Ubuntu with Unity is known to fail.  
 	        res = false;
+	    }
 	    
 	    return res;
 	};
@@ -84,7 +89,7 @@ define(["dualless/util/rect",
 		} else {
 			throw "Viewport.setSize() - Invalid argument";
 		}
-		console.log("Viewport.setSize()" , this._size , newSize);
+		//console.log("Viewport.setSize()" , this._size , newSize);
 
 		if (this._size == undefined || !newSize.equal(this._size) ){
 			this._size = new Rect(newSize);
@@ -385,10 +390,19 @@ define(["dualless/util/rect",
 		chrome.windows.update(winId, updateInfo , checker);
 	};
 	
+	/** Attach a handler to viewport's resize event
+	 * @param callback
+	 */
+	
 	Viewport.prototype.bind = function(callback) {
 		this._callbacks.add(callback);
 	};
+
 	
+	/** Deattach a handler from viewport's resize event
+	 * @param callback
+	 */
+
 	Viewport.prototype.unbind = function(callback) {
 		this._callbacks.remove(callback);
 	};

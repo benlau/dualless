@@ -300,11 +300,13 @@ define(["dualless/util/rect",
 	 */
 	
 	Viewport.prototype.merge = function(options,callback){
-		var rect = this._size.toData();
+		var rect;
 		var master = options.windows[0]; // master window ; which will be resized to max viewport size
 		var tabs = [];// Tabs from other managed windows. All the tab inside will be moved to master window
 		
 		this.detect(options.screen);
+		
+		rect = this._size.toData();
 		
 		for (var i =1 ; i < options.windows.length;i++) {
 			$(options.windows[i].tabs).each(function(idx,tab){

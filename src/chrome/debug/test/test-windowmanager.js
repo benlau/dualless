@@ -105,7 +105,8 @@ define(["module",
 		runner.step(function() {
 			manager.split({ param1 : 5 , param2 : 5 , 
 							orientation :"V" , position:1,
-							window: testlib.currentWindow()},
+							window: testlib.currentWindow(),
+							tab : testlib.currentTab()},
 							runner.listener());
 			// 3:7 Vertical split must overlap in MBA (1440 * 900) . So 5:5 is more friendly for MBA
 		});

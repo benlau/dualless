@@ -51,6 +51,7 @@ function closeAllOtherWindow() {
 
 define(function() {
 	var current;
+	var currentTab;
 	
 	function currentWindow(){
 		if (arguments.length == 0) {
@@ -59,14 +60,26 @@ define(function() {
 			current = arguments[0];
 		}
 	}
-	
+
+	function currentTab(){
+	    if (arguments.length == 0) {
+	        return currentTab;
+	    } else {
+	        currentTab = arguments[0];
+	    }
+	}
 	
 	chrome.windows.getCurrent({populate: true}, function(win){
 		current = win;
 	});
 	
+	chrome.tabs.getCurrent(function(tab){
+	   currentTab = tab; 
+	});
+	
 	return {
-		currentWindow : currentWindow
+		currentWindow : currentWindow,
+		currentTab : currentTab
 	};
 	
 });

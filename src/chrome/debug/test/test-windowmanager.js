@@ -101,6 +101,11 @@ define(["module",
 		 *
 		 */
 		var runner = new TaskRunner();
+		
+		runner.step(function(){
+		    // Close all other tab. Otherwise, the current tab may be moved to other windows. Then it may affect the test case. 
+		    closeAllOtherTab(runner.listener());
+		});
 
 		runner.step(function() {
 			manager.split({ param1 : 5 , param2 : 5 , 
@@ -121,10 +126,17 @@ define(["module",
 			ok(windows.length == 2);
 			var current = windows[0];
 			var paired = windows[1];
-			ok(current.top > paired.top,"The current window should be in the bottom of screen");
 			var rect1 = new Rect(windows[0]);
 			var rect2 = new Rect(windows[1]);
 			var intersect = rect1.intersect(rect2);
+			
+          ok(windows[0].id == testlib.currentWindow().id , "The first window returned by manager.split() should be the window holding the test case");
+          ok(windows[0].id != windows[1].id,"The returned windows should not be duplicated");
+
+          ok(current.top > paired.top,"The current window should be in the bottom of screen." +
+	                                       "First Window = " + rect1.toString() +
+	                                       "Second Window = " + rect2.toString());
+
 			
 			ok(intersect.size() == 0,"It should have no intersect between managed windows. First window = " + 
 													    rect1.toString() + 

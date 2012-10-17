@@ -49,6 +49,19 @@ function closeAllOtherWindow() {
 	}	
 };
 
+function closeAllOtherTab(callback) { 
+   chrome.tabs.getCurrent(function(tab) {
+      chrome.windows.getCurrent({populate:true},function(win) {
+          var tabs = [];
+          $(win.tabs).each(function(idx,t){
+              if (t.id != tab.id)
+                  tabs.push(t.id);
+           });
+          chrome.tabs.remove(tabs,callback);
+       }); 
+   });
+}
+
 define(function() {
 	var current;
 	var currentTab;

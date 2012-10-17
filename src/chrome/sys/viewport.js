@@ -20,14 +20,18 @@ define(["dualless/util/rect",
 	}
 	
 	/** Reset viewport to initialize status.
-	 * 
+	 *
+	 * @param scr The current screen object. It can not use window.screen for all case. The popup's window.screen can not provide correct information
 	 */
 	
-	Viewport.prototype.reset = function() {
-		var rect = new Rect({ top : window.screen.availTop,
-			left : window.screen.availLeft,
-			width : window.screen.availWidth,
-			height : window.screen.availHeight	});
+	Viewport.prototype.reset = function(scr) {
+	    if (scr == undefined){
+	        scr = window.screen;
+	    }
+		var rect = new Rect({ top : scr.availTop,
+			left : scr.availLeft,
+			width : scr.availWidth,
+			height : scr.availHeight	});
 		this._screen = rect;
 		this.setSize(rect);
 	};

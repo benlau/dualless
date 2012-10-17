@@ -30,7 +30,7 @@ function OptionsController($scope) {
 	};
 	
 	$scope.resetViewport = function(){
-		manager.viewport().reset();
+		manager.viewport().reset(window.screen);
 		$scope.viewport = manager.viewport().size().toString();
 	};	
 

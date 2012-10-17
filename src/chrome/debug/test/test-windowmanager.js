@@ -97,14 +97,14 @@ define(["module",
 	
 	asyncTest("Split vertically",function testSplitVertically(){
 		console.log("Test case : Split vertically");
-		/** Condition: Single window , multiple tabs. The current tab should be moved into a new window.
+		/** Condition: Single window , multiple tabs.
 		 *
 		 */
-		var runner = new TaskRunner();
+		var runner = new TaskRunner();		
 		
 		runner.step(function(){
-		    // Close all other tab. Otherwise, the current tab may be moved to other windows. Then it may affect the test case. 
-		    closeAllOtherTab(runner.listener());
+		    // Create a new window. Prevent the current tab moved to another window
+		    chrome.windows.create({},runner.listener());
 		});
 
 		runner.step(function() {

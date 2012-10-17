@@ -185,7 +185,10 @@ define(["dualless/util/rect",
 	 */
 	
 	Viewport.prototype.layout = function(options,windows,callback) {
-		
+		if (windows.length != 2) {
+		    console.error("Viewport.layout() - The input windows size must be 2.",windows);
+		}
+	    
 		var rects ; // The rectangles of window.
 		var viewport = this;
 		
@@ -333,6 +336,10 @@ define(["dualless/util/rect",
 	 */
 	
 	Viewport.prototype.resize = function(rect,win,callback) {
+       if (win == undefined) {
+           console.error("Viewport.resize() - Input window is undefined.");
+        }
+	    
 		var updateInfo = {}; // The target rect
 		var winId = win.id;
 		

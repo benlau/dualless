@@ -57,7 +57,10 @@ function closeAllOtherTab(callback) {
               if (t.id != tab.id)
                   tabs.push(t.id);
            });
-          chrome.tabs.remove(tabs,callback);
+          if (tabs.length > 0)
+              chrome.tabs.remove(tabs,callback);
+          else 
+              callback();
        }); 
    });
 }

@@ -17,6 +17,7 @@ define(["dualless/sys/viewport",
 		
 		var manager = this;
 		
+		/*
 		chrome.windows.onRemoved.addListener(function ( winId){
 			for (var i = 0 ; i < manager._windows.length;i++) {
 				if (manager._windows[i].id  == winId) {
@@ -25,6 +26,7 @@ define(["dualless/sys/viewport",
 				}
 			}
 		});
+		*/
 		
 	};
 	
@@ -219,6 +221,7 @@ define(["dualless/sys/viewport",
 		this.updateWindows({autoMatching: true,
 							  window : options.window},
 							  function(list) {
+//			console.log("WindowManager.split() - No of windows = " + list.length)
 			if (list.length == 1) {
 				manager._createAndMove(options,callback);
 			} else {
@@ -257,24 +260,28 @@ define(["dualless/sys/viewport",
 		}
 		
 		function create(win,tab) {
-//			console.log("WindowManager._createAndMove.create",win.tabs);
+//			console.log("WindowManager._createAndMove.create",win,tab);
 			if (win.tabs.length == 1) {
-				createData = {};
+				var createData = {};
 				if (options.duplicate) {
 					createData.url = options.tab.url;
 					delete options.duplicate;
 				}
 				
 				chrome.windows.create(createData,function(newWin) {
-	            	manager._windows = [win,newWin];
+				    var windows = [win,newWin];
+	            	manager._windows = windows;
+//	            	console.log("WindowManager._createAndMove.create",manager._windows,win,newWin);
 	            	layout();
 	            });
 				
 			} else {
 				var createData = {};
 				createData["tabId"] = tab.id;
-	            chrome.windows.create(createData,function(newWin) {
-	        		manager._windows = [newWin,win];
+	          chrome.windows.create(createData,function(newWin) {
+	              var windows = [newWin,win];
+	        		manager._windows = windows;
+//	        		console.log("WindowManager._createAndMove.create",manager,manager._windows,[newWin,win],windows);
 	        		layout();
 	            });
 			
@@ -284,6 +291,7 @@ define(["dualless/sys/viewport",
 		if (options.window != undefined && options.tab != undefined) {
 			create(options.window , options.tab);
 		} else {
+//		    console.log("WindowManager._createAndMove - window or tab is not passed. Auto-detect it.");
 			manager.currentWindowTab(create);			
 		}
 		

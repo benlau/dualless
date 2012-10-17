@@ -84,12 +84,17 @@ define(function(){
           */
 			
 			/* Approach 2 */
-			/* Test will it works better in Ubuntu/Unity */
+			/* This method works better in Ubuntu/Unity */
 			this.freeze(1000);
-			chrome.windows.update(windows[1 - pos].id , {focused: true , state:"normal"},function() {
-				chrome.windows.update(windows[pos].id , {focused: true , state:"normal"},function() {
+			chrome.windows.update(windows[1 - pos].id , {focused: true},function() {
+				chrome.windows.update(windows[pos].id , {focused: true},function() {
 				});
 			});
+			/* Remarks: Do not set state to "normal". If the window is maximized, it will force to rollback to previous
+			 * size. It is quite annoying.  
+
+			 */
+			
 		};
 		
 		this.lastWindowId = winId;		

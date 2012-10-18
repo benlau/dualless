@@ -330,7 +330,7 @@ define(["module",
 						if (windows.length == 2) {
 							var current = windows[0];
 							ok(current.id == currentWin.id);
-							ok(current.tabs.length == 1,"Make sure no extra tab is created accidently");
+							ok(current.tabs.length == 1,"Make sure no extra tab is created accidently. No. of tabs available : " + current.tabs.length);
 							ok(current.top > windows[1].top,"The current window should be located in the bottom part");
 							console.log(current);
 							console.log(windows[1]);
@@ -454,9 +454,10 @@ define(["module",
 							orientation : "H"},runner.listener());
 		});
 		
-//		runner.step(function() {
-//			manager.updateWindows({},runner.listener());
-//		});
+		runner.step(function() {
+			// The information of windows returnned by split() may not be the most updated. Call this function to retrieve the latest information
+			manager.updateWindows({window : testlib.currentWindow() },runner.listener());
+		});
 		
 		runner.step(function(windows){
 			ok(windows.length == 2,"Splitted into same window");
@@ -464,8 +465,10 @@ define(["module",
 			
 			var rect1 = new Rect(windows[0]);
 			var rect2 = new Rect(windows[1]);
+			var intersected = rect1.intersect(rect2); 
 		
-			ok(rect1.intersect(rect2).size() == 0, "No intersection");
+			ok(intersected.size() == 0, "No intersection. Overalapped rectangle = " + intersected.toString()
+										+ "from " + rect1.toString() + "," + rect2.toString());
 			runner.next();		
 		});
 		

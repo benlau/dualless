@@ -4,7 +4,7 @@ requirejs.config({
 	}
 });
 
-function SplitController($scope,$location) {
+function SplitController($scope,$location,$timeout) {
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
 	
@@ -52,9 +52,15 @@ function SplitController($scope,$location) {
 		if (localStorage.lastPopupPath != $location.path())
 			localStorage.lastPopupPath = $location.path();
 	});
+	
+    $timeout(function(){
+        $(".split-panel-win").each(function() {
+            $(this).attr("title","Press middle key may duplicate this page to other window.");
+         });  
+    });
 };
 
-SplitController.$inject = ["$scope","$location"];
+SplitController.$inject = ["$scope","$location","$timeout"];
 
 require([ "dualless/directive/hsplitpanel",
           "dualless/directive/vsplitpanel"],
@@ -63,12 +69,12 @@ require([ "dualless/directive/hsplitpanel",
 	
 	module.config(['$routeProvider', function configRouteProvider($routeProvider) {
 			$routeProvider.when("/hsplit",{
-				template : "<hsplitpanel></hsplitpanel",
+				template : "<hsplitpanel></hsplitpanel>",
 				controller : SplitController
 			});
 
 			$routeProvider.when("/vsplit",{
-				template : "<vsplitpanel></vsplitpanel",
+				template : "<vsplitpanel></vsplitpanel>",
 				controller : SplitController
 			});
 			

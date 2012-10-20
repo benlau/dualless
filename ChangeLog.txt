@@ -1,12 +1,12 @@
-0.2.1 (Development Version)
-============
+Release 0.3
+===========
 
 Feature Changes
- * Dualless is now work with maximized window!
- * Vertical split is added.
- * Press middle key on split window button will duplicate the current window.
+ * Dualless now works with maximized window!
+ * Press middle key on split window button will duplicate the current page on other window.
+ * Vertical split is supported.
  * Options page is added. User may enable/disable pairing mode(MacOS simulation)
- * It works better in Ubuntu / Unity
+ * Ubuntu with Unity works better now
 
 Architecture changes
  * Reorganize the source tree.

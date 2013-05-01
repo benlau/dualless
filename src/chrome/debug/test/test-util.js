@@ -28,51 +28,70 @@ define(["module",
 	});
 	
 	asyncTest("closeAllOtherWindow", function test_closeAllOtherWindow(){
+		
+		// This test case is written in using $.Deferred()'s pipe() method
+		// Show the different with task runner.
+		
 		expect(2);
 		var rect = {
-				top : 0,
-				left : 0,
+				top : 30,
+				left : 30,
 				width : 400,
 				height : 400
 		};
 		var runner = new TaskRunner();
 		var current = undefined;
+		var d = $.Deferred();
 		
-		runner.step(function() {
-			manager.currentWindow(runner.listener());
-		});
-		
-		
-		runner.step(function(win){
-			current = win;
-			runner.next();
-		});
-		
-		runner.step(function(){
-			
-		chrome.windows.create(rect,function(win) { // Create one more windows to make sure there has at least 2 windows available
-			closeAllOtherWindow(current,function() { 
-				// It must pass "current" to this function. Otherwise it will not works on MacOS
-				
-				chrome.windows.getAll({populate : true},function(windows) {
-					ok(windows.length == 1 , 
-					   "After called closeAllOtherWindow(). It should have only 1 window leave , Nnow has " + windows.length + " windows");
-					
-					closeAllOtherWindow(current,function() {
-						ok(1, "closeAllOtherWindow() should also works with single window condition");
-						runner.next();
-					});
-	
-				});
+		d.pipe(function() {
+
+			var p = $.Deferred();
+			manager.currentWindow(function(win) {
+				current = win;
+				p.resolve(win);
 			});
-		});			
-	
-		});
-	
-		runner.run(function() {
+			return p;
+		}).pipe(function() {
+
+			var p = $.Deferred();
+			chrome.windows.create(rect,function() { // Create one more windows to make sure there has at least 2 windows available
+				setTimeout(function() { 
+					// Let's Window creation be visible to human
+					p.resolve(); 					
+				},300);
+			});
+			return p;
+
+		}).pipe(function() {
+
+			var p = $.Deferred();
+			closeAllOtherWindow(current,function() { 
+				p.resolve();
+			});
+			return p;
+		}).pipe(function() {
+
+			var p = $.Deferred();
+			chrome.windows.getAll({populate : true},function(windows) {
+				ok(windows.length == 1 , 
+				   "After called closeAllOtherWindow(). It should have only 1 window leave , Now has " + windows.length + " windows");
+				 p.resolve();
+			});
+			return p;
+		}).pipe(function() {
+			var p = $.Deferred();			
+			closeAllOtherWindow(current,function() {
+				ok(1, "closeAllOtherWindow() should also works with single window condition. No exception raised");
+				p.resolve();
+			});
+			return p;
+		}).done(function() {
+			console.log("Final");
 			QUnit.start();
 		});
-		
+
+		d.resolve();
+
 		
 	});
 	

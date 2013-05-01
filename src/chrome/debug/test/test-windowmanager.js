@@ -104,7 +104,9 @@ define(["module",
 		
 		runner.step(function(){
 		    // Create a new window. Prevent the current tab moved to another window
-		    chrome.windows.create({},runner.listener());
+		    chrome.windows.create({},function() {
+				setTimeout(runner.listener(),300);
+			});
 		});
 
 		runner.step(function() {

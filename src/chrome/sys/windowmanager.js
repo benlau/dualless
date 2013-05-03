@@ -6,27 +6,27 @@
  * */
 
 define(["dualless/sys/viewport",
-		 "dualless/sys/os"], 
+		 "dualless/sys/os",
+		 "dualless/lib/eventemitter"], 
 		function sys(Viewport,
-					   os) {
+					   os,
+					   EventEmitter) {
 
 	WindowManager = function() {
 		this._os = os();
 		this._viewport = new Viewport();
 		this._windows = []; // Managed windows
 		
+		this.events = new EventEmitter();
+		
 		var manager = this;
 		
-		/*
 		chrome.windows.onRemoved.addListener(function ( winId){
-			for (var i = 0 ; i < manager._windows.length;i++) {
-				if (manager._windows[i].id  == winId) {
-					manager._windows.splice(i,1);
-					break;
-				}
+			if (manager.isManaged(winId)) {
+                manager.remove(winId);
+                manager.events.emit("removed",winId);
 			}
 		});
-		*/
 		
 	};
 	
@@ -310,6 +310,19 @@ define(["dualless/sys/viewport",
 			manager._viewport.merge({ windows: windows , tab : options.tab});
 		});
 	};
+	
+	/** Remove a window from managed window list
+	 * 
+	 */
+	
+    WindowManager.prototype.remove = function(winId) {
+        for (var i = 0 ; i < this._windows.length;i++) {
+			if (this._windows[i].id == winId) {
+				this._windows.splice(i,1);
+				break;
+			}
+		}
+	}
 	
 	return WindowManager;
 });

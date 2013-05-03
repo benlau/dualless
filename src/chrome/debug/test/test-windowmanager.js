@@ -326,9 +326,8 @@ define(["module",
 				console.log(manager.windows());
 				setTimeout(function(){
 					manager.updateWindows({window : currentWin },function (windows) {
-						console.log(windows);
-						ok(windows.length == 2 , "It should have at least two windows after vertical split");
-						console.log(windows);
+						ok(windows.length == 2 , "It should have at least two windows after vertical split. Now has :" + windows.length);
+						console.log("#6:",windows);
 						if (windows.length == 2) {
 							var current = windows[0];
 							ok(current.id == currentWin.id);
@@ -552,7 +551,48 @@ define(["module",
 		
 	});
 	
+	asyncTest("On removed",function () {
+		// test manager.events.on('removed');
+		
+		expect(4);
+		var runner = new TaskRunner();
+		var removedWindow;
 
+		function onRemoved(winId) {
+			console.log("removed");
+			ok(winId == removedWindow.id);
+			manager.events.off("removed",onRemoved);
+			runner.next();
+		}
 
+		manager.events.on("removed",onRemoved);
+		
+		runner.step(function() {
+		   // split and make sure it has two windows available
+		   manager.split({ param1 : 5 , param2 : 5 ,
+				   orientation :"H" , position:1,
+				   window: testlib.currentWindow(),
+				   tab : testlib.currentTab()},
+				   runner.listener());
+		});
+
+		runner.step(function() {
+			ok(manager.windows().length == 2,"Two windows after split. The window ID = " + [ manager.windows()[0].id , manager.windows()[1].id ] );
+			removedWindow = manager.windows()[1];
+			chrome.windows.remove(manager.windows()[1].id);
+		});
+		
+		runner.step(function() {
+			// After enabled manager to receive removed event, it don't need to call updateWindow manually 
+			// unless to fetch latest information
+			ok(manager.windows().length == 1,"One window leave after remove");
+			runner.next();
+		});
+
+		runner.run(function() {
+			ok(runner.size() == 0,"All step is finished");		
+			QUnit.start();
+		});
+	});
 
 });

@@ -24,7 +24,7 @@ function SplitController($scope,$location,$timeout) {
 		args.window = win;
 		args.tab = tab;
 		
-		// Manager alive in the background page. The screen object is not updated. So it may to pass the screen object from external
+		// Manager alive in the background page. The screen object is not updated. So it need to pass the screen object from external
 		args.screen = scr; 	
 		
 		manager.split(args,function(windows){

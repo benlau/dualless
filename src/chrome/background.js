@@ -21,6 +21,15 @@ require(["sys/windowmanager",
 	_manager = new WindowManager();
 	_display = new PairDisplay();
 	_display.start(_manager);
+	
+	// If a paired window is removed, the remaining one will occupy the screen automatically
+	_manager.events.on("removed",function() {
+		var windows = _manager.windows();
+		if (windows.length > 0) {
+			_manager.maximize(windows[0].id);
+		}
+	});
+	
 });
 
 var _log = [];

@@ -311,6 +311,16 @@ define(["dualless/sys/viewport",
 		});
 	};
 	
+	/** Maximize the size of a window.
+	 */
+	
+	WindowManager.prototype.maximize = function(winId) {
+		var manager = this;
+		chrome.windows.get(winId, function(win) {
+			manager._viewport.merge({ windows:[win] , tab: []});
+		});
+	};
+	
 	/** Remove a window from managed window list
 	 * 
 	 */

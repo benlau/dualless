@@ -18,7 +18,7 @@ define(["module",
 	 * @param runner
 	 */
 	
-	function insertFocusTest(runner) {
+	function focusTest(runner) {
 		runner.step(function(){
 			manager.currentWindowTab(function(win,tab) {
 				currentWin = win;
@@ -35,6 +35,12 @@ define(["module",
 			});
 		});		
 	};
+	
+	function delay(runner,timeout){
+		runner.step(function(){
+			setTimeout(runner.listener(),timeout);
+		});
+	}
 	
 
 	module("WindowManager");
@@ -147,7 +153,7 @@ define(["module",
 			runner.next();
 		});
 		
-		insertFocusTest(runner);
+		focusTest(runner);
 		
 		runner.step(function(){
 		   chrome.windows.update(currentWin.id,{focused : true} , runner.listener());
@@ -554,18 +560,26 @@ define(["module",
 	asyncTest("On removed",function () {
 		// test manager.events.on('removed');
 		
-		expect(4);
+		expect(7);
 		var runner = new TaskRunner();
 		var removedWindow;
 
 		function onRemoved(winId) {
-			console.log("removed");
 			ok(winId == removedWindow.id);
 			manager.events.off("removed",onRemoved);
 			runner.next();
 		}
 
 		manager.events.on("removed",onRemoved);
+
+		runner.step(function() {
+			chrome.tabs.create({windowId : testlib.currentWindow().id,
+								  url : "chrome://chrome/extensions",
+								  active : false
+								 } , runner.listener())
+		});
+		
+		delay(runner,300);
 		
 		runner.step(function() {
 		   // split and make sure it has two windows available
@@ -575,19 +589,34 @@ define(["module",
 				   tab : testlib.currentTab()},
 				   runner.listener());
 		});
+		
+		delay(runner,300);
+		
+		focusTest(runner);
 
 		runner.step(function() {
 			ok(manager.windows().length == 2,"Two windows after split. The window ID = " + [ manager.windows()[0].id , manager.windows()[1].id ] );
+			ok(manager.windows()[0].id  == testlib.currentWindow().id);
 			removedWindow = manager.windows()[1];
 			chrome.windows.remove(manager.windows()[1].id);
 		});
+		
+		delay(runner,300);
 		
 		runner.step(function() {
 			// After enabled manager to receive removed event, it don't need to call updateWindow manually 
 			// unless to fetch latest information
 			ok(manager.windows().length == 1,"One window leave after remove");
+			ok(manager.windows()[0].id  == testlib.currentWindow().id);
 			runner.next();
 		});
+
+		runner.step(function() {
+			manager.maximize(testlib.currentWindow().id);
+			runner.next();
+		});
+		
+		delay(runner,300);
 
 		runner.run(function() {
 			ok(runner.size() == 0,"All step is finished");		

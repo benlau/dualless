@@ -23,7 +23,7 @@ define(["dualless/sys/viewport",
 		
 		chrome.windows.onRemoved.addListener(function ( winId){
 			if (manager.isManaged(winId)) {
-                manager.remove(winId);
+                manager.take(winId);
                 manager.events.emit("removed",winId);
 			}
 		});
@@ -325,7 +325,7 @@ define(["dualless/sys/viewport",
 	 * 
 	 */
 	
-    WindowManager.prototype.remove = function(winId) {
+    WindowManager.prototype.take = function(winId) {
         for (var i = 0 ; i < this._windows.length;i++) {
 			if (this._windows[i].id == winId) {
 				this._windows.splice(i,1);

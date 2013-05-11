@@ -1,7 +1,9 @@
 define(["dualless/util/rect",
-        "dualless/sys/os"], 
+        "dualless/sys/os",
+        "dualless/sys/toolbox"], 
 		function sys(Rect,
-					  os) {
+                        os,
+						toolbox) {
 	
 	/** Viewport controller
 	 * 
@@ -290,7 +292,10 @@ define(["dualless/util/rect",
 					updateInfo.focused = true;
 //				console.log("Resize",windows[i].id,updateInfo,windows[i]);
 				
-				viewport.resize(updateInfo,windows[i],collector);
+				toolbox.resize({	window : windows[i],
+									updateInfo : updateInfo,
+									os : viewport._os
+							     },collector);
 				// Call resize in parallel.
 				// Nested call do not work well on windows. Moreover, the response time may be slow					
 			}
@@ -326,81 +331,6 @@ define(["dualless/util/rect",
         }		
 
 		chrome.windows.update(master.id,rect);
-	};
-	
-	/** Resize a window
-	 * 
-	 * @param rect Rect object instance
-	 * @param win
-	 * @param callback
-	 */
-	
-	Viewport.prototype.resize = function(rect,win,callback) {
-       if (win == undefined) {
-           console.error("Viewport.resize() - Input window is undefined.");
-        }
-	    
-		var updateInfo = {}; // The target rect
-		var winId = win.id;
-		
-		$.extend(updateInfo,this._size.toData());
-		
-		if (rect.__proto__.constructor.name == "Rect"){
-			$.extend(updateInfo,rect.toData());	
-		} else {
-			$.extend(updateInfo,rect);
-		}
-	
-//		if (win.state == "maximized" || win.state == "minimized")
-		
-		updateInfo.state = "normal"; 
-		/* Remarks:
-		 * 
-		 * Sometimes Chrome on Ubuntu/Unity may not report the current state correctly.
-		 * So set to "normal" by default. Otherwise, it may not be able to resize maximized window
-		 *  
-		 */  
-		
-		if (this._os == "MacOS") {
-			delete updateInfo.state; // Don't set normal in MacOS. The animation will be mad
-		}	
-		
-		if (this._os == "Linux") {
-			this._resizeOnLinux(winId,updateInfo,callback);
-		} else {
-			chrome.windows.update(winId, updateInfo , callback);
-		}
-		
-	};
-	
-	/** A special resize function for Linux due to the #72369 bug for Chrome on Linux
-	 * 
-	 */
-	
-	Viewport.prototype._resizeOnLinux = function(winId,updateInfo,callback){
-		var lastSize = new Rect();
-		var newSize = new Rect();
-		var targetSize = new Rect(updateInfo);
-
-		function checker() { // Check is the resize frozen?
-			chrome.windows.get(winId,function(result) {
-				newSize = new Rect(result);
-//				console.log("checker",winId,lastSize,newSize,targetSize);			
-				
-				if (lastSize.equal(newSize) || newSize.equal(targetSize)) {
-					// Done!
-					if (callback)
-						callback(result);
-				} else {
-					lastSize = newSize;
-					setTimeout(checker,100);
-				}
-			});
-		}
-		
-		lastSize = new Rect();
-		
-		chrome.windows.update(winId, updateInfo , checker);
 	};
 	
 	/** Attach a handler to viewport's resize event

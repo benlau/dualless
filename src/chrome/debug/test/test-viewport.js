@@ -2,11 +2,13 @@ define(["module",
         "dualless/util/taskrunner",
         "dualless/util/rect",
         "dualless/sys/viewport",
+        "dualless/sys/toolbox",
         "testlib"],
 		function testViewport(self,
 						TaskRunner,
 						Rect,
-						Viewport) {
+						Viewport,
+                        toolbox) {
 
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
@@ -115,7 +117,10 @@ define(["module",
 					height : 700
 			});
 			
-			viewport.resize(target , currentWin, runner.listener());			
+			toolbox.resize({ updateInfo : target.toData() , 
+                               window : currentWin ,
+                               os : manager.os()
+                               }, runner.listener());			
 		});
 		
 		runner.step(function(win) {

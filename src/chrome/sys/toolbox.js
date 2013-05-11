@@ -1,8 +1,11 @@
 
-define(["sys/toolbox/pair"] , 
-        function(pair) {
+define(["dualless/sys/toolbox/pair",
+         "dualless/sys/toolbox/resize"] , 
+        function(pair,
+                   resize) {
             
             return {
-                pair : pair
+                pair : pair,
+                resize : resize
             }
 });

@@ -134,7 +134,7 @@ define(["module",
 		runner.step(function(win) {
 			var rect1 = new Rect(target);
 			var rect2 = new Rect(win);
-			console.log(target,win)
+			console.log(target,win,manager.os())
 			if (manager.os() == "Linux") {
 				ok(!rect1.equal(rect2), "The callback of chrome.windows.update is involved before the window is resized completely!!!!!");
 			} else{
@@ -147,7 +147,7 @@ define(["module",
 			manager.currentWindow(function(win) {
 				var rect1 = new Rect(target);
 				var rect2 = new Rect(win);
-				console.log(target,win)
+				console.log(target,win,rect1,rect2)
 				ok(rect1.equal(rect2),"The resize is completed");
 				runner.next();
 			});

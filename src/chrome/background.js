@@ -12,14 +12,14 @@ requirejs.config({
 });
 
 require(["sys/windowmanager",
-         "sys/pairdisplay"],
-		function(WindowManager,PairDisplay) {
+         "sys/toolbox"],
+		function(WindowManager,toolbox) {
 
 	if (localStorage.pairingModeEnabled == undefined)
 		localStorage.pairingModeEnabled = 1;
 	
 	_manager = new WindowManager();
-	_display = new PairDisplay();
+	_display = new toolbox.PairDisplay();
 	_display.start(_manager);
 	
 	// If a paired window is removed, the remaining one will occupy the screen automatically

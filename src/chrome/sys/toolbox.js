@@ -1,8 +1,8 @@
 
-define(["sys/toolbox/pairdisplay"] , 
-        function(pairdisplay) {
+define(["sys/toolbox/pair"] , 
+        function(pair) {
             
             return {
-                PairDisplay : pairdisplay
+                pair : pair
             }
 });

@@ -27,7 +27,14 @@ define(["dualless/sys/viewport",
                 manager.events.emit("removed",winId);
 			}
 		});
-		
+
+		chrome.windows.onFocusChanged.addListener(function (winId){
+			if (manager.isManaged(winId)) {
+				manager.events.emit("focusChanged",winId);
+			} else {
+				manager.events.emit("focusChanged",chrome.windows.WINDOW_ID_NONE);
+			}
+		});		
 	};
 	
 	/** Return the detected os

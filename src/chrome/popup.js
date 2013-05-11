@@ -89,6 +89,19 @@ require([ "dualless/directive/hsplitpanel",
 	module.directive('hsplitpanel',hsplitpanel);
 	module.directive('vsplitpanel',vsplitpanel);
 	
+	module.directive('ngRightClick', function($parse) {
+		return function(scope, element, attrs) {
+			var fn = $parse(attrs.ngRightClick);
+			element.bind('contextmenu', function(event) {
+				console.log("ngRightClick contextmenu",fn);
+				scope.$apply(function() {
+					event.preventDefault();
+					fn(scope, {$event:event});
+				});
+			});
+		};
+	});
+	
 	$(document).ready(function() {
 		angular.bootstrap(document,["popup"]);
 	});	

@@ -258,7 +258,7 @@ define(["dualless/util/rect",
 					arrange();
 				};
 			
-			}
+			} 
 		
 			if (accept) {
 				if (options.duplicate) {
@@ -269,18 +269,10 @@ define(["dualless/util/rect",
 				}
 			}
 		
-		};
-	
-		
-		function collector(win) { // Collect updated window
-			updatedWindows.push(win);
-			count--;
-			if (count == 0) { // Start validation
-				validate();
-			}
-		}
+		};	
 	
 		function arrange() {
+			var condition = [];
 			count = 2;
 			updatedWindows = [];
 //			console.log(rects[0].__proto__.constructor.name);
@@ -292,13 +284,24 @@ define(["dualless/util/rect",
 					updateInfo.focused = true;
 //				console.log("Resize",windows[i].id,updateInfo,windows[i]);
 				
-				toolbox.resize({	window : windows[i],
-									updateInfo : updateInfo,
-									os : viewport._os
-							     },collector);
+				(function() {		
+					var deferred = $.Deferred();
+					condition.push(deferred);
+					toolbox.resize({	window : windows[i],
+										updateInfo : updateInfo,
+										os : viewport._os
+									 },function(win) {
+										   updatedWindows.push(win);
+										   deferred.resolve();	
+									 });
+				})();
 				// Call resize in parallel.
-				// Nested call do not work well on windows. Moreover, the response time may be slow					
+				// Nested call do not work well on Windows. Moreover, the response time may be slow					
 			}
+
+			$.when.apply(null,condition).done(function() {
+				validate();
+			});
 			
 		}
 		

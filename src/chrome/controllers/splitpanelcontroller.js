@@ -24,7 +24,7 @@ define(["module"],
             }
         }
 
-        function Controller($scope) {
+        function Controller($scope,$location) {
             var arr = [];
             for (var i = 3 ; i <=7;i++ ) {
                 var pair = [i , 10-i];
@@ -48,7 +48,13 @@ define(["module"],
                 $scope.$emit("merge");
             };
             
+            $scope.showBookmark = function(param1,param2,position) {
+                $location.path("/bookmark/h/3/7");
+            }
+            
         };
+        
+        Controller.$inject = ["$scope","$location"]
                 
         return Controller
     }

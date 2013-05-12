@@ -1,0 +1,16 @@
+<div class="split-panel" >
+    <div class="split-panel-box">
+        <div class="split-panel-label"><span>{{param1}}:{{param2}}</span></div>
+        <div class="split-panel-screen">
+            <div class="split-panel-win hsplit-panel-win hsplit-panel-win{{param1}}0"></div>
+            <div class="split-panel-win hsplit-panel-win hsplit-panel-win{{param2}}0"></div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div ng-repeat="bookmark in bookmarks">
+    <div style="background-color:{{bookmark.color}};width:20px;height:20px;display:inline-block"></div>
+    <div style="display:inline-block">{{bookmark.title}}</div>
+</div>

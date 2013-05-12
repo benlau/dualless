@@ -49,7 +49,11 @@ function SplitController($scope,$location,$timeout) {
 	});
 	
 	$scope.$on("$destroy",function(event) {
-		if (localStorage.lastPopupPath != $location.path())
+		if (localStorage.lastPopupPath == undefined || (
+				localStorage.lastPopupPath != $location.path() 
+				&& $location.path().indexOf("split") != -1
+				)
+			)
 			localStorage.lastPopupPath = $location.path();
 	});
 	
@@ -61,6 +65,21 @@ function SplitController($scope,$location,$timeout) {
 };
 
 SplitController.$inject = ["$scope","$location","$timeout"];
+
+function BookmarkController($scope) {
+	$scope.param1 = 3
+	$scope.param2 = 7
+	
+	$scope.bookmarks = [
+		{ color : "#FFFFFF",
+		  title : "Default"
+		},
+		{ color : "#FFFF00",
+		  title : "Note"
+		},
+	]
+	
+}
 
 require([ "dualless/directive/hsplitpanel",
           "dualless/directive/vsplitpanel"],
@@ -77,11 +96,16 @@ require([ "dualless/directive/hsplitpanel",
 				template : "<vsplitpanel></vsplitpanel>",
 				controller : SplitController
 			});
+
+			$routeProvider.when("/bookmark/:orientation/:param1/:param2",{
+				templateUrl : "partials/bookmark.html",
+				controller : BookmarkController
+			});
 			
 			var popupDefaultPath = localStorage.lastPopupPath;
 			if (popupDefaultPath == undefined)
 				popupDefaultPath = "/hsplit";
-			
+
 		  	$routeProvider.otherwise({redirectTo : popupDefaultPath });
 			
 	}]);
@@ -93,7 +117,6 @@ require([ "dualless/directive/hsplitpanel",
 		return function(scope, element, attrs) {
 			var fn = $parse(attrs.ngRightClick);
 			element.bind('contextmenu', function(event) {
-				console.log("ngRightClick contextmenu",fn);
 				scope.$apply(function() {
 					event.preventDefault();
 					fn(scope, {$event:event});

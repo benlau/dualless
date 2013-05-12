@@ -75,15 +75,20 @@ function BookmarkController($scope) {
 		  title : "Default"
 		},
 		{ color : "#FFFF00",
-		  title : "Note"
+		  title : "Google Keep",
+		  url : "https://drive.google.com/keep" // Hard code the site for testing purpose
 		},
 	]
 	
 }
 
 require([ "dualless/directives/hsplitpanel",
-          "dualless/directives/vsplitpanel"],
-          function popup(hsplitpanel,vsplitpanel){
+          "dualless/directives/vsplitpanel",
+          "dualless/directives/bookmarklist"],
+          function popup(hsplitpanel,
+                            vsplitpanel,
+                            bookmarklist){
+
 	var module = angular.module("popup",[]);
 	
 	module.config(['$routeProvider', function configRouteProvider($routeProvider) {
@@ -112,6 +117,7 @@ require([ "dualless/directives/hsplitpanel",
 	
 	module.directive('hsplitpanel',hsplitpanel);
 	module.directive('vsplitpanel',vsplitpanel);
+	module.directive('bookmarklist',bookmarklist);
 	
 	module.directive('ngRightClick', function($parse) {
 		return function(scope, element, attrs) {

@@ -1,14 +1,17 @@
 
 define(["dualless/sys/toolbox/pair",
          "dualless/sys/toolbox/resize",
-         "dualless/sys/toolbox/merge"] , 
+         "dualless/sys/toolbox/merge",
+         "dualless/sys/toolbox/arrange"] , 
         function(pair,
                    resize,
-                   merge) {
+                   merge,
+                   arrange) {
             
             return {
                 pair : pair,
                 resize : resize,
-                merge : merge
+                merge : merge,
+                arrange : arrange
             }
 });

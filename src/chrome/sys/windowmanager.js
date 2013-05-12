@@ -227,14 +227,22 @@ define(["dualless/sys/viewport",
 	
 	WindowManager.prototype.split = function(options,callback) {
 		var manager = this;
+		
+		manager._viewport.detect(options.screen);
+		$.extend(options,{ viewport: manager._viewport,
+						     os : manager._os
+							});
+		
 		this.updateWindows({autoMatching: true,
 							  window : options.window},
 							  function(list) {
 //			console.log("WindowManager.split() - No of windows = " + list.length)
+			$.extend(options,{ windows: list});
+			
 			if (list.length == 1) {
 				manager._createAndMove(options,callback);
 			} else {
-				manager._viewport.layout(options, list, function() {
+				toolbox.arrange(options,function() {
 					if (callback)
 						callback(manager._windows);
 				});
@@ -258,13 +266,16 @@ define(["dualless/sys/viewport",
 		
 		function layout() {
 //			console.log("WindowManager._createAndMove.layout",manager._windows);
+			$.extend(options,{ windows: manager._windows});
     		if (manager._os == "Linux") {
     			// Extra delay for Linux. Otherwise , the newly created window size may not be correct.
     			setTimeout(function() {
-    				manager._viewport.layout(options, manager._windows,bridge);	        				
+    				// manager._viewport.layout(options, manager._windows,bridge);	        				
+    				toolbox.arrange(options,bridge);
     			},100);
     		} else {
-    			manager._viewport.layout(options, manager._windows,bridge);
+				toolbox.arrange(options,bridge);
+    			//manager._viewport.layout(options, manager._windows,bridge);
     		}
 		}
 		

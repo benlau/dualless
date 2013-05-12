@@ -9,8 +9,8 @@ requirejs.config({
 
 require(["debug/view/component",
          "debug/view/information",
-         "dualless/directive/hsplitpanel",
-         "dualless/directive/vsplitpanel"
+         "dualless/directives/hsplitpanel",
+         "dualless/directives/vsplitpanel"
          ],
 	     function app(component,
 	    		 		information,

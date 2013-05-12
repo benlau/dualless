@@ -3,11 +3,9 @@
            <div class="split-panel-box">
                <div class="split-panel-label"><span>{{pair[0]}}:{{pair[1]}}</span></div>
                <div class="split-panel-screen">
-                <div class="split-panel-win hsplit-panel-win hsplit-panel-win{{pair[0]}}0"
-                     ng-click="split(pair[0] , pair[1] ,0,$event);"
-                     ng-right-click='showBookmark(pair[0] , pair[1],0);'
-                     ></div> 
-                <div class="split-panel-win hsplit-panel-win hsplit-panel-win{{pair[1]}}0" 
+                <div class="split-panel-win vsplit-panel-win vsplit-panel-win-top vsplit-panel-win{{pair[0]}}0" 
+                     ng-click="split(pair[0] , pair[1] ,0 ,$event);"></div> 
+                <div class="split-panel-win vsplit-panel-win vsplit-panel-win{{pair[1]}}0" 
                      ng-click="split(pair[0] , pair[1] ,1,$event);"></div>
                </div>
           </div>          
@@ -16,11 +14,11 @@
         <div class="split-panel-box">
             <div class="split-panel-label" align="center"><span>1</span></div>
             <div class="split-panel-screen">
-              <div class="split-panel-win hsplit-panel-win hsplit-panel-win100" ng-click="merge()"></div> 
+              <div class="split-panel-win vsplit-panel-win vsplit-panel-win100" ng-click="merge()"></div> 
             </div>
         </div>
         
-        <div ng-include="'directive/switchmodepanel.html'"></div>
+        <div ng-include="'directives/switchmodepanel.html'"></div>
         
     </div>
 

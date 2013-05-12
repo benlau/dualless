@@ -7,7 +7,7 @@ define(["module"],
 	uri = arr.join("/");
 
 
-	var sheet = "<link  href='" + uri + "/../directive/splitpanel.css' rel='stylesheet'>";
+	var sheet = "<link  href='" + uri + "/../directives/splitpanel.css' rel='stylesheet'>";
 	$("head").append(sheet);
     
     /** Creator of SplitPanelController

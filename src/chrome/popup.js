@@ -81,8 +81,8 @@ function BookmarkController($scope) {
 	
 }
 
-require([ "dualless/directive/hsplitpanel",
-          "dualless/directive/vsplitpanel"],
+require([ "dualless/directives/hsplitpanel",
+          "dualless/directives/vsplitpanel"],
           function popup(hsplitpanel,vsplitpanel){
 	var module = angular.module("popup",[]);
 	

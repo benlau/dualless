@@ -1,45 +1,21 @@
 
 define(["module",
-        "dualless/directive/splitpanel"],
+        "dualless/directive/splitpanel",
+        "dualless/controllers/splitpanelcontroller"],
 		function vsplitpanel(self,
-		                     splitpanel) {
+		                         splitpanel,
+                                 splitpanelcontroller) {
 	var uri = self.uri;
 	var arr = uri.split("/");
 	arr.pop();
 	uri = arr.join("/");
-	
-	function Controller($scope) {
-		var arr = [];
-		for (var i = 3 ; i <=7;i++ ) {
-			var pair = [i , 10-i];
-			arr.push(pair);
-		}	
-			
-		$scope.choices = arr;
-
-		$scope.split = function (param1,param2,position,event) {		
-			var args = {param1: param1,
-				        param2: param2,
-					    position : position,
-				        orientation : "V"}
-		
-            splitpanel.update(args,event);
-			
-			$scope.$emit("split",args);
-		};
-
-		$scope.merge = function() {
-			$scope.$emit("merge");
-		};
-		
-	};
 	
 	function factory() {
 		var def = {
            replace: false,
 	       transclude: true,
 			templateUrl : uri + "/vsplitpanel.html",
-			controller: Controller,
+			controller: splitpanelcontroller("V"),
 			restrict : 'E',
 			scope : {}
 		};

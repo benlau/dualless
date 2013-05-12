@@ -308,34 +308,6 @@ define(["dualless/util/rect",
 		arrange();
 	};
 	
-	/** Merge windows
-	 * 
-	 * @param options
-	 * @param callback
-	 */
-	
-	Viewport.prototype.merge = function(options,callback){
-		var rect;
-		var master = options.windows[0]; // master window ; which will be resized to max viewport size
-		var tabs = [];// Tabs from other managed windows. All the tab inside will be moved to master window
-		
-		this.detect(options.screen);
-		
-		rect = this._size.toData();
-		
-		for (var i =1 ; i < options.windows.length;i++) {
-			$(options.windows[i].tabs).each(function(idx,tab){
-				tabs.push(tab.id);
-			});
-		}
-
-       if (tabs.length > 0) {
-	    	  chrome.tabs.move(tabs,{windowId:master.id, index : master.tabs.length});
-        }		
-
-		chrome.windows.update(master.id,rect);
-	};
-	
 	/** Attach a handler to viewport's resize event
 	 * @param callback
 	 */

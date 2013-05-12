@@ -7,10 +7,12 @@
 
 define(["dualless/sys/viewport",
 		 "dualless/sys/os",
-		 "dualless/lib/eventemitter"], 
+		 "dualless/lib/eventemitter",
+		 "dualless/sys/toolbox"], 
 		function sys(Viewport,
 					   os,
-					   EventEmitter) {
+					   EventEmitter,
+					   toolbox) {
 
 	WindowManager = function() {
 		this._os = os();
@@ -311,10 +313,13 @@ define(["dualless/sys/viewport",
 	
 	WindowManager.prototype.merge = function(options) {
 		var manager = this;
+		manager._viewport.detect(options.screen);
 		manager.updateWindows({window:options.window , 
 								  autoMatching: true}, 
 								  function (windows) {
-			manager._viewport.merge({ windows: windows , tab : options.tab});
+			toolbox.merge({ windows: windows , 
+			                  tab : options.tab,
+			                  viewport : manager._viewport});
 		});
 	};
 	
@@ -324,7 +329,10 @@ define(["dualless/sys/viewport",
 	WindowManager.prototype.maximize = function(winId) {
 		var manager = this;
 		chrome.windows.get(winId, function(win) {
-			manager._viewport.merge({ windows:[win] , tab: []});
+			toolbox.merge({windows:[win],
+						     viewport : manager._viewport 
+							});
+//			manager._viewport.merge({  , tab: []});
 		});
 	};
 	

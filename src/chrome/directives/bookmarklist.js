@@ -12,8 +12,8 @@ define(["module"],
         $scope.click = function(url) {
             var split = { // Split argument
                 orientation : 'H',
-                param1 : 3,
-                param2 : 7,
+                param1 : 7,
+                param2 : 3,
                 position : 1,
                 url : url
             };

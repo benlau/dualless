@@ -1,4 +1,14 @@
-define(function() {
+define(["module"],
+        function(self) {
+
+	var uri = self.uri;
+	var arr = uri.split("/");
+	arr.pop();
+	uri = arr.join("/");
+
+
+	var sheet = "<link  href='" + uri + "/../directive/splitpanel.css' rel='stylesheet'>";
+	$("head").append(sheet);
     
     /** Creator of SplitPanelController
      * 

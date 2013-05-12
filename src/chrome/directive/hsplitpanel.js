@@ -1,9 +1,7 @@
 
 define(["module",
-        "dualless/directive/splitpanel",
         "dualless/controllers/splitpanelcontroller"],
 		function hsplitpanel(self,
-		                     splitpanel,
                              splitpanelcontroller) {
 	var uri = self.uri;
 	var arr = uri.split("/");

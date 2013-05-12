@@ -67,9 +67,23 @@ function SplitController($scope,$location,$timeout) {
 SplitController.$inject = ["$scope","$location","$timeout"];
 
 function BookmarkController($scope) {
+	var bg = chrome.extension.getBackgroundPage();
+	var manager = bg.manager();
+	
+	var win; // The current window
+	var tab; // The current tab
+
+	var scr = {};
+	$.extend(scr,window.screen); // Make a copy of the screen object
+	
+	manager.currentWindowTab(function (val1,val2){
+		win = val1;
+		tab = val2;
+	});
+	
 	$scope.param1 = 3
 	$scope.param2 = 7
-	
+
 	$scope.bookmarks = [
 		{ color : "#FFFFFF",
 		  title : "Default"
@@ -79,7 +93,16 @@ function BookmarkController($scope) {
 		  url : "https://drive.google.com/keep" // Hard code the site for testing purpose
 		},
 	]
-	
+
+	$scope.split = function(options) {
+		options.window = win;
+		options.tab = tab;
+		options.screen = scr;
+		
+		manager.split(options,function(windows){
+			win = windows[0]; 
+		});
+	}
 }
 
 require([ "dualless/directives/hsplitpanel",

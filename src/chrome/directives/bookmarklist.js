@@ -9,6 +9,17 @@ define(["module"],
 
     
     function Controller($scope) {       
+        $scope.click = function(url) {
+            var split = { // Split argument
+                orientation : 'H',
+                param1 : 3,
+                param2 : 7,
+                position : 1,
+                url : url
+            };
+            
+            $scope.onSelect({ options : split});
+        }
     }
 	
 	function factory() {
@@ -18,7 +29,8 @@ define(["module"],
             templateUrl : uri + "/bookmarklist.html",
             controller: Controller,
             restrict : 'E',
-            scope : { model:"=model"
+            scope : { model:"=model",
+                       onSelect: "&"
                      }
 		};
 		return def;

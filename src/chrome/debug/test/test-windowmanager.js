@@ -624,4 +624,59 @@ define(["module",
 		});
 	});
 
+    asyncTest("Bookmark",function (test) {
+        // Simulate a bookmark mode
+        var runner = new TaskRunner();
+		var bkTab;
+        
+        runner.step(function() {
+           chrome.tabs.create({url : "chrome://extensions/",
+                               active : false
+                              },runner.listener());
+        });
+        
+        runner.step(function(tab) {
+            ok(tab!=undefined);
+            bkTab = tab;
+            manager.split({
+                orientation : "H",
+                param1 : 7,
+                param2 : 3,
+                position : 0,
+                window : testlib.currentWindow(),
+                tab : testlib.currentTab()
+            },runner.listener());
+        });
+        
+        runner.step(function() {
+            //  move the bookmark tab to paired window
+            var winId = manager.pair(testlib.currentWindow().id).id;
+            ok(winId!=undefined);
+            chrome.tabs.move(bkTab.id,
+                             { windowId : winId,
+                               index: 0},
+                             runner.listener());            
+        });
+        
+        runner.step(function() {
+            chrome.tabs.update(bkTab.id,
+                               { active: true},
+                               runner.listener());
+        });
+        
+        runner.step(function() {
+            chrome.tabs.get(bkTab.id,function(tab) {
+               //refresh tab information
+                bkTab = tab;
+                ok(tab.windowId !=testlib.currentWindow().id,"The bookmark tab should be splitted in another window");
+                runner.next();
+            });
+        });
+
+        runner.run(function() {
+            QUnit.start();
+        });
+
+        
+    });        
 });

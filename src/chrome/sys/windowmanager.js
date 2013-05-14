@@ -108,6 +108,13 @@ define(["dualless/sys/viewport",
 	 */
 	
 	WindowManager.prototype.windows = function() {
+        if (arguments.length > 0) {
+            var windows = []
+            for (var i =0 ; i < arguments.length && i < 2;i++) {
+                windows.push(arguments[i]);
+            }
+            this._windows = windows;
+        }
 		return this._windows;
 	};
 	
@@ -132,6 +139,28 @@ define(["dualless/sys/viewport",
 		});
 		return res;
 	};
+    
+    /** Based on the input window id, find the paired window. If no such pair was found, return undefiened.
+     */
+            
+    WindowManager.prototype.pair = function(winId) {
+        var pos = -1,
+            pwin;
+        
+        for (var i in this._windows) {
+            var w = this._windows[i];
+            if (w.id == winId) {
+                pos = i;
+                break;
+            }
+        }
+        
+        if (pos >= 0) {
+            pwin = this._windows[1 - pos];    
+        }
+        
+        return pwin;
+    }
 	
 	/** Update the managed windows information. May purge record out if the windows is already destroyed.
 	 * 

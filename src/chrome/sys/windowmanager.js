@@ -8,11 +8,13 @@
 define(["dualless/sys/viewport",
 		 "dualless/sys/os",
 		 "dualless/lib/eventemitter",
-		 "dualless/sys/toolbox"], 
+		 "dualless/sys/toolbox",
+         "dualless/util/taskrunner"], 
 		function sys(Viewport,
 					   os,
 					   EventEmitter,
-					   toolbox) {
+					   toolbox,
+                       TaskRunner) {
 
 	WindowManager = function() {
 		this._os = os();
@@ -140,7 +142,7 @@ define(["dualless/sys/viewport",
 		return res;
 	};
     
-    /** Based on the input window id, find the paired window. If no such pair was found, return undefiened.
+    /** Based on the input window id, find the another paired window. If no such pair was found, return undefined.
      */
             
     WindowManager.prototype.pair = function(winId) {
@@ -266,85 +268,113 @@ define(["dualless/sys/viewport",
 							  window : options.window},
 							  function(list) {
 //			console.log("WindowManager.split() - No of windows = " + list.length)
-			$.extend(options,{ windows: list});
+			$.extend(options,{ windows: list
+                                });
 			
 			if (list.length == 1) {
-				manager._createAndMove(options,callback);
+				manager.createPairedWindow(options,function(newWin) {
+                    manager._windows.push(newWin);
+                    options.windows = manager._windows;
+                    arrange(options);
+                });
 			} else {
-				toolbox.arrange(options,function() {
-					if (callback)
-						callback(manager._windows);
-				});
+				arrange(options);
 			}
 		});
+
+        function arrange(options) {
+            toolbox.arrange(options,function() {
+                if (callback)
+                    callback(manager._windows);
+            });			
+        }
 	};
 
-	/** Create a new window and move the current tab to the new window is needed.
+	/** Create a new window as a pair of input window and move all the tab except the current tab 
 	 * 
 	 * @param rects
 	 */
 	
-	WindowManager.prototype._createAndMove = function(options,callback) {
+	WindowManager.prototype.createPairedWindow = function(options,callback) {
 //		console.log("WindowManager._createAndMove",this._windows);
-		var manager = this;
+        var manager = this,
+             win = options.window,
+             tab = options.tab,
+             duplicate = options.duplicate,
+             newWin = undefined,
+             tabs = [],
+             runner = new TaskRunner();
+        
+        runner.step(function() {
+           if (window == undefined || tab == undefined) {
+               manager.currentWindowTab(function(p1,p2){
+                  win = p1;
+                  tab = p2; 
+                  runner.next();
+               });
+           } else {
+               runner.next();  
+           }
+        });
+        
+        runner.step(function() {
+            for (var i in win.tabs) {
+                if (win.tabs[i].id != tab.id) {
+                    tabs.push(win.tabs[i].id);
+                }
+            }
+            runner.next();
+        });        
+
+        runner.step(function() {
+            var createData = {
+                 focused : false
+            }
+            
+            var tabId = tabs.shift();
+            createData.tabId = tabId;
+            
+            if (options.duplicate) {
+                createData.url = options.tab.url;
+                delete options.duplicate;
+            }                
+
+            chrome.windows.create(createData,runner.listener());
+        });
+
+        runner.step(function(win) {
+            newWin = win;
+            
+            if (tabs.length == 0) {
+                runner.next();
+            } else {
+                chrome.tabs.move(tabs,{ windowId : newWin.id,
+                                           index : 0},runner.listener());
+            }
+        });
+
+        runner.run(function() {
+            if (manager._os == "Linux") {
+                // Extra delay for Linux. Otherwise , the newly created window size may not be correct.
+                setTimeout(function() {
+                    callback(newWin);
+                },100);
+            } else {
+                callback(newWin);
+            }
+        });
 		
-		function bridge(){
-			if (callback!=undefined)
-				callback(manager._windows);
-		}
-		
-		function layout() {
-//			console.log("WindowManager._createAndMove.layout",manager._windows);
-			$.extend(options,{ windows: manager._windows});
-    		if (manager._os == "Linux") {
-    			// Extra delay for Linux. Otherwise , the newly created window size may not be correct.
-    			setTimeout(function() {
-    				// manager._viewport.layout(options, manager._windows,bridge);	        				
-    				toolbox.arrange(options,bridge);
-    			},100);
-    		} else {
-				toolbox.arrange(options,bridge);
-    			//manager._viewport.layout(options, manager._windows,bridge);
-    		}
-		}
-		
-		function create(win,tab) {
-//			console.log("WindowManager._createAndMove.create",win,tab);
-			if (win.tabs.length == 1) {
-				var createData = {};
-				if (options.duplicate) {
-					createData.url = options.tab.url;
-					delete options.duplicate;
-				}
-				
-				chrome.windows.create(createData,function(newWin) {
-				    var windows = [win,newWin];
-	            	manager._windows = windows;
-//	            	console.log("WindowManager._createAndMove.create",manager._windows,win,newWin);
-	            	layout();
-	            });
-				
-			} else {
-				var createData = {};
-				createData["tabId"] = tab.id;
-	          chrome.windows.create(createData,function(newWin) {
-	              var windows = [newWin,win];
-	        		manager._windows = windows;
-//	        		console.log("WindowManager._createAndMove.create",manager,manager._windows,[newWin,win],windows);
-	        		layout();
-	            });
-			
-			}
-		};
-		
+/*		
 		if (options.window != undefined && options.tab != undefined) {
 			create(options.window , options.tab);
 		} else {
 //		    console.log("WindowManager._createAndMove - window or tab is not passed. Auto-detect it.");
 			manager.currentWindowTab(create);			
 		}
-		
+*/		
 	};
+
+
 
 	/** Merge all managed windows into current window.
 	 * 

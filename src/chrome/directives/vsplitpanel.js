@@ -12,7 +12,7 @@ define(["module",
 		var def = {
            replace: false,
 	       transclude: true,
-			templateUrl : uri + "/vsplitpanel.html",
+			templateUrl : uri + "/splitpanel.html",
 			controller: splitpanelcontroller("V"),
 			restrict : 'E',
 			scope : {}

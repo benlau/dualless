@@ -32,6 +32,8 @@ define(["module"],
             }	
                 
             $scope.choices = arr;
+            
+            $scope.orientation = orientation;
 
             $scope.split = function (param1,param2,position,event) {
                 var args = {param1: param1,

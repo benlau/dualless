@@ -19,8 +19,10 @@
 }
 
 .split-panel-screen {
+    width : 140px;
     height: 50px;
     display: inline-block;
+    overflow : hidden;
 }
 
 .split-panel-win {
@@ -29,7 +31,7 @@
     border-width : 1px 1px 1px 1px;
     height : 40px;
     width : 111px;
-    margin-right : 5px;
+    margin-right : 0px;
 }
 
 .split-panel-win:hover {
@@ -66,6 +68,12 @@
     width : 111px;
 }
 
+.hsplit-panel-spacer {
+    width : 1px;
+    height : 5px;
+    display : inline-block;
+}
+
 /* Vertical Window */
 
 .vsplit-panel-win {
@@ -98,4 +106,10 @@
 
 .vsplit-panel-win100 {
     height : 38px;
+}
+
+.vsplit-panel-spacer {
+    width : 120px;
+    height : 5px;
+    display : inline-block;
 }

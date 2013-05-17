@@ -3,12 +3,13 @@
            <div class="split-panel-box">
                <div class="split-panel-label"><span>{{pair[0]}}:{{pair[1]}}</span></div>
                <div class="split-panel-screen">
-                <winbutton orientation="H" ratio="{{pair[0]}}0"
+                <winbutton orientation="{{orientation}}" ratio="{{pair[0]}}0"
                 on-click="split(pair[0] , pair[1] ,0,$event);"
                 ng-right-click='showBookmark(pair[0] , pair[1],0);'
                 >
-                </winbutton>                      
-                <winbutton orientation="H" ratio="{{pair[1]}}0"
+                </winbutton>
+                <div class="{{orientation}}split-panel-spacer"></div>
+                <winbutton orientation="{{orientation}}" ratio="{{pair[1]}}0"
                 on-click="split(pair[0] , pair[1] ,1,$event);"
                 >
                 </winbutton>

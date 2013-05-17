@@ -7,8 +7,14 @@
                      ng-click="split(pair[0] , pair[1] ,0,$event);"
                      ng-right-click='showBookmark(pair[0] , pair[1],0);'
                      ></div> 
+                <winbutton orientation="H" ratio="{{pair[1]}}0"
+                on-click="split(pair[0] , pair[1] ,1,$event);"
+                >
+                </winbutton>
+                <!--
                 <div class="split-panel-win hsplit-panel-win hsplit-panel-win{{pair[1]}}0" 
                      ng-click="split(pair[0] , pair[1] ,1,$event);"></div>
+               //-->                     
                </div>
           </div>          
         </div>

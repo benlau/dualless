@@ -119,10 +119,13 @@ function BookmarkController($scope) {
 
 require([ "dualless/directives/hsplitpanel",
           "dualless/directives/vsplitpanel",
-          "dualless/directives/bookmarklist"],
+          "dualless/directives/bookmarklist",
+          "dualless/directives/winbutton"
+          ],
           function popup(hsplitpanel,
                             vsplitpanel,
-                            bookmarklist){
+                            bookmarklist,
+                            winbutton){
 
 	var module = angular.module("popup",[]);
 	
@@ -153,6 +156,7 @@ require([ "dualless/directives/hsplitpanel",
 	module.directive('hsplitpanel',hsplitpanel);
 	module.directive('vsplitpanel',vsplitpanel);
 	module.directive('bookmarklist',bookmarklist);
+    module.directive('winbutton',winbutton);
 	
 	module.directive('ngRightClick', function($parse) {
 		return function(scope, element, attrs) {

@@ -38,7 +38,7 @@ define(["module"],
     
     function factory() {
         var def = {
-            replace: false,
+            replace: true,
             transclude: false,
             template : "<div></div>",
             controller: Controller,

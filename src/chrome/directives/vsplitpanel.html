@@ -3,10 +3,23 @@
            <div class="split-panel-box">
                <div class="split-panel-label"><span>{{pair[0]}}:{{pair[1]}}</span></div>
                <div class="split-panel-screen">
+                   <winbutton orientation="V" ratio="{{pair[0]}}0"
+                   on-click="split(pair[0] , pair[1] ,0,$event);"
+                   class="vsplit-panel-win-top"
+                   >
+                   </winbutton>
+
+                   <winbutton orientation="V" ratio="{{pair[1]}}0"
+                   on-click="split(pair[0] , pair[1] ,1,$event);"
+                   >
+                   </winbutton>
+
+                   <!--
                 <div class="split-panel-win vsplit-panel-win vsplit-panel-win-top vsplit-panel-win{{pair[0]}}0" 
                      ng-click="split(pair[0] , pair[1] ,0 ,$event);"></div> 
                 <div class="split-panel-win vsplit-panel-win vsplit-panel-win{{pair[1]}}0" 
                      ng-click="split(pair[0] , pair[1] ,1,$event);"></div>
+                    //-->
                </div>
           </div>          
         </div>
@@ -14,7 +27,8 @@
         <div class="split-panel-box">
             <div class="split-panel-label" align="center"><span>1</span></div>
             <div class="split-panel-screen">
-              <div class="split-panel-win vsplit-panel-win vsplit-panel-win100" ng-click="merge()"></div> 
+              <!-- <div class="split-panel-win vsplit-panel-win vsplit-panel-win100" ng-click="merge()"></div>  -->
+              <winbutton orientation="H" ratio="100" on-click="merge()"></winbutton>
             </div>
         </div>
         

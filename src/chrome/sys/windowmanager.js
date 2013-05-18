@@ -257,37 +257,43 @@ define(["dualless/sys/viewport",
 	 */
 	
 	WindowManager.prototype.split = function(options,callback) {
-		var manager = this;
+		var manager = this,
+             runner = new TaskRunner();
 		
 		manager._viewport.detect(options.screen);
 		$.extend(options,{ viewport: manager._viewport,
 						     os : manager._os
 							});
-		
-		this.updateWindows({autoMatching: true,
-							  window : options.window},
-							  function(list) {
-//			console.log("WindowManager.split() - No of windows = " + list.length)
+	
+        runner.step(function() {
+		    manager.updateWindows({autoMatching: true,
+                                      window : options.window},runner.listener());
+        });
+    	
+        runner.step(function(list) {
 			$.extend(options,{ windows: list
                                 });
-			
-			if (list.length == 1) {
-				manager.createPairedWindow(options,function(newWin) {
+                                
+            if (list.length == 1) {
+                manager.createPairedWindow(options,function(newWin) {
                     manager._windows.push(newWin);
                     options.windows = manager._windows;
-                    arrange(options);
+                    runner.next(options);
                 });
-			} else {
-				arrange(options);
-			}
-		});
-
-        function arrange(options) {
-            toolbox.arrange(options,function() {
-                if (callback)
-                    callback(manager._windows);
-            });			
-        }
+            } else {
+                runner.next(options);
+            }            
+        });
+        
+        runner.step(function (options) {
+            toolbox.arrange(options,runner.listener());			
+        });
+        
+        runner.run(function (options) {
+            if (callback)
+                callback(manager._windows);            
+        });
+        
 	};
 
 	/** Create a new window as a pair of input window and move all the tab except the current tab 

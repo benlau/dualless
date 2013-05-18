@@ -42,7 +42,9 @@ define(["module"],
             $($element).addClass(cls + ratio);            
             
             $($element).click(function(event) {
-                $scope.onClick({ $event :event});
+                $scope.onClick({ $event :event, 
+                                   bookmark : $scope.button
+                                 });
             });
             $scope.refresh();
      

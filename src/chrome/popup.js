@@ -12,17 +12,20 @@ angular.injector(['ng']).invoke(function($rootScope) {
     // Hard coded bookmark for testing purpose
 
     $.extend(bookmark,{
+        // List of bookmaked item
         list : [
             { color : "#f4b400",
               title : "Google Keep",
               url : "https://drive.google.com/keep" 
             }
         ],
+        // Binding between bookmark item and button
         binding : [
             { key: "H_70_30_1",
               color : "#f4b400"
             }
         ],
+        // The bookmark for a specific button
         buttons : {
         }
     });

@@ -15,6 +15,7 @@ define(["dualless/sys/toolbox/resize",
        var windows = options.windows,
             viewport = options.viewport,
             os = options.os,
+            action = options.action || {},
             retry = 0, // May retry for layout depend on the OS without resize the viewport
             count = 2, // No. of windows waiting for resize
             updatedWindows = [], // Result of processed windows
@@ -87,15 +88,18 @@ define(["dualless/sys/toolbox/resize",
             
             } 
 
+/*
             if (accept) {
-                if (options.duplicate) {
+                if (action.duplicate) {
                     createTab(windows[1].id,options.tab.url,callback);
                 } else {			
                     if (callback!=undefined)
                         callback();
                 }
             }
-
+*/
+            if (callback!=undefined)
+                callback();
         };	
 
         function arrange() {

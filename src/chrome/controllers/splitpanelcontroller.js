@@ -16,10 +16,22 @@ define(["module"],
      */
     function create(orientation) {
         
-        function update(args,event) {
+        // update the arguments
+        function update(args,bookmark,event) {
+            
             if (event.button == 1 ||
                 (event.button == 0 && event.metaKey == true)) {
-                args.duplicate = true;
+                    // Middle key is pressed
+                args.action = {
+                    duplicate : true
+                }
+                args.position = 1 - args.position;
+            } else if (bookmark != undefined) {
+                console.log(bookmark);
+                // The button is binded with bookmark
+                args.action = {
+                    url : bookmark.url
+                }
                 args.position = 1 - args.position;
             }
         }
@@ -35,13 +47,13 @@ define(["module"],
             
             $scope.orientation = orientation;
 
-            $scope.split = function (param1,param2,position,event) {
+            $scope.split = function (param1,param2,position,bookmark,event) {
                 var args = {param1: param1,
                             param2: param2,
                             position : position,
                             orientation : orientation};
                 
-                update(args,event);
+                update(args,bookmark,event);
 
                 $scope.$emit("split",args);
             };

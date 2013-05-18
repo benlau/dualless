@@ -289,11 +289,26 @@ define(["dualless/sys/viewport",
             toolbox.arrange(options,runner.listener());			
         });
         
-        runner.run(function (options) {
+        // Post action handler
+        runner.step(function() {
+            var action = options.action || {},
+                 duplicate = action.duplicate;
+                 
+            console.log("Post action",action,duplicate);
+            if (duplicate) {
+                 chrome.tabs.create({windowId : options.windows[1].id,
+                                       url : options.tab.url},
+                                       runner.listener());
+            } else {
+                runner.next();   
+            }
+        });
+        
+        runner.run(function () {
             if (callback)
                 callback(manager._windows);            
         });
-        
+    
 	};
 
 	/** Create a new window as a pair of input window and move all the tab except the current tab 
@@ -306,7 +321,8 @@ define(["dualless/sys/viewport",
         var manager = this,
              win = options.window,
              tab = options.tab,
-             duplicate = options.duplicate,
+             action = options.action,
+             duplicate = (action && action.duplicate ) || undefined ,
              newWin = undefined,
              tabs = [],
              runner = new TaskRunner();
@@ -340,9 +356,9 @@ define(["dualless/sys/viewport",
             var tabId = tabs.shift();
             createData.tabId = tabId;
             
-            if (options.duplicate) {
+            if (duplicate) {
                 createData.url = options.tab.url;
-                delete options.duplicate;
+                delete options.action.duplicate;
             }                
 
             chrome.windows.create(createData,runner.listener());

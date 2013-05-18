@@ -45,12 +45,15 @@ define(["module"],
                 $scope.onClick({ $event :event});
             });
             $scope.refresh();
+     
+            if ($scope.bookmark != undefined)  {
+                $scope.bookmark.$watch(function(scope) {
+                    return scope.buttons[$scope.key];
+                },function() {
+                    $scope.refresh();
+                });
+            }
             
-            $scope.bookmark.$watch(function(scope) {
-                return scope.buttons[$scope.key];
-            },function() {
-                $scope.refresh();
-            });
         });
     }
     

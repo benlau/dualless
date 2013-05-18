@@ -8,27 +8,23 @@ define(["module",
 	arr.pop();
 	uri = arr.join("/");	
 	
-	function factory() {
+	function factory(orientation) {
 		var def = {
            replace: false,
 	       transclude: true,
 			templateUrl : uri + "/splitpanel.html",
-			controller: splitpanelcontroller("H"),
+			controller: splitpanelcontroller(orientation),
 			restrict : 'E',
             scope : {
                 bookmark : "=ngModel"
             },
-            link: function(scope, element, attrs, ngModel) {
-                if(!ngModel) return; // do nothing if no ng-model
-                
-                ngModel.$render = function() {
-                    scope.refresh();
-                }
-                
-            }
 		};
 		return def;
 	}
 	
-	return factory; 
+	return function(orientation) {
+        return function() {
+            return factory(orientation);
+        };
+    }; 
 });

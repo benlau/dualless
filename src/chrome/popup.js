@@ -166,13 +166,11 @@ function BookmarkController($scope) {
 	}
 }
 
-require([ "dualless/directives/hsplitpanel",
-          "dualless/directives/vsplitpanel",
+require([ "dualless/directives/splitpanel",
           "dualless/directives/bookmarklist",
           "dualless/directives/winbutton"
           ],
-          function popup(hsplitpanel,
-                            vsplitpanel,
+          function popup(splitpanel,
                             bookmarklist,
                             winbutton){
 
@@ -185,7 +183,7 @@ require([ "dualless/directives/hsplitpanel",
 			});
 
 			$routeProvider.when("/vsplit",{
-				template : "<vsplitpanel></vsplitpanel>",
+				template : "<vsplitpanel ng-model='bookmark'></vsplitpanel>",
 				controller : SplitController
 			});
 
@@ -202,8 +200,8 @@ require([ "dualless/directives/hsplitpanel",
 			
 	}]);
 	
-	module.directive('hsplitpanel',hsplitpanel);
-	module.directive('vsplitpanel',vsplitpanel);
+	module.directive('hsplitpanel',splitpanel("H"));
+	module.directive('vsplitpanel',splitpanel("V"));
 	module.directive('bookmarklist',bookmarklist);
     module.directive('winbutton',winbutton);
 	

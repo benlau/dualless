@@ -13,10 +13,11 @@ define(["module"],
         
         $scope.refresh = function() {
             if ($scope.bookmark) {
-                var ret = $scope.bookmark.find($scope.key);
-                if (ret.length > 0) {
+                var ret = $scope.bookmark.buttons[$scope.key];
+                if (ret && ret.length > 0) {
                     $scope.color = ret[0].color;
                     $($scope.element).css("background-color",$scope.color);
+                    $scope.button = ret;
                 }
             }
         }
@@ -44,6 +45,12 @@ define(["module"],
                 $scope.onClick({ $event :event});
             });
             $scope.refresh();
+            
+            $scope.bookmark.$watch(function(scope) {
+                return scope.buttons[$scope.key];
+            },function() {
+                $scope.refresh();
+            });
         });
     }
     
@@ -61,7 +68,7 @@ define(["module"],
                 orientation : "@",
                 ratio : "@",
                 key : "@",
-                bookmark : "=ngModel",
+                bookmark : "=",
                 onClick : "&"
             },
             link : function(scope, element, attrs, ngModel) {
@@ -71,12 +78,6 @@ define(["module"],
                 },function() {
                     $(element).css("background-color",scope.color);  
                 });
-                
-                if(!ngModel) return; // do nothing if no ng-model
-                
-                ngModel.$render = function() {
-                    scope.refresh();
-                }
             }
         };
         return def;

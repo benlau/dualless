@@ -4,29 +4,60 @@ requirejs.config({
 	}
 });
 
-// Hard coded bookmark for testing purpose
-var bookmark = {
-    list : [
-        { color : "#FFFF00",
-          title : "Google Keep",
-          url : "https://drive.google.com/keep" 
+var bookmark;
+
+angular.injector(['ng']).invoke(function($rootScope) {
+    bookmark = $rootScope.$new();
+
+    // Hard coded bookmark for testing purpose
+
+    $.extend(bookmark,{
+        list : [
+            { color : "#f4b400",
+              title : "Google Keep",
+              url : "https://drive.google.com/keep" 
+            }
+        ],
+        binding : [
+            { key: "H_70_30_1",
+              color : "#f4b400"
+            }
+        ],
+        buttons : {
         }
-    ],
-    binding : [
-        { key: "H-70-30-1",
-          color : "#f4b400"
-        }
-    ],
-    find : function(key) {
-        var ret = [];
-        for (var i  in this.binding) {
-            if (this.binding[i].key == key) {
-                ret.push(this.binding[i]);
+    });
+    
+    bookmark.$watch(function(scope) {
+            // Due to CSP problem
+            return JSON.stringify({
+                list : scope.list,
+                binding : scope.binding
+            });
+        },function() {
+        var buttons = {};
+        for (var i  in bookmark.binding) {
+            var b = bookmark.binding[i];
+            var color = b.color;
+            for (var j in bookmark.list) {
+                var item = bookmark.list[j];
+                if (item.color== color) {
+                    var res = {};
+                    $.extend(res,b);
+                    $.extend(item);
+                    if (buttons[b.key] == undefined) {
+                        buttons[b.key] = [];
+                    }
+                    buttons[b.key].push(res);
+                    break;
+                } 
             }
         }
-        return ret;
-    }
-}
+        //$.extend(this.buttons , buttons);
+        bookmark.buttons = buttons;
+    });   
+    
+    bookmark.$digest();
+});
 
 function SplitController($scope,$location,$timeout) {
 	var bg = chrome.extension.getBackgroundPage();

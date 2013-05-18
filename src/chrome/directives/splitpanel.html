@@ -7,15 +7,15 @@
                 position=0
                 on-click="split(pair[0] , pair[1] ,0,$event);"
                 ng-right-click='showBookmark(pair[0] , pair[1],0);'
-                ng-model='bookmark'
-                key="{{orientation}}-{{pair[0]}}0-{{pair[1]}}0-0"
+                bookmark=bookmark
+                key="{{orientation}}_{{pair[0]}}0_{{pair[1]}}0_0"
                 >
                 </winbutton>
                 <div class="{{orientation}}split-panel-spacer"></div>
                 <winbutton orientation="{{orientation}}" ratio="{{pair[1]}}0"
                 on-click="split(pair[0] , pair[1] ,1,$event);"
-                ng-model='bookmark'
-                key="{{orientation}}-{{pair[0]}}0-{{pair[1]}}0-1"
+                bookmark="bookmark"
+                key="{{orientation}}_{{pair[0]}}0_{{pair[1]}}0_1"
                 >
                 </winbutton>
                 <!--

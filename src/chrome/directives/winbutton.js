@@ -17,7 +17,7 @@ define(["module"],
                 if (ret && ret.length > 0) {
                     $scope.color = ret[0].color;
                     $($scope.element).css("background-color",$scope.color);
-                    $scope.button = ret;
+                    $scope.button = ret[0];
                 }
             }
         }

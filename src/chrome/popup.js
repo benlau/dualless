@@ -46,7 +46,7 @@ angular.injector(['ng']).invoke(function($rootScope) {
                 if (item.color== color) {
                     var res = {};
                     $.extend(res,b);
-                    $.extend(item);
+                    $.extend(res,item);
                     if (buttons[b.key] == undefined) {
                         buttons[b.key] = [];
                     }

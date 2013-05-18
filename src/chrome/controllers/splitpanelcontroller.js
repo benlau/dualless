@@ -27,7 +27,6 @@ define(["module"],
                 }
                 args.position = 1 - args.position;
             } else if (bookmark != undefined) {
-                console.log(bookmark);
                 // The button is binded with bookmark
                 args.action = {
                     url : bookmark.url

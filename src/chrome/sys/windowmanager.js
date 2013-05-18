@@ -292,12 +292,16 @@ define(["dualless/sys/viewport",
         // Post action handler
         runner.step(function() {
             var action = options.action || {},
-                 duplicate = action.duplicate;
+                 duplicate = action.duplicate,
+                 url = action.url;
                  
-            console.log("Post action",action,duplicate);
             if (duplicate) {
                  chrome.tabs.create({windowId : options.windows[1].id,
                                        url : options.tab.url},
+                                       runner.listener());
+            } else if (url) {
+                 chrome.tabs.create({windowId : options.windows[1].id,
+                                       url : url},
                                        runner.listener());
             } else {
                 runner.next();   

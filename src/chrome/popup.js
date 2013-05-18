@@ -4,6 +4,30 @@ requirejs.config({
 	}
 });
 
+// Hard coded bookmark for testing purpose
+var bookmark = {
+    list : [
+        { color : "#FFFF00",
+          title : "Google Keep",
+          url : "https://drive.google.com/keep" 
+        }
+    ],
+    binding : [
+        { key: "H-70-30-1",
+          color : "#f4b400"
+        }
+    ],
+    find : function(key) {
+        var ret = [];
+        for (var i  in this.binding) {
+            if (this.binding[i].key == key) {
+                ret.push(this.binding[i]);
+            }
+        }
+        return ret;
+    }
+}
+
 function SplitController($scope,$location,$timeout) {
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
@@ -18,6 +42,8 @@ function SplitController($scope,$location,$timeout) {
 		win = val1;
 		tab = val2;
 	});
+    
+    $scope.bookmark = bookmark;
 
 	$scope.$on("split",function(event,args) {
 		event.stopPropagation();
@@ -84,15 +110,7 @@ function BookmarkController($scope) {
 	$scope.param1 = 3
 	$scope.param2 = 7
 
-	$scope.bookmarks = [
-		{ color : "#FFFFFF",
-		  title : "Default"
-		},
-		{ color : "#FFFF00",
-		  title : "Google Keep",
-		  url : "https://drive.google.com/keep" // Hard code the site for testing purpose
-		},
-	]
+    $scope.bookmark = bookmark;
 
 	$scope.split = function(options) {
 		// Create tab with specific url then split
@@ -131,7 +149,7 @@ require([ "dualless/directives/hsplitpanel",
 	
 	module.config(['$routeProvider', function configRouteProvider($routeProvider) {
 			$routeProvider.when("/hsplit",{
-				template : "<hsplitpanel></hsplitpanel>",
+				template : "<hsplitpanel ng-model='bookmark'></hsplitpanel>",
 				controller : SplitController
 			});
 

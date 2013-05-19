@@ -11,7 +11,7 @@
                 key="{{orientation}}_{{pair[0]}}0_{{pair[1]}}0_0"
                 >
                 </winbutton>
-                <div class="{{orientation}}split-panel-spacer"></div>
+                <div class="{{orientation | lowercase}}split-panel-spacer"></div>
                 <winbutton orientation="{{orientation}}" ratio="{{pair[1]}}0"
                 on-click="split(pair[0] , pair[1] ,1,bookmark,$event);"
                 bookmark="bookmark"

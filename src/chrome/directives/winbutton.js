@@ -9,7 +9,7 @@ define(["module"],
     
     function Controller($scope,$element,$timeout) {
         
-        $scope.color = "#FFFFFF";
+        $scope.color = "transparent";
         
         $scope.refresh = function() {
             if ($scope.bookmark) {

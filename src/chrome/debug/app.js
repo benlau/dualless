@@ -9,13 +9,13 @@ requirejs.config({
 
 require(["debug/view/component",
          "debug/view/information",
-         "dualless/directives/hsplitpanel",
-         "dualless/directives/vsplitpanel"
+         "dualless/directives/splitpanel",
+         "dualless/directives/winbutton"
          ],
 	     function app(component,
 	    		 		information,
-	    		 		hsplitpanel,
-	    		 		vsplitpanel){
+	    		 		splitpanel,
+	    		 		winbutton){
 
 	var module = angular.module('main', []);
 	
@@ -30,8 +30,9 @@ require(["debug/view/component",
 	  	
 	}]);
 
-	module.directive('hsplitpanel',hsplitpanel);
-	module.directive('vsplitpanel',vsplitpanel);
+	module.directive('hsplitpanel',splitpanel("H"));
+	module.directive('vsplitpanel',splitpanel("V"));
+    module.directive('winbutton',winbutton);
 	
 	$(document).ready(function() {
 		angular.bootstrap(document,["main"]);

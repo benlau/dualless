@@ -325,13 +325,14 @@ define(["dualless/sys/viewport",
         var manager = this,
              win = options.window,
              tab = options.tab,
-             action = options.action,
-             duplicate = (action && action.duplicate ) || undefined ,
+             action = options.action || {},
              newWin = undefined,
              tabs = [],
+             skipTabsMoving = false,
              runner = new TaskRunner();
         
         runner.step(function() {
+            // In case window and tab is not provided. Let's do auto detection.
            if (window == undefined || tab == undefined) {
                manager.currentWindowTab(function(p1,p2){
                   win = p1;
@@ -353,17 +354,24 @@ define(["dualless/sys/viewport",
         });        
 
         runner.step(function() {
+            // Pre-processing of action
             var createData = {
                  focused : false
             }
             
-            var tabId = tabs.shift();
-            createData.tabId = tabId;
-            
-            if (duplicate) {
+            if (action.duplicate) {
                 createData.url = options.tab.url;
                 delete options.action.duplicate;
-            }                
+                skipTabsMoving = true; 
+            } else if (action.url) {
+                createData.url = action.url;
+                delete options.action.url;
+                skipTabsMoving = true; 
+            } else {
+                // Prevent the creation of blank tab in new window
+                var tabId = tabs.shift(); 
+                createData.tabId = tabId;                    
+            }
 
             chrome.windows.create(createData,runner.listener());
         });
@@ -371,7 +379,8 @@ define(["dualless/sys/viewport",
         runner.step(function(win) {
             newWin = win;
             
-            if (tabs.length == 0) {
+            if (tabs.length == 0 ||
+                skipTabsMoving) {
                 runner.next();
             } else {
                 chrome.tabs.move(tabs,{ windowId : newWin.id,

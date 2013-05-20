@@ -208,18 +208,6 @@ require([ "dualless/directives/splitpanel",
 	module.directive('bookmarklist',bookmarklist);
     module.directive('winbutton',winbutton);
 	
-	module.directive('ngRightClick', function($parse) {
-		return function(scope, element, attrs) {
-			var fn = $parse(attrs.ngRightClick);
-			element.bind('contextmenu', function(event) {
-				scope.$apply(function() {
-					event.preventDefault();
-					fn(scope, {$event:event});
-				});
-			});
-		};
-	});
-	
 	$(document).ready(function() {
 		angular.bootstrap(document,["popup"]);
 	});	

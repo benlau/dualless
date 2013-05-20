@@ -74,7 +74,8 @@ define(["module"],
                 ratio : "@",
                 key : "@",
                 bookmark : "=",
-                onClick : "&"
+                onClick : "&",
+                onRightClick : "&"
             },
             link : function(scope, element, attrs, ngModel) {
                 scope.element = element;
@@ -82,6 +83,13 @@ define(["module"],
                     $(element).css("background-color","yellow");  
                 },function() {
                     $(element).css("background-color",scope.color);  
+                });
+                
+                element.bind('contextmenu', function(event) {
+                    scope.$apply(function(scope) {
+                        event.preventDefault();
+                        scope.onRightClick();
+                    });
                 });
             }
         };

@@ -14,8 +14,10 @@ define(["module"],
                 orientation : 'H',
                 param1 : 7,
                 param2 : 3,
-                position : 1,
-                url : url
+                position : 0,
+                action : {
+                    url : url
+                }
             };
             
             $scope.onSelect({ options : split});

@@ -62,7 +62,8 @@ angular.injector(['ng']).invoke(function($rootScope) {
     bookmark.$digest();
 });
 
-function SplitController($scope,$location,$timeout) {
+// The main controller for popup
+function PopupCtrl($scope,$location,$timeout) {
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
 	
@@ -124,7 +125,7 @@ function SplitController($scope,$location,$timeout) {
     });
 };
 
-SplitController.$inject = ["$scope","$location","$timeout"];
+PopupCtrl.$inject = ["$scope","$location","$timeout"];
 
 function BookmarkController($scope) {
 	var bg = chrome.extension.getBackgroundPage();
@@ -147,25 +148,7 @@ function BookmarkController($scope) {
     $scope.bookmark = bookmark;
 
 	$scope.split = function(options) {
-		// Create tab with specific url then split
-		options.screen = scr;		
-		
-		// "active" should be false , otherwise the popup will
-		// be destroyed before it is completed.
-		chrome.tabs.create({active:false, 
-		                      url : options.url
-						      },function(tab) {
-	
-				options.window = win;
-				options.tab = tab;
-				delete options.url;
-				manager.split(options,function(windows) {
-					chrome.tabs.update(tab.id,{ active: true
-									             });
-				});							
-
-		});
-		
+		$scope.$emit("split",options);
 	}
 }
 
@@ -181,13 +164,13 @@ require([ "dualless/directives/splitpanel",
 	
 	module.config(['$routeProvider', function configRouteProvider($routeProvider) {
 			$routeProvider.when("/hsplit",{
-				template : "<hsplitpanel ng-model='bookmark'></hsplitpanel>",
-				controller : SplitController
+				template : "<hsplitpanel ng-model='bookmark'></hsplitpanel>"
+				//controller : SplitController
 			});
 
 			$routeProvider.when("/vsplit",{
-				template : "<vsplitpanel ng-model='bookmark'></vsplitpanel>",
-				controller : SplitController
+				template : "<vsplitpanel ng-model='bookmark'></vsplitpanel>"
+				//controller : SplitController
 			});
 
 			$routeProvider.when("/bookmark/:orientation/:param1/:param2",{

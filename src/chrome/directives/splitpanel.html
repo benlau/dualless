@@ -5,17 +5,15 @@
                <div class="split-panel-screen">
                 <winbutton orientation="{{orientation}}" ratio="{{pair[0]}}0"
                 position=0
-                on-click="split(pair[0] , pair[1] ,0,bookmark,$event);"
+                on-click="split(pair[0] , pair[1] ,0,$link,$event);"
                 on-right-click='showBookmark(pair[0] , pair[1],0);'
-                bookmark="bookmark"
-                key="{{orientation}}_{{pair[0]}}0_{{pair[1]}}0_0"
+                links="bookmark.buttons[orientation + '_' + pair[0] + '0_' + pair[1]+ '0_0']"
                 >
                 </winbutton>
                 <div class="{{orientation | lowercase}}split-panel-spacer"></div>
                 <winbutton orientation="{{orientation}}" ratio="{{pair[1]}}0"
-                on-click="split(pair[0] , pair[1] ,1,bookmark,$event);"
-                bookmark="bookmark"
-                key="{{orientation}}_{{pair[0]}}0_{{pair[1]}}0_1"
+                on-click="split(pair[0] , pair[1] ,1,$link,$event);"
+                links="bookmark.buttons[orientation + '_' + pair[0] + '0_' + pair[1]+ '0_1']"
                 >
                 </winbutton>
                 <!--

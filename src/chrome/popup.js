@@ -4,64 +4,6 @@ requirejs.config({
 	}
 });
 
-var bookmark;
-
-angular.injector(['ng']).invoke(function($rootScope) {
-    bookmark = $rootScope.$new();
-
-    // Hard coded bookmark for testing purpose
-
-    $.extend(bookmark,{
-        // List of bookmaked item
-        list : [
-            { color : "#f4b400",
-              title : "Google Keep",
-              url : "https://drive.google.com/keep" 
-            }
-        ],
-        // Binding between bookmark item and button
-        binding : [
-            { key: "H_70_30_1",
-              color : "#f4b400"
-            }
-        ],
-        // The bookmark for a specific button
-        buttons : {
-        }
-    });
-    
-    bookmark.$watch(function(scope) {
-            // Due to CSP problem
-            return JSON.stringify({
-                list : scope.list,
-                binding : scope.binding
-            });
-        },function() {
-        var buttons = {};
-        for (var i  in bookmark.binding) {
-            var b = bookmark.binding[i];
-            var color = b.color;
-            for (var j in bookmark.list) {
-                var item = bookmark.list[j];
-                if (item.color== color) {
-                    var res = {};
-                    $.extend(res,b);
-                    $.extend(res,item);
-                    if (buttons[b.key] == undefined) {
-                        buttons[b.key] = [];
-                    }
-                    buttons[b.key].push(res);
-                    break;
-                } 
-            }
-        }
-        //$.extend(this.buttons , buttons);
-        bookmark.buttons = buttons;
-    });   
-    
-    bookmark.$digest();
-});
-
 // The main controller for popup
 function PopupCtrl($scope,$location,$timeout) {
 	var bg = chrome.extension.getBackgroundPage();
@@ -78,7 +20,54 @@ function PopupCtrl($scope,$location,$timeout) {
 		tab = val2;
 	});
     
-    $scope.bookmark = bookmark;
+    $scope.bookmark = {
+        // List of link
+        links : [
+            { color : "#f4b400",
+              title : "Google Keep",
+              url : "https://drive.google.com/keep" 
+            }
+        ],
+        // Binding between link and window button
+        bindings : [
+            { key: "H_70_30_1",
+              color : "#f4b400"
+            }
+        ],
+        // The link for specific window button. It is the result after combined links and bindings
+        buttons : {
+        }
+    }
+
+	// @TODO : Pregenerate the buttons
+	
+    $scope.$watch(function(scope) {
+            // Due to CSP problem
+            return JSON.stringify({
+                list : scope.bookmark.links,
+                binding : scope.bookmark.bindings
+            });
+        },function() {
+        var buttons = {};
+        for (var i  in $scope.bookmark.bindings) {
+            var b = $scope.bookmark.bindings[i];
+            var color = b.color;
+            for (var j in $scope.bookmark.links) {
+                var item = $scope.bookmark.links[j];
+                if (item.color== color) {
+                    var res = {};
+                    $.extend(res,b);
+                    $.extend(res,item);
+                    if (buttons[b.key] == undefined) {
+                        buttons[b.key] = [];
+                    }
+                    buttons[b.key].push(res);
+                    break;
+                } 
+            }
+        }
+        $.extend($scope.bookmark.buttons , buttons);
+    });   
 
 	$scope.$on("split",function(event,args) {
 		event.stopPropagation();

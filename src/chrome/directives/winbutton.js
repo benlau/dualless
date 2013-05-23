@@ -20,6 +20,16 @@ define(["module"],
                     $scope.button = ret[0];
                 }
             }
+
+            if ($scope.links) {
+                if ($scope.links[0] &&  $scope.links[0].color) {
+                    var link = $scope.links[0];
+                    $scope.color = link.color;
+                    $($scope.element).css("background-color",$scope.color);
+                    $scope.link = link;
+                }
+            }
+            
         }
        
         $timeout(function() {
@@ -43,19 +53,10 @@ define(["module"],
             
             $($element).click(function(event) {
                 $scope.onClick({ $event :event, 
-                                   bookmark : $scope.button
+                                   $link : $scope.link
                                  });
             });
             $scope.refresh();
-     
-            if ($scope.bookmark != undefined)  {
-                $scope.bookmark.$watch(function(scope) {
-                    return scope.buttons[$scope.key];
-                },function() {
-                    $scope.refresh();
-                });
-            }
-            
         });
     }
     
@@ -73,7 +74,7 @@ define(["module"],
                 orientation : "@",
                 ratio : "@",
                 key : "@",
-                bookmark : "=",
+                links : "=links",
                 onClick : "&",
                 onRightClick : "&"
             },
@@ -91,6 +92,11 @@ define(["module"],
                         scope.onRightClick();
                     });
                 });
+                             
+                scope.$watch("links",function() {
+                    scope.refresh();
+                });
+                
             }
         };
         return def;

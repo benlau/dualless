@@ -12,15 +12,6 @@ define(["module"],
         $scope.color = "transparent";
         
         $scope.refresh = function() {
-            if ($scope.bookmark) {
-                var ret = $scope.bookmark.buttons[$scope.key];
-                if (ret && ret.length > 0) {
-                    $scope.color = ret[0].color;
-                    $($scope.element).css("background-color",$scope.color);
-                    $scope.button = ret[0];
-                }
-            }
-
             if ($scope.links) {
                 if ($scope.links[0] &&  $scope.links[0].color) {
                     var link = $scope.links[0];
@@ -28,26 +19,26 @@ define(["module"],
                     $($scope.element).css("background-color",$scope.color);
                     $scope.link = link;
                 }
-            }
-            
+            }           
         }
-       
-        $timeout(function() {
-            // link() is not used since ratio is passed by parent scope using {{}} notation.
-            // "ratio" will not be resolved even in post-linking. 
-            // So it now wait until the render is completed for first time setup
+        
+        $scope.$watch(function(scope) {
+            return scope.orientation + scope.ratio;
+        },function() {
+            if ($scope.ratio == undefined ||
+                $scope.orientation == undefined) 
+                return
+            
             var cls = "",
                  ratio = $scope.ratio || "",
                  orientation = $scope.orientation;
 
-            $($element).addClass("split-panel-win");
-            
             if (orientation == 'H') {
                 cls = "hsplit-panel-win";
             } else {
                 cls = "vsplit-panel-win";
             }
-            
+
             $($element).addClass(cls);
             $($element).addClass(cls + ratio);            
             
@@ -56,8 +47,9 @@ define(["module"],
                                    $link : $scope.link
                                  });
             });
-            $scope.refresh();
-        });
+            $scope.refresh();            
+            
+        });      
     }
     
     Controller.inject = ["$scope","$element","$timeout"];
@@ -85,7 +77,9 @@ define(["module"],
                 },function() {
                     $(element).css("background-color",scope.color);  
                 });
-                
+
+                $(element).addClass("split-panel-win");
+
                 element.bind('contextmenu', function(event) {
                     scope.$apply(function(scope) {
                         event.preventDefault();

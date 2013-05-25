@@ -10,6 +10,7 @@ define(["module"],
     function Controller($scope,$element,$timeout) {
         
         $scope.color = "transparent";        
+        $scope.rendered = false;
         
         $scope.$watch("links",function() {
             if ($scope.links) {
@@ -38,10 +39,32 @@ define(["module"],
             } else {
                 cls = "vsplit-panel-win";
             }
-
             $($element).addClass(cls);
             $($element).addClass(cls + ratio);            
-        });      
+        });
+        
+        $scope.$watch(function(scope) {
+            return { 
+                orientation : scope.orientation,
+                w: scope.element.width() ,
+                h: scope.element.height(),
+                rendered : scope.rendered 
+            }
+        }, function() {
+            if (!$scope.rendered)
+                return false;
+                
+            $($scope.element).children().each(function(idx,elem) {
+                if ($scope.orientation == "H") {
+                   $(elem).width($scope.element.width()/2);
+                   $(elem).height($scope.element.height()/2);
+                } else {
+                   $(elem).width($scope.element.width()/4);
+                   $(elem).height($scope.element.height());                    
+                }
+            });
+        },
+        true);
     }
     
     Controller.inject = ["$scope","$element","$timeout"];
@@ -50,7 +73,7 @@ define(["module"],
         var def = {
             replace: true,
             transclude: false,
-            template : "<div></div>",
+            template : "<div><div ng-repeat='i in [1,2,3,4]' style='float:left' on-repeat-finish='$parent.rendered = true' ></div></div>",
             controller: Controller,
             restrict : 'E',
             require : "?ngModel",

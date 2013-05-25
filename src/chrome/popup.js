@@ -179,6 +179,16 @@ require([ "dualless/directives/splitpanel",
 	module.directive('vsplitpanel',splitpanel("V"));
 	module.directive('bookmarklist',bookmarklist);
     module.directive('winbutton',winbutton);
+	module.directive('onRepeatFinish',function() {
+		return {
+			restrict: 'A',
+			link : function(scope,element,attr) {
+				if (scope.$last == true) {
+					scope.$evalAsync(attr.onRepeatFinish);
+				}
+			}
+		}
+	});
 	
 	$(document).ready(function() {
 		angular.bootstrap(document,["popup"]);

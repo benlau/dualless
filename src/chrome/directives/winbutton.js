@@ -9,9 +9,9 @@ define(["module"],
     
     function Controller($scope,$element,$timeout) {
         
-        $scope.color = "transparent";
+        $scope.color = "transparent";        
         
-        $scope.refresh = function() {
+        $scope.$watch("links",function() {
             if ($scope.links) {
                 if ($scope.links[0] &&  $scope.links[0].color) {
                     var link = $scope.links[0];
@@ -19,8 +19,8 @@ define(["module"],
                     $($scope.element).css("background-color",$scope.color);
                     $scope.link = link;
                 }
-            }           
-        }
+            }
+        });
         
         $scope.$watch(function(scope) {
             return scope.orientation + scope.ratio;
@@ -41,14 +41,6 @@ define(["module"],
 
             $($element).addClass(cls);
             $($element).addClass(cls + ratio);            
-            
-            $($element).click(function(event) {
-                $scope.onClick({ $event :event, 
-                                   $link : $scope.link
-                                 });
-            });
-            $scope.refresh();            
-            
         });      
     }
     
@@ -77,6 +69,12 @@ define(["module"],
                 },function() {
                     $(element).css("background-color",scope.color);  
                 });
+                
+                $(element).click(function(event) {
+                    scope.onClick({ $event :event, 
+                                      $link : scope.link
+                                    });
+                });
 
                 $(element).addClass("split-panel-win");
 
@@ -85,12 +83,7 @@ define(["module"],
                         event.preventDefault();
                         scope.onRightClick();
                     });
-                });
-                             
-                scope.$watch("links",function() {
-                    scope.refresh();
-                });
-                
+                });                
             }
         };
         return def;

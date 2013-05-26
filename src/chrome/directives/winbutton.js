@@ -61,7 +61,6 @@ define(["module"],
                 groups[i] = [];
                 for (var j in m) {
                     if (m[j] == i) {
-                        console.log(j);
                         groups[i].push($($scope.element).children()[j]);
                     }
                 }

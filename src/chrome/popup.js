@@ -134,11 +134,13 @@ function BookmarkController($scope) {
 	$scope.param1 = 3
 	$scope.param2 = 7
 
-    $scope.bookmark = bookmark;
-
 	$scope.split = function(options) {
 		$scope.$emit("split",options);
 	}
+	
+	$scope.$watch("$parent.bookmark",function(){
+		$scope.bookmark = $scope.$parent.bookmark;
+	},true);
 }
 
 require([ "dualless/directives/splitpanel",

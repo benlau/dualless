@@ -1,7 +1,10 @@
 
 /* Window Button 
  * 
- * Represent the size of a window after the action
+ * Represent the size of a window after the action.
+ * 
+ * Each window button is further divided into 4 grid,
+ * it is used for bookmarked links.
  */
 
 define(["module"],
@@ -12,41 +15,64 @@ define(["module"],
         $scope.color = "transparent";        
         $scope.rendered = false;
         
-        // The link and color of a grid
+        // The information of children grid
         $scope.grids = [];
+
         for (var i = 0 ; i < 4;i++){
-            $scope.grids.push({ color : "transparent"});
+            $scope.grids.push( { link : { color : "transparent"
+                                    }
+            });
         }
         
-        $scope.$watch("links",function() {
+        // Mapping of links to grids (depend on the no. of link)
+        var map = [ [-1,-1,-1,-1],
+                    [0,0,-1,-1],
+                    [0,1,-1,-1],
+                    [0,1,2,-1] ];
+        
+        
+        $scope.$watch("links",function() { // links -> grids.link
             if ($scope.links) {
                 
-                if ($scope.links[0] &&  $scope.links[0].color) {
-                    
-                    // Temp solution
-                    /*
-                    var link = $scope.links[0];
-                    $scope.color = link.color;
-                    $($scope.element).css("background-color",$scope.color);
-                    $scope.link = link;
-                    */
-
-                    // Reconstruct grids
-                    $scope.grids = [];
-                    var map = [ [-1,-1,-1,-1],
-                                [0,0,-1,-1],
-                                [0,1,-1,-1],
-                                [0,1,2,-1] ];
+                if ($scope.links[0] &&  $scope.links[0].color) {                   
                     var m = map[$scope.links.length];
                     for (var i = 0 ; i < 4;i++){
-                        var grid = { color : "transparent" };
+                        var link = { color : "transparent" };
                         if (m[i] >= 0)
-                            grid = $scope.links[m[i]];
-                        $scope.grids.push(grid);
+                            link = $scope.links[m[i]];
+                        $scope.grids[i].link = link;
                     }
                 }
             }
         });
+        
+        $scope.$watch(function(scope) { // links,rendered -> grids.group
+            return {
+                links : scope.links,
+                rendered : scope.rendered
+            }
+        },function() {
+            if (!$scope.rendered || $scope.links == undefined)
+                return;
+            var m = map[$scope.links.length];
+            var groups = [];
+            
+            for (var i = -1 ; i < 4;i++) {
+                groups[i] = [];
+                for (var j in m) {
+                    if (m[j] == i) {
+                        console.log(j);
+                        groups[i].push($($scope.element).children()[j]);
+                    }
+                }
+            }
+            
+            for (var i = 0 ; i < 4;i++) {
+                $scope.grids[i].group = groups[m[i]];
+            }
+            
+        },
+        true);
         
         $scope.$watch(function(scope) {
             return scope.orientation + scope.ratio;
@@ -78,7 +104,8 @@ define(["module"],
         }, function() {
             if (!$scope.rendered)
                 return false;
-                
+            
+            // Initialize the grid elements
             $($scope.element).children().each(function(idx,elem) {
                 if ($scope.orientation == "H") {
                    $(elem).width($scope.element.width()/2);
@@ -88,18 +115,31 @@ define(["module"],
                    $(elem).height($scope.element.height());                    
                 }
                 
-                (function(idx) {
-                    $(elem).hover(function() {
-                       $(elem).css("background-color","yellow");  
-                    },function() {
-                        $(elem).css("background-color",$scope.grids[idx].color);  
+                (function(idx,parent) {
+                    $(elem).hover(function(event) {
+                        event.preventDefault();
+                        if ($scope.grids[idx].group == undefined) {
+                            $(parent).css("background-color","yellow");
+                        }
+                        $($scope.grids[idx].group).each(function(i,elem) {
+                           $(elem).css("background-color","yellow");
+                        });
+                    },function(event) {
+                        event.preventDefault();
+                        if ($scope.grids[idx].group == undefined) {
+                            $(parent).css("background-color",$scope.grids[idx].link.color);  
+                        }
+                        $($scope.grids[idx].group).each(function(i,elem) {
+                           $(elem).css("background-color",$scope.grids[idx].link.color);  
+                        });
                     });
-                    $(elem).css("background-color",$scope.grids[idx].color);  
+                    $(elem).css("background-color",$scope.grids[idx].link.color);  
                     
                     $(elem).click(function(event) {
                         var link = undefined;
-                        if ($scope.grids[idx].color != "transparent"){
-                            link = $scope.grids[idx]
+
+                        if ($scope.grids[idx].link.color != "transparent"){
+                            link = $scope.grids[idx].link
                         }
                         event.preventDefault();
                         $scope.onClick({ $event :event, 
@@ -107,9 +147,9 @@ define(["module"],
                                         });
                     });
                     
-                })(idx);
+                })(idx,$scope.element);
         
-            });
+            }); // End of watch
         },
         true);
     }
@@ -135,11 +175,13 @@ define(["module"],
             link : function(scope, element, attrs, ngModel) {
                 scope.element = element;
                 
+                /*
                 $(element).hover(function() {
                     $(element).css("background-color","yellow");  
                 },function() {
                     $(element).css("background-color","transparent");  
                 });
+                */
 
                 $(element).addClass("split-panel-win");
 

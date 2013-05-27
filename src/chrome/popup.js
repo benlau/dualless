@@ -23,15 +23,16 @@ function PopupCtrl($scope,$location,$timeout) {
     $scope.bookmark = {
         // List of link
         links : [
-            { color : "#f4b400",
+            { id : "1", // Each link should have an unique id
+              color : "#f4b400",
               title : "Google Keep",
               url : "https://drive.google.com/keep" 
             }
         ],
         // Binding between link and window button
         bindings : [
-            { key: "H_70_30_1",
-              color : "#f4b400"
+            { key: "H_70_30_1", // The id of the button
+              id : "1"
             }
         ],
         // The link for specific window button. It is the result after combined links and bindings
@@ -50,18 +51,17 @@ function PopupCtrl($scope,$location,$timeout) {
         },function() {
         var buttons = {};
         for (var i  in $scope.bookmark.bindings) {
-            var b = $scope.bookmark.bindings[i];
-            var color = b.color;
+            var binding = $scope.bookmark.bindings[i];
             for (var j in $scope.bookmark.links) {
-                var item = $scope.bookmark.links[j];
-                if (item.color== color) {
+                var link = $scope.bookmark.links[j];
+                if (link.id== binding.id) {
                     var res = {};
-                    $.extend(res,b);
-                    $.extend(res,item);
-                    if (buttons[b.key] == undefined) {
-                        buttons[b.key] = [];
+                    $.extend(res,binding);
+                    $.extend(res,link);
+                    if (buttons[binding.key] == undefined) {
+                        buttons[binding.key] = [];
                     }
-                    buttons[b.key].push(res);
+                    buttons[binding.key].push(res);
                     break;
                 } 
             }

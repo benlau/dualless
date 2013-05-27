@@ -3,6 +3,16 @@
  * It is the core of Dualless that manages the split , merge , pairing and all windows related
  * operations. 
  * 
+ * Events:
+ * 
+ * - removed        A managed tab is removed 
+ * 
+ * - focusChanged   The focus of window has been changed. 
+ *                  If it is focus on a unmanaged window,
+ *                  the window ID will be chrome.windows.WINDOW_ID_NONE
+ * 
+ * - tabCreated     A new tab is created by WindowManager.
+ * 
  * */
 
 define(["dualless/sys/viewport",
@@ -306,6 +316,13 @@ define(["dualless/sys/viewport",
             } else {
                 runner.next();   
             }
+        });
+        
+        runner.step(function(tab) {
+            if (tab != undefined) {
+                manager.events.emit("tabCreated",tab);
+            }
+            runner.next();
         });
         
         runner.run(function () {

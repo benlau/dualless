@@ -19,21 +19,27 @@ define(["dualless/sys/viewport",
 		 "dualless/sys/os",
 		 "dualless/lib/eventemitter",
 		 "dualless/sys/toolbox",
-         "dualless/util/taskrunner"], 
+         "dualless/util/taskrunner",
+         "dualless/sys/tabtracker"
+         ], 
 		function sys(Viewport,
 					   os,
 					   EventEmitter,
 					   toolbox,
-                       TaskRunner) {
+                       TaskRunner,
+                       TabTracker) {
 
 	WindowManager = function() {
+        var manager = this;
+        
 		this._os = os();
 		this._viewport = new Viewport();
 		this._windows = []; // Managed windows
 		
 		this.events = new EventEmitter();
-		
-		var manager = this;
+        
+        this._tracker = new TabTracker();
+        this._tracker.start();
 		
 		chrome.windows.onRemoved.addListener(function ( winId){
 			if (manager.isManaged(winId)) {

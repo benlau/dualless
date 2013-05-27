@@ -309,24 +309,45 @@ define(["dualless/sys/viewport",
         runner.step(function() {
             var action = options.action || {},
                  duplicate = action.duplicate,
-                 url = action.url;
-                 
+                 link = action.link;
+
             if (duplicate) {
                  chrome.tabs.create({windowId : options.windows[1].id,
                                        url : options.tab.url},
                                        runner.listener());
-            } else if (url) {
-                 chrome.tabs.create({windowId : options.windows[1].id,
-                                       url : url},
-                                       runner.listener());
+            } else if (link) {
+                var tab = manager._tracker.tab(link.id),
+                     info = {
+                         windowId : options.windows[1].id
+                     }
+                if (tab) { // Find tracked tab. It should move it.
+                    info.index = 0;
+                    chrome.tabs.move(tab.id,info,function() {
+                        chrome.tabs.update(tab.id,
+                                            {active:true
+                                            }
+                                            ,function() {
+                                                runner.next(tab);                       
+                                            });
+                    });
+                } else {
+                    info.url = link.url;
+                    chrome.tabs.create(info,runner.listener());                    
+                }
+
             } else {
                 runner.next();   
             }
         });
         
         runner.step(function(tab) {
+            var action = options.action || {},
+                 link = action.link;
+
             if (tab != undefined) {
                 manager.events.emit("tabCreated",tab);
+                if (link)
+                    manager._tracker.add(link.id,tab); // start tracking
             }
             runner.next();
         });
@@ -386,9 +407,9 @@ define(["dualless/sys/viewport",
                 createData.url = options.tab.url;
                 delete options.action.duplicate;
                 skipTabsMoving = true; 
-            } else if (action.url) {
-                createData.url = action.url;
-                delete options.action.url;
+            } else if (action.link) {
+                createData.url = action.link.url;
+                delete options.action.link;
                 skipTabsMoving = true; 
             } else {
                 // Prevent the creation of blank tab in new window

@@ -29,7 +29,7 @@ define(["module"],
             } else if (link != undefined) {
                 // The button is binded with link from bookmark
                 args.action = {
-                    url : link.url
+                    link : link
                 }
                 args.position = 1 - args.position;
             }

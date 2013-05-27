@@ -1,0 +1,45 @@
+
+.bookmark-editor {
+    margin-top : 20px;
+}
+
+.bookmark-editor-icon {
+    margin-left : 5px;
+    margin-right : -20px;
+    margin-bottom : -1.2em;
+}
+
+.bookmark-editor-field {
+    margin-bottom: 5px;
+}
+
+.bookmark-editor-label {
+    width : 50px;
+    display : inline-block;
+    text-align : right;
+    margin-left : 10px;
+    margin-right : 5px;
+}
+
+.bookmark-editor-content {
+    display : inline-block;
+}
+
+.bookmark-editor-content input{
+    width : 90px;
+    margin : 0px 0px 0px 0px;
+}
+
+.bookmark-editor-color-picker {
+    width : 120px;
+    margin-top : 15px;
+    margin-left : 40px;
+}
+
+.bookmark-editor-color-grid {
+    width : 15px;
+    height: 15px;
+    float : left;
+    margin-right : 5px;
+    margin-bottom : 5px;
+}

@@ -145,11 +145,13 @@ function BookmarkController($scope) {
 
 require([ "dualless/directives/splitpanel",
           "dualless/directives/bookmarklist",
-          "dualless/directives/winbutton"
+          "dualless/directives/winbutton",
+          "dualless/directives/bookmarkeditor"
           ],
           function popup(splitpanel,
                             bookmarklist,
-                            winbutton){
+                            winbutton,
+                            bookmarkeditor){
 
 	var module = angular.module("popup",[]);
 	
@@ -180,6 +182,7 @@ require([ "dualless/directives/splitpanel",
 	module.directive('hsplitpanel',splitpanel("H"));
 	module.directive('vsplitpanel',splitpanel("V"));
 	module.directive('bookmarklist',bookmarklist);
+	module.directive('bookmarkeditor',bookmarkeditor);
     module.directive('winbutton',winbutton);
 	module.directive('onRepeatFinish',function() {
 		return {

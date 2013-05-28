@@ -370,6 +370,7 @@ define(["dualless/sys/viewport",
              win = options.window,
              tab = options.tab,
              action = options.action || {},
+             link = action.link,
              newWin = undefined,
              tabs = [],
              skipTabsMoving = false,
@@ -408,7 +409,15 @@ define(["dualless/sys/viewport",
                 delete options.action.duplicate;
                 skipTabsMoving = true; 
             } else if (action.link) {
-                createData.url = action.link.url;
+                               
+                var tab = manager._tracker.tab(link.id)
+                     
+                if (tab) { // Find tracked tab. It should move it.
+                    createData.tabId = tab.id
+                } else {
+                    createData.url = action.link.url;    
+                }
+                
                 delete options.action.link;
                 skipTabsMoving = true; 
             } else {
@@ -422,6 +431,11 @@ define(["dualless/sys/viewport",
 
         runner.step(function(win) {
             newWin = win;
+            
+            if (link) {
+                manager.events.emit("tabCreated",win.tabs[0]);
+                manager._tracker.add(link.id,win.tabs[0]);
+            }
             
             if (tabs.length == 0 ||
                 skipTabsMoving) {

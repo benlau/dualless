@@ -47,6 +47,7 @@ function PopupCtrl($scope,$location,$timeout,$rootScope) {
     }
     
 	// @TODO : Pregenerate the buttons
+    // @TODO : should be moved to another scope
 	
     $rootScope.$watch(function(scope) {
             // Due to CSP problem

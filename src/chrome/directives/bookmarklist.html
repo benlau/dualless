@@ -1,6 +1,5 @@
 <div>
     <div ng-repeat="bookmark in model">
-        <div style="background-color:{{bookmark.color}};width:20px;height:20px;display:inline-block"></div>
-        <div style="display:inline-block" ng-click="click(bookmark.url)">{{bookmark.title}}</div>
+        <bookmarkitem bookmark="bookmark"></bookmarkitem>
     </div>
 </div>

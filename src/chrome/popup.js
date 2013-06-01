@@ -131,13 +131,15 @@ require([ "dualless/directives/splitpanel",
           "dualless/directives/bookmarklist",
           "dualless/directives/winbutton",
           "dualless/views/bookmark",
-          "dualless/directives/bookmarkeditor"
+          "dualless/directives/bookmarkeditor",
+          "dualless/directives/bookmarkitem"
           ],
           function popup(splitpanel,
                             bookmarklist,
                             winbutton,
                             bookmark,
-                            bookmarkeditor){
+                            bookmarkeditor,
+                            bookmarkitem){
 
 	var module = angular.module("popup",[]);
 	
@@ -166,6 +168,7 @@ require([ "dualless/directives/splitpanel",
 	module.directive('vsplitpanel',splitpanel("V"));
 	module.directive('bookmarklist',bookmarklist);
 	module.directive('bookmarkeditor',bookmarkeditor);
+    module.directive('bookmarkitem',bookmarkitem);
     module.directive('winbutton',winbutton);
 	module.directive('onRepeatFinish',function() {
 		return {

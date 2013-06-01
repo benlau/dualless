@@ -135,7 +135,7 @@ define(["dualless/sys/viewport",
         }
 		return this._windows;
 	};
-	
+    	
 	/** Return true if the input window is managed by the Window Manager  
 	 * 
 	 * @param win Either the ID or a Chrome Window object.
@@ -272,14 +272,14 @@ define(["dualless/sys/viewport",
 	 * 
 	 */
 	
-	WindowManager.prototype.split = function(options,callback) {
-		var manager = this,
+    WindowManager.prototype.split = function(options,callback) {
+        var manager = this,
              runner = new TaskRunner();
-		
-		manager._viewport.detect(options.screen);
-		$.extend(options,{ viewport: manager._viewport,
-						     os : manager._os
-							});
+        
+        manager._viewport.detect(options.screen);
+        $.extend(options,{ viewport: manager._viewport,
+                             os : manager._os
+                            });
 	
         runner.step(function() {
 		    manager.updateWindows({autoMatching: true,

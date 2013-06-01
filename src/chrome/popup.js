@@ -116,41 +116,16 @@ function PopupCtrl($scope,$location,$timeout) {
 
 PopupCtrl.$inject = ["$scope","$location","$timeout"];
 
-function BookmarkController($scope) {
-	var bg = chrome.extension.getBackgroundPage();
-	var manager = bg.manager();
-	
-	var scr = {};
-	$.extend(scr,window.screen); // Make a copy of the screen object
-
-	manager.currentWindowTab(function (val1,val2){
-		win = val1;
-		tab = val2;
-	});
-
-	var win; // The current window
-	var tab; // The current tab
-	
-	$scope.param1 = 3
-	$scope.param2 = 7
-
-	$scope.split = function(options) {
-		$scope.$emit("split",options);
-	}
-	
-	$scope.$watch("$parent.bookmark",function(){
-		$scope.bookmark = $scope.$parent.bookmark;
-	},true);
-}
-
 require([ "dualless/directives/splitpanel",
           "dualless/directives/bookmarklist",
           "dualless/directives/winbutton",
+          "dualless/views/bookmark",
           "dualless/directives/bookmarkeditor"
           ],
           function popup(splitpanel,
                             bookmarklist,
                             winbutton,
+                            bookmark,
                             bookmarkeditor){
 
 	var module = angular.module("popup",[]);
@@ -166,10 +141,7 @@ require([ "dualless/directives/splitpanel",
 				//controller : SplitController
 			});
 
-			$routeProvider.when("/bookmark/:orientation/:param1/:param2",{
-				templateUrl : "partials/bookmark.html",
-				controller : BookmarkController
-			});
+			$routeProvider.when("/bookmark/:orientation/:param1/:param2",bookmark);
 			
 			var popupDefaultPath = localStorage.lastPopupPath;
 			if (popupDefaultPath == undefined)

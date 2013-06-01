@@ -5,7 +5,7 @@ requirejs.config({
 });
 
 // The main controller for popup
-function PopupCtrl($scope,$location,$timeout) {
+function PopupCtrl($scope,$location,$timeout,$rootScope) {
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
 	
@@ -20,40 +20,46 @@ function PopupCtrl($scope,$location,$timeout) {
 		tab = val2;
 	});
     
-    $scope.bookmark = {
-        // List of link
-        links : [
-            { id : "1", // Each link should have an unique id
-              color : "#f4b400",
-              title : "Google Keep",
-              url : "https://drive.google.com/keep" 
-            }
-        ],
-        // Binding between link and window button
-        bindings : [
-            { key: "H_70_30_1", // The id of the button
-              id : "1"
-            }
-        ],
-        // The link for specific window button. It is the result after combined links and bindings
-        buttons : {
-        }
-    }
+    $rootScope.$evalAsync(function(scope) {
 
+        scope.bookmarks = {
+            // List of link
+            links : [
+                { id : "1", // Each link should have an unique id
+                  color : "#f4b400",
+                  title : "Google Keep",
+                  url : "https://drive.google.com/keep" 
+                }
+            ],
+            // Binding between link and window button
+            bindings : [
+                { key: "H_70_30_1", // The id of the button
+                  id : "1"
+                }
+            ]
+        }
+        
+    });
+    
+    $scope.bookmark = {
+        // The link for specific window button. It is the result after combined links and bindings
+        buttons: {}    
+    }
+    
 	// @TODO : Pregenerate the buttons
 	
-    $scope.$watch(function(scope) {
+    $rootScope.$watch(function(scope) {
             // Due to CSP problem
-            return JSON.stringify({
-                list : scope.bookmark.links,
-                binding : scope.bookmark.bindings
-            });
+            return {
+                list : scope.bookmarks.links,
+                binding : scope.bookmarks.bindings
+            };
         },function() {
         var buttons = {};
-        for (var i  in $scope.bookmark.bindings) {
-            var binding = $scope.bookmark.bindings[i];
-            for (var j in $scope.bookmark.links) {
-                var link = $scope.bookmark.links[j];
+        for (var i  in $rootScope.bookmarks.bindings) {
+            var binding = $rootScope.bookmarks.bindings[i];
+            for (var j in $rootScope.bookmarks.links) {
+                var link = $rootScope.bookmarks.links[j];
                 if (link.id== binding.id) {
                     var res = {};
                     $.extend(res,binding);
@@ -67,7 +73,8 @@ function PopupCtrl($scope,$location,$timeout) {
             }
         }
         $.extend($scope.bookmark.buttons , buttons);
-    });   
+    },
+    true);   
 
 	$scope.$on("split",function(event,args) {
 		event.stopPropagation();
@@ -114,7 +121,10 @@ function PopupCtrl($scope,$location,$timeout) {
     });
 };
 
-PopupCtrl.$inject = ["$scope","$location","$timeout"];
+PopupCtrl.$inject = ["$scope",
+                       "$location",
+                       "$timeout",
+                       "$rootScope"];
 
 require([ "dualless/directives/splitpanel",
           "dualless/directives/bookmarklist",

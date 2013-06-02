@@ -61,8 +61,8 @@ define(["module"],
                 $scope.$emit("merge");
             };
             
-            $scope.showBookmark = function(param1,param2,position) {
-                $location.path("/bookmark/h/3/7");
+            $scope.showBookmark = function(orientation,param1,param2,position) {
+                $location.path("/bookmark/" + orientation.toLowerCase() + "/" + param1 + "/" + param2 + "/" + position);
             }
             
         };

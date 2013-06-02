@@ -18,6 +18,7 @@ define(["module"],
          $scope.param1 = $routeParams.param1;
          $scope.param2 = $routeParams.param2;
          $scope.orientation = $routeParams.orientation;
+         $scope.position = $routeParams.position;
          
          $rootScope.$watch(function(scope) {
              return {

@@ -154,7 +154,7 @@ require([ "dualless/directives/splitpanel",
 				//controller : SplitController
 			});
 
-			$routeProvider.when("/bookmark/:orientation/:param1/:param2",bookmark);
+			$routeProvider.when("/bookmark/:orientation/:param1/:param2/:position",bookmark);
 			
 			var popupDefaultPath = localStorage.lastPopupPath;
 			if (popupDefaultPath == undefined)

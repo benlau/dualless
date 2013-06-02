@@ -26,16 +26,18 @@ define(["module"],
                                    $scope.position
          );
          
+         
+         // bookmarks.links , bookmarks.bindings => links
          $rootScope.$watch(function(scope) {
              return {
                  links : scope.bookmarks.links,
                  bindings : scope.bookmarks.bindings
              }
          },function() {
+             $scope.links = {}; // Clear all the value as links could be removed.
+
              $scope.$evalAsync(function() {
-                 $scope.links = [];
                  for (var i in $rootScope.bookmarks.links) {
-                     // Change to object. More easy for 2 way binding
                      $scope.links[i] = { pin : false }; // Extra attribute is added
                      
                      $.extend($scope.links[i],$rootScope.bookmarks.links[i]);
@@ -46,6 +48,24 @@ define(["module"],
              });
          }, 
          true);
+         
+         // links => bookmarks.links , bookmarks.bindings
+         $scope.$watch(function() {
+             return $scope.links;
+         } , function() { // Write back the change to $rootScope
+            $rootScope.$evalAsync(function() {
+                 $scope.bookmarks.links = []
+                 for (var i in $scope.links) {
+                    var link = {};
+                    $.extend(link,$scope.links[i]);
+                    delete link.pin;
+                    $scope.bookmarks.links.push(link);
+                 }
+                 // @TODO : Update binding
+            });
+         },
+         true);
+         
          
          $scope.back = function() {
              history.back();

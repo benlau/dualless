@@ -15,5 +15,23 @@ define(function() {
    
     BindingList.prototype = clone(Array.prototype);
     
+    BindingList.prototype.find = function(cond) {
+        var ret = [];
+        for (var i in this) {
+            var item = this[i];
+            var match = true;
+            for (var j in cond) {
+                if (item[j] != cond[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match)
+                ret.push(item);
+        }
+        
+        return ret;
+    }
+    
     return BindingList;
 });

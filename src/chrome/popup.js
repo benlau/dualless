@@ -4,8 +4,26 @@ requirejs.config({
 	}
 });
 
+var PopupCtrl;
+
+require([ "dualless/directives/splitpanel",
+          "dualless/directives/bookmarklist",
+          "dualless/directives/winbutton",
+          "dualless/views/bookmark",
+          "dualless/directives/bookmarkeditor",
+          "dualless/directives/bookmarkitem",
+          "dualless/models/bindinglist"
+          ],
+          function popup(splitpanel,
+                            bookmarklist,
+                            winbutton,
+                            bookmark,
+                            bookmarkeditor,
+                            bookmarkitem,
+                            BindingList){
+
 // The main controller for popup
-function PopupCtrl($scope,$location,$timeout,$rootScope) {
+function Controller($scope,$location,$timeout,$rootScope) {
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
 	
@@ -21,6 +39,12 @@ function PopupCtrl($scope,$location,$timeout,$rootScope) {
 	});
     
     $rootScope.$evalAsync(function(scope) {
+        
+        var bindings = new BindingList(
+                { key: "H_70_30_1", // The id of the button
+                  id : "1" // Link ID
+                }
+            );           
 
         scope.bookmarks = {
             // List of link
@@ -32,11 +56,7 @@ function PopupCtrl($scope,$location,$timeout,$rootScope) {
                 }
             ],
             // Binding between link and window button
-            bindings : [
-                { key: "H_70_30_1", // The id of the button
-                  id : "1" // Link ID
-                }
-            ]
+            bindings : bindings
         }
         
     });
@@ -122,24 +142,12 @@ function PopupCtrl($scope,$location,$timeout,$rootScope) {
     });
 };
 
-PopupCtrl.$inject = ["$scope",
+Controller.$inject = ["$scope",
                        "$location",
                        "$timeout",
                        "$rootScope"];
 
-require([ "dualless/directives/splitpanel",
-          "dualless/directives/bookmarklist",
-          "dualless/directives/winbutton",
-          "dualless/views/bookmark",
-          "dualless/directives/bookmarkeditor",
-          "dualless/directives/bookmarkitem"
-          ],
-          function popup(splitpanel,
-                            bookmarklist,
-                            winbutton,
-                            bookmark,
-                            bookmarkeditor,
-                            bookmarkitem){
+PopupCtrl = Controller;
 
 	var module = angular.module("popup",[]);
 	

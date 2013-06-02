@@ -33,22 +33,24 @@ define(["module"],
              }
          },function() {
              $scope.$evalAsync(function() {
-                 $scope.links = {};
+                 $scope.links = [];
                  for (var i in $rootScope.bookmarks.links) {
                      // Change to object. More easy for 2 way binding
-                     $scope.links[i] = { pin : false };
-                     $.extend($scope.links[i],$rootScope.bookmarks.links[i]);
-                     for (var j in $rootScope.bookmarks.bindings) {
-                         if ($rootScope.bookmarks.bindings[j].key == $scope.key) {
-                             $scope.links[i].pin = true;
-                             break;
-                         }
-                     }
+                     $scope.links[i] = { pin : false }; // Extra attribute is added
                      
+                     $.extend($scope.links[i],$rootScope.bookmarks.links[i]);
+                     if ($rootScope.bookmarks.bindings.find({ key : $scope.key}).length > 0) {
+                         $scope.links[i].pin = true;
+                     }
                  }
              });
          }, 
          true);
+         
+         $scope.back = function() {
+             history.back();
+             $scope.$evalAsync();
+         }
          
     }
     

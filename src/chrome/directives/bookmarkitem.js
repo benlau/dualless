@@ -9,8 +9,6 @@ define(["module"],
     
     function Controller($scope) {
         
-        $scope.pin = false;
-        
         $scope.$watch(function(scope) {
             return scope.link;
         }, function() {
@@ -19,6 +17,12 @@ define(["module"],
             $scope.pin = $scope.link.pin;
         },
         true);
+        
+        $scope.$watch("pin",function() {
+            $scope.$evalAsync(function() {
+                $scope.link.pin = $scope.pin;
+            });
+        });
         
         $scope.toggle = function() {
             $scope.pin = ! $scope.pin;

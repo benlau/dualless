@@ -12,10 +12,11 @@ define(["module"],
         $scope.pin = false;
         
         $scope.$watch(function(scope) {
-            return scope.bookmark;
+            return scope.link;
         }, function() {
-            $scope.title = $scope.bookmark.title;
-            $scope.color = $scope.bookmark.color;
+            $scope.title = $scope.link.title;
+            $scope.color = $scope.link.color;
+            $scope.pin = $scope.link.pin;
         },
         true);
         
@@ -31,7 +32,7 @@ define(["module"],
             templateUrl : uri + "/bookmarkitem.html",
             controller: Controller,
             restrict : 'E',
-            scope : { bookmark : "="
+            scope : { link : "="
                      },
             link : function(scope,iElement, iAttrs, controller) {
                 

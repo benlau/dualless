@@ -34,7 +34,7 @@ function PopupCtrl($scope,$location,$timeout,$rootScope) {
             // Binding between link and window button
             bindings : [
                 { key: "H_70_30_1", // The id of the button
-                  id : "1"
+                  id : "1" // Link ID
                 }
             ]
         }

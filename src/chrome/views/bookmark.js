@@ -50,7 +50,7 @@ define(["module"],
                      });
                      if (bindings.length > 0)
                         $scope.links[i].pin = true;
-                 }
+                 }                 
              });
          }, 
          true);

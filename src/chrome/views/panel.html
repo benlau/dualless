@@ -7,14 +7,14 @@
                 position=0
                 on-click="split(pair[0] , pair[1] ,0,$link,$event);"
                 on-right-click='showBookmark(orientation,pair[0] , pair[1],0);'
-                links="bookmark.buttons[orientation + '_' + pair[0] + '0_' + pair[1]+ '0_0']"
+                links="buttons[orientation + '_' + pair[0] + '0_' + pair[1]+ '0_0']"
                 >
                 </winbutton>
                 <div class="{{orientation | lowercase}}split-panel-spacer"></div>
                 <winbutton orientation="{{orientation}}" ratio="{{pair[1]}}0"
                 on-click="split(pair[0] , pair[1] ,1,$link,$event);"
                 on-right-click='showBookmark(orientation,pair[0] , pair[1],1);'
-                links="bookmark.buttons[orientation + '_' + pair[0] + '0_' + pair[1]+ '0_1']"
+                links="buttons[orientation + '_' + pair[0] + '0_' + pair[1]+ '0_1']"
                 >
                 </winbutton>
                 <!--

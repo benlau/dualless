@@ -6,14 +6,14 @@ requirejs.config({
 
 var PopupCtrl;
 
-require([ "dualless/directives/splitpanel",
+require([ "dualless/views/panel",
           "dualless/directives/bookmarklist",
           "dualless/directives/winbutton",
           "dualless/views/bookmark",
           "dualless/directives/bookmarkeditor",
           "dualless/directives/bookmarkitem"
           ],
-          function popup(splitpanel,
+          function popup(PanelView,
                             bookmarklist,
                             winbutton,
                             bookmark,
@@ -55,15 +55,13 @@ function Controller($scope,$location,$timeout,$rootScope) {
                 }
             ],
             // Binding between link and window button
-            bindings : bindings
+            bindings : bindings,
+
+            // The link for specific window button. It is the result after combined links and bindings
+            buttons : {}
         }
         
-    });
-    
-    $scope.bookmark = {
-        // The link for specific window button. It is the result after combined links and bindings
-        buttons: {}    
-    }
+    });   
     
 	// @TODO : Pregenerate the buttons
     // @TODO : should be moved to another scope
@@ -92,7 +90,7 @@ function Controller($scope,$location,$timeout,$rootScope) {
                 } 
             }
         }
-        $.extend($scope.bookmark.buttons , buttons);
+        $rootScope.bookmarks.buttons = buttons;
     },
     true);   
 
@@ -151,28 +149,29 @@ PopupCtrl = Controller;
 	var module = angular.module("popup",[]);
 	
 	module.config(['$routeProvider', function configRouteProvider($routeProvider) {
-			$routeProvider.when("/hsplit",{
-				template : "<hsplitpanel ng-model='bookmark'></hsplitpanel>"
-				//controller : SplitController
-			});
+        
+			$routeProvider.when("/panel/:orientation",PanelView);
 
+/*
 			$routeProvider.when("/vsplit",{
 				template : "<vsplitpanel ng-model='bookmark'></vsplitpanel>"
 				//controller : SplitController
 			});
-
+*/
 			$routeProvider.when("/bookmark/:orientation/:param1/:param2/:position",bookmark);
 			
+            /*
 			var popupDefaultPath = localStorage.lastPopupPath;
 			if (popupDefaultPath == undefined)
-				popupDefaultPath = "/hsplit";
-
-		  	$routeProvider.otherwise({redirectTo : popupDefaultPath });
+				popupDefaultPath = "/split/h";
+            */
+            // @TODO - Enable to remember the horizontal or vertical mode.
+		  	$routeProvider.otherwise({redirectTo : "/panel/h" });
 			
 	}]);
 	
-	module.directive('hsplitpanel',splitpanel("H"));
-	module.directive('vsplitpanel',splitpanel("V"));
+	//module.directive('hsplitpanel',splitpanel("H"));
+	//module.directive('vsplitpanel',splitpanel("V"));
 	module.directive('bookmarklist',bookmarklist);
 	module.directive('bookmarkeditor',bookmarkeditor);
     module.directive('bookmarkitem',bookmarkitem);

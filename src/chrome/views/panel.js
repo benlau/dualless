@@ -1,3 +1,6 @@
+
+// Panel view
+
 define(["module"],
         function(self) {
 
@@ -6,16 +9,9 @@ define(["module"],
 	arr.pop();
 	uri = arr.join("/");
 
-
-	var sheet = "<link  href='" + uri + "/../directives/splitpanel.css' rel='stylesheet'>";
+	var sheet = "<link  href='" + uri + "/panel.css' rel='stylesheet'>";
 	$("head").append(sheet);
     
-    /** Creator of SplitPanelController
-     * 
-     * @params orientation Either of "H" or "V"
-     */
-    function create(orientation) {
-        
         // update the arguments
         function update(args,link,event) {
             
@@ -35,7 +31,11 @@ define(["module"],
             }
         }
 
-        function Controller($scope,$location) {
+        function Controller($scope,
+                                $location,
+                                $routeParams,
+                                $rootScope) {
+
             var arr = [];
             for (var i = 3 ; i <=7;i++ ) {
                 var pair = [i , 10-i];
@@ -44,13 +44,13 @@ define(["module"],
                 
             $scope.choices = arr;
             
-            $scope.orientation = orientation;
+            $scope.orientation = $routeParams.orientation.toUpperCase();
 
             $scope.split = function (param1,param2,position,link,event) {
                 var args = {param1: param1,
                             param2: param2,
                             position : position,
-                            orientation : orientation};
+                            orientation : $scope.orientation};
                 
                 update(args,link,event);
 
@@ -65,12 +65,25 @@ define(["module"],
                 $location.path("/bookmark/" + orientation.toLowerCase() + "/" + param1 + "/" + param2 + "/" + position);
             }
             
+            $rootScope.$watch(function(scope) {
+                return scope.bookmarks.buttons;
+            },function() {
+                $scope.$evalAsync(function() {
+                    $scope.buttons = $rootScope.bookmarks.buttons;
+                });
+            },
+            true);
         };
         
-        Controller.$inject = ["$scope","$location"]
-                
-        return Controller
-    }
+        Controller.$inject = ["$scope",
+                                "$location",
+                                "$routeParams",
+                                "$rootScope"
+                                ]
     
-    return create
+    // Factory for route provider
+    return {
+        templateUrl : uri + "/panel.html",
+        controller : Controller
+    }
 });

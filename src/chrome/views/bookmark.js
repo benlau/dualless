@@ -86,6 +86,21 @@ define(["module"],
             });
          },
          true);
+
+         // $rootScope -> buttons
+         $rootScope.$watch(function(scope) {
+             return scope.bookmarks.buttons;
+         },function() {
+             $scope.$evalAsync(function() {
+                 $scope.buttons = [{},{}];
+                 console.log($rootScope.bookmarks.buttons,$scope.key);
+                 var button = $rootScope.bookmarks.buttons[$scope.key];
+                 $scope.buttons[$scope.position] = button;
+                 $scope.buttons[1 - $scope.position]= undefined;
+                 console.log($scope.buttons);
+             });
+         },
+         true);
          
          
          $scope.back = function() {

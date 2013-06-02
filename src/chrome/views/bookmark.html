@@ -1,14 +1,14 @@
-<div class="split-panel" >
+
     <div class="split-panel-box">
         <div class="split-panel-label"><span>{{param1}}:{{param2}}</span></div>
         <div class="split-panel-screen">
-            <div class="split-panel-win hsplit-panel-win hsplit-panel-win{{param1}}0"></div>
-            <div class="split-panel-win hsplit-panel-win hsplit-panel-win{{param2}}0"></div>
+            <winbutton orientation="{{orientation}}" ratio="{{param1}}0"></winbutton>
+            <div class="{{orientation | lowercase}}split-panel-spacer"></div>
+            <winbutton orientation="{{orientation}}" ratio="{{param2}}0"></winbutton>
         </div>
     </div>
-</div>
 
-<hr>
+<hr style="margin: 2px 0px 2px 0px">
 
 <bookmarklist model="links" on-select="split(options)"></bookmarklist>
 <bookmarkeditor model="bookmark"></bookmarkeditor>

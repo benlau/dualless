@@ -17,7 +17,7 @@ define(["module"],
 
          $scope.param1 = $routeParams.param1;
          $scope.param2 = $routeParams.param2;
-         $scope.orientation = $routeParams.orientation;
+         $scope.orientation = $routeParams.orientation.toUpperCase();
          $scope.position = $routeParams.position;        
          
          $scope.key = buttonKey($scope.orientation,

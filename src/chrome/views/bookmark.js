@@ -41,9 +41,15 @@ define(["module"],
                      $scope.links[i] = { pin : false }; // Extra attribute is added
                      
                      $.extend($scope.links[i],$rootScope.bookmarks.links[i]);
+                     /*
                      if ($rootScope.bookmarks.bindings.find({ key : $scope.key}).length > 0) {
                          $scope.links[i].pin = true;
-                     }
+                     }*/
+                     var bindings = $.grep($rootScope.bookmarks.bindings,function(value) {
+                         return value.key == $scope.key;
+                     });
+                     if (bindings.length > 0)
+                        $scope.links[i].pin = true;
                  }
              });
          }, 
@@ -58,8 +64,23 @@ define(["module"],
                  for (var i in $scope.links) {
                     var link = {};
                     $.extend(link,$scope.links[i]);
+                    var pin = link.pin;
                     delete link.pin;
                     $scope.bookmarks.links.push(link);
+                    
+                    if (pin) {
+                        
+                        $rootScope.bookmarks.bindings.push({
+                           key : $scope.key,
+                           id : link.id 
+                        });
+                        
+                    } else {
+                        var bindings = $.grep($rootScope.bookmarks.bindings, function(value) { 
+                            return value.key == $scope.key && value.id == link.id
+                        },true );
+                        $rootScope.bookmarks.bindings = bindings;
+                    }
                  }
                  // @TODO : Update binding
             });

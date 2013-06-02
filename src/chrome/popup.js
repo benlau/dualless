@@ -11,16 +11,15 @@ require([ "dualless/directives/splitpanel",
           "dualless/directives/winbutton",
           "dualless/views/bookmark",
           "dualless/directives/bookmarkeditor",
-          "dualless/directives/bookmarkitem",
-          "dualless/models/bindinglist"
+          "dualless/directives/bookmarkitem"
           ],
           function popup(splitpanel,
                             bookmarklist,
                             winbutton,
                             bookmark,
                             bookmarkeditor,
-                            bookmarkitem,
-                            BindingList){
+                            bookmarkitem
+                            ){
 
 // The main controller for popup
 function Controller($scope,$location,$timeout,$rootScope) {
@@ -40,11 +39,11 @@ function Controller($scope,$location,$timeout,$rootScope) {
     
     $rootScope.$evalAsync(function(scope) {
         
-        var bindings = new BindingList(
+        var bindings = [
                 { key: "H_70_30_1", // The id of the button
                   id : "1" // Link ID
                 }
-            );           
+            ];
 
         scope.bookmarks = {
             // List of link

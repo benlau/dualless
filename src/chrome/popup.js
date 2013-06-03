@@ -11,14 +11,16 @@ require([ "dualless/views/panel",
           "dualless/directives/winbutton",
           "dualless/views/bookmark",
           "dualless/directives/bookmarkeditor",
-          "dualless/directives/bookmarkitem"
+          "dualless/directives/bookmarkitem",
+          "dualless/sys/service"
           ],
           function popup(PanelView,
                             bookmarklist,
                             winbutton,
                             bookmark,
                             bookmarkeditor,
-                            bookmarkitem
+                            bookmarkitem,
+                            WindowManagerService
                             ){
 
 // The main controller for popup
@@ -94,34 +96,34 @@ function Controller($scope,$location,$timeout,$rootScope) {
     },
     true);   
 
-	$scope.$on("split",function(event,args) {
-		event.stopPropagation();
-		args.window = win;
-		args.tab = tab;
+	//$scope.$on("split",function(event,args) {
+		//event.stopPropagation();
+		//args.window = win;
+		//args.tab = tab;
 		
-		// Manager alive in the background page. The screen object is not updated. So it need to pass the screen object from external
-		args.screen = scr; 	
+		//// Manager alive in the background page. The screen object is not updated. So it need to pass the screen object from external
+		//args.screen = scr; 	
 		
-		manager.split(args,function(windows){
-			win = windows[0]; 
-			// Current window could be changed for some condition
-			/* 
-			 * Condition 1. Single Window. 
-			 * The current tab will be moved to a new window. So the current window will be changed , but tab will not 
-			 * be changed.  
-			 * 
-			 */ 
-		});
-	});
+		//manager.split(args,function(windows){
+			//win = windows[0]; 
+			//// Current window could be changed for some condition
+			///* 
+			 //* Condition 1. Single Window. 
+			 //* The current tab will be moved to a new window. So the current window will be changed , but tab will not 
+			 //* be changed.  
+			 //* 
+			 //*/ 
+		//});
+	//});
 	
-	$scope.$on("merge",function(event) {
-		event.stopPropagation();
-		var args = {};
-		args.window = win;
-		args.tab = tab;
-		args.screen = scr;
-		manager.merge(args);
-	});
+	//$scope.$on("merge",function(event) {
+		//event.stopPropagation();
+		//var args = {};
+		//args.window = win;
+		//args.tab = tab;
+		//args.screen = scr;
+		//manager.merge(args);
+	//});
 	
 	$scope.$on("$destroy",function(event) {
 		if (localStorage.lastPopupPath == undefined || (
@@ -186,6 +188,7 @@ PopupCtrl = Controller;
 			}
 		}
 	});
+    module.factory("WindowManager",WindowManagerService);
 	
 	$(document).ready(function() {
 		angular.bootstrap(document,["popup"]);

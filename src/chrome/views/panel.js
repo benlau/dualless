@@ -34,7 +34,8 @@ define(["module"],
         function Controller($scope,
                                 $location,
                                 $routeParams,
-                                $rootScope) {
+                                $rootScope,
+                                WindowManager) {
 
             var arr = [];
             for (var i = 3 ; i <=7;i++ ) {
@@ -54,11 +55,13 @@ define(["module"],
                 
                 update(args,link,event);
 
-                $scope.$emit("split",args);
+                //$scope.$emit("split",args);
+                WindowManager.split(args);
             };
 
             $scope.merge = function() {
-                $scope.$emit("merge");
+                //$scope.$emit("merge");
+                WindowManager.merge();
             };
             
             $scope.showBookmark = function(orientation,param1,param2,position) {
@@ -78,7 +81,8 @@ define(["module"],
         Controller.$inject = ["$scope",
                                 "$location",
                                 "$routeParams",
-                                "$rootScope"
+                                "$rootScope",
+                                "WindowManager"
                                 ]
     
     // Factory for route provider

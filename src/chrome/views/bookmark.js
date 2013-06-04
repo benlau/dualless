@@ -12,9 +12,12 @@ define(["module"],
     uri = arr.join("/");
 
     function Controller($scope,
-                            $routeParams,
-                            $rootScope) {
+                        $routeParams,
+                        $rootScope,
+                        WindowManager) {
 
+        var tab = WindowManager.tab();
+        
          $scope.param1 = $routeParams.param1;
          $scope.param2 = $routeParams.param2;
          $scope.orientation = $routeParams.orientation.toUpperCase();
@@ -25,7 +28,11 @@ define(["module"],
                                    $scope.param2,
                                    $scope.position
          );
-         
+        
+        // The link of current browsing page. It is pending to add to bookmark
+        $scope.pending = { title : tab.title,
+                           url : tab.url
+                          };
          
          // bookmarks.links , bookmarks.bindings => links
          $rootScope.$watch(function(scope) {
@@ -112,7 +119,8 @@ define(["module"],
     
     Controller.inject = ["$scope" , 
                            "$routeParams",
-                           "$rootScope"]
+                           "$rootScope",
+                        "WindowManager"];
 
     // Construction the key for a button    
     function buttonKey(o,p1,p2,pos) {

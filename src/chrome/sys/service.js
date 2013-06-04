@@ -38,6 +38,12 @@ define(function() {
                 args.screen = scr;
                 
                 manager.merge(args);
+            },
+            window : function() {
+                return win;
+            },
+            tab : function() {
+                return tab;
             }
         };
         

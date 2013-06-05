@@ -38,9 +38,30 @@ define(["module"],
             return scope.bookmark.links;
         },function() {
             $scope.$evalAsync(function() {
-                $scope.links = $rootScope.bookmark.links[$scope.key];
+                $scope.links = $rootScope.bookmark.links[$scope.key];               
+                $scope.buttons = [{},{}];
+                $scope.buttons[$scope.position] = $scope.links;
+                $scope.buttons[1 - $scope.position]= undefined;
             });
         },true);
+        
+        $scope.$watch(function(scope) {
+            return scope.links;    
+        },function() {
+            $rootScope.$evalAsync(function() {
+                $rootScope.bookmark.links[$scope.key] = $scope.links;
+            });
+        },
+        true);
+        
+        // Add new link to bookmark
+        $scope.add = function() {
+            if ($scope.links === undefined)
+                $scope.links = [];
+            $scope.pending.color = "blue";
+            $scope.links.push($scope.pending);
+            delete $scope.pending;
+        };
          
         /* 
          // bookmarks.links , bookmarks.bindings => links

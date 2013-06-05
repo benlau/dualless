@@ -33,13 +33,22 @@ define(["module"],
         $scope.pending = { title : tab.title,
                            url : tab.url
                           };
+
+        $rootScope.$watch(function(scope) {
+            return scope.bookmark.links;
+        },function() {
+            $scope.$evalAsync(function() {
+                $scope.links = $rootScope.bookmark.links[$scope.key];
+            });
+        },true);
          
+        /* 
          // bookmarks.links , bookmarks.bindings => links
          $rootScope.$watch(function(scope) {
              return {
                  links : scope.bookmarks.links,
                  bindings : scope.bookmarks.bindings
-             }
+             };
          },function() {
              $scope.links = {}; // Clear all the value as links could be removed.
 
@@ -48,10 +57,6 @@ define(["module"],
                      $scope.links[i] = { pin : false }; // Extra attribute is added
                      
                      $.extend($scope.links[i],$rootScope.bookmarks.links[i]);
-                     /*
-                     if ($rootScope.bookmarks.bindings.find({ key : $scope.key}).length > 0) {
-                         $scope.links[i].pin = true;
-                     }*/
                      var bindings = $.grep($rootScope.bookmarks.bindings,function(value) {
                          return value.key == $scope.key;
                      });
@@ -84,7 +89,7 @@ define(["module"],
                         
                     } else {
                         var bindings = $.grep($rootScope.bookmarks.bindings, function(value) { 
-                            return value.key == $scope.key && value.id == link.id
+                            return value.key == $scope.key && value.id == link.id;
                         },true );
                         $rootScope.bookmarks.bindings = bindings;
                     }
@@ -108,12 +113,12 @@ define(["module"],
              });
          },
          true);
-         
+         */
          
          $scope.back = function() {
              history.back();
              $scope.$evalAsync();
-         }
+         };
          
     }
     
@@ -124,12 +129,12 @@ define(["module"],
 
     // Construction the key for a button    
     function buttonKey(o,p1,p2,pos) {
-        return o.toUpperCase() + "_" + p1 *10  + "_" + p2 * 10 + "_" + pos
+        return o.toUpperCase() + "_" + p1 *10  + "_" + p2 * 10 + "_" + pos;
     }
 
     // Factory for route provider
     return {
         templateUrl : uri + "/bookmark.html",
         controller : Controller
-    }
+    };
 });

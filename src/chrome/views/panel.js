@@ -69,10 +69,10 @@ define(["module"],
             }
             
             $rootScope.$watch(function(scope) {
-                return scope.bookmarks.buttons;
+                return scope.bookmark.links;
             },function() {
                 $scope.$evalAsync(function() {
-                    $scope.buttons = $rootScope.bookmarks.buttons;
+                    $scope.links = $rootScope.bookmark.links;
                 });
             },
             true);

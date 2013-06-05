@@ -40,34 +40,21 @@ function Controller($scope,$location,$timeout,$rootScope) {
 	});
     
     $rootScope.$evalAsync(function(scope) {
+       
+        scope.bookmark = {
+            // Links for each button
+            links : {
+                "H_70_30_1" : [{
+                    color : "#f4b400",
+                    title : "Google Keep",
+                    url : "https://drive.google.com/keep"    
+                }]
+            }
+        };
         
-        var bindings = [
-                { key: "H_70_30_1", // The id of the button
-                  id : "1" // Link ID
-                }
-            ];
-
-        scope.bookmarks = {
-            // List of link
-            links : [
-                { id : "1", // Each link should have an unique id
-                  color : "#f4b400",
-                  title : "Google Keep",
-                  url : "https://drive.google.com/keep" 
-                }
-            ],
-            // Binding between link and window button
-            bindings : bindings,
-
-            // The link for specific window button. It is the result after combined links and bindings
-            buttons : {}
-        }
-        
-    });   
+    });
     
-	// @TODO : Pregenerate the buttons
-    // @TODO : should be moved to another scope
-	
+    /*	
     $rootScope.$watch(function(scope) {
             // Due to CSP problem
             return {
@@ -95,6 +82,7 @@ function Controller($scope,$location,$timeout,$rootScope) {
         $rootScope.bookmarks.buttons = buttons;
     },
     true);   
+    */
 
 	//$scope.$on("split",function(event,args) {
 		//event.stopPropagation();
@@ -126,7 +114,7 @@ function Controller($scope,$location,$timeout,$rootScope) {
 	//});
 	
 	$scope.$on("$destroy",function(event) {
-		if (localStorage.lastPopupPath == undefined || (
+		if (localStorage.lastPopupPath === undefined || (
 				localStorage.lastPopupPath != $location.path() 
 				&& $location.path().indexOf("split") != -1
 				)
@@ -139,7 +127,7 @@ function Controller($scope,$location,$timeout,$rootScope) {
             $(this).attr("title","Press middle key may duplicate this page to other window.");
          });  
     });
-};
+}
 
 Controller.$inject = ["$scope",
                        "$location",

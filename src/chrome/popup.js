@@ -23,6 +23,7 @@ require([ "dualless/views/panel",
                             WindowManagerService
                             ){
 
+/*	
 // The main controller for popup
 function Controller($scope,$location,$timeout,$rootScope) {
 	var bg = chrome.extension.getBackgroundPage();
@@ -37,24 +38,8 @@ function Controller($scope,$location,$timeout,$rootScope) {
 	manager.currentWindowTab(function (val1,val2){
 		win = val1;
 		tab = val2;
-	});
-    
-    $rootScope.$evalAsync(function(scope) {
-       
-        scope.bookmark = {
-            // Links for each button
-            links : {
-                "H_70_30_1" : [{
-                    color : "#f4b400",
-                    title : "Google Keep",
-                    url : "https://drive.google.com/keep"    
-                }]
-            }
-        };
-        
-    });
-    
-    /*	
+	});    
+
     $rootScope.$watch(function(scope) {
             // Due to CSP problem
             return {
@@ -82,7 +67,6 @@ function Controller($scope,$location,$timeout,$rootScope) {
         $rootScope.bookmarks.buttons = buttons;
     },
     true);   
-    */
 
 	//$scope.$on("split",function(event,args) {
 		//event.stopPropagation();
@@ -90,7 +74,7 @@ function Controller($scope,$location,$timeout,$rootScope) {
 		//args.tab = tab;
 		
 		//// Manager alive in the background page. The screen object is not updated. So it need to pass the screen object from external
-		//args.screen = scr; 	
+        //args.screen = scr;
 		
 		//manager.split(args,function(windows){
 			//win = windows[0]; 
@@ -100,7 +84,7 @@ function Controller($scope,$location,$timeout,$rootScope) {
 			 //* The current tab will be moved to a new window. So the current window will be changed , but tab will not 
 			 //* be changed.  
 			 //* 
-			 //*/ 
+			 //*
 		//});
 	//});
 	
@@ -133,8 +117,9 @@ Controller.$inject = ["$scope",
                        "$location",
                        "$timeout",
                        "$rootScope"];
+*/
 
-PopupCtrl = Controller;
+//PopupCtrl = Controller;
 
 	var module = angular.module("popup",[]);
 	
@@ -156,7 +141,7 @@ PopupCtrl = Controller;
 				popupDefaultPath = "/split/h";
             */
             // @TODO - Enable to remember the horizontal or vertical mode.
-		  	$routeProvider.otherwise({redirectTo : "/panel/h" });
+        $routeProvider.otherwise({redirectTo : "/panel/h" });
 			
 	}]);
 	
@@ -170,13 +155,28 @@ PopupCtrl = Controller;
 		return {
 			restrict: 'A',
 			link : function(scope,element,attr) {
-				if (scope.$last == true) {
+				if (scope.$last === true) {
 					scope.$evalAsync(attr.onRepeatFinish);
 				}
 			}
-		}
+		};
 	});
+	
     module.factory("WindowManager",WindowManagerService);
+    
+    module.run(function($rootScope) {
+        // @TODO Load from localStorage
+        $rootScope.bookmark = {
+            // Links for each button
+            links : {
+                "H_70_30_1" : [{
+                    color : "#f4b400",
+                    title : "Google Keep",
+                    url : "https://drive.google.com/keep"    
+                }]
+            }
+        };
+    });
 	
 	$(document).ready(function() {
 		angular.bootstrap(document,["popup"]);

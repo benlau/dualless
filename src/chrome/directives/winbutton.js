@@ -10,6 +10,8 @@
 define(["module"],
          function(self) {
     
+    var max = 3;
+    
     function Controller($scope,$element,$timeout) {
         
         $scope.color = "transparent";        
@@ -31,11 +33,13 @@ define(["module"],
                     [0,1,2,-1] ];
         
         
-        $scope.$watch("links",function() { // links -> grids.link
+        $scope.$watch(function() {
+            return $scope.links;    
+        },function() { // links -> grids.link,color of element
             if ($scope.links) {
                 var count = $scope.links.length;
-                if (count >3 ) {
-                    count = 3;
+                if (count > max ) {
+                    count = max;
                 }
                 
                 if ($scope.links[0] &&  $scope.links[0].color) {                   
@@ -47,10 +51,14 @@ define(["module"],
                         $scope.grids[i].link = link;
                     }
                 }
+                $($scope.element).children().each(function(idx,elem) {
+                    $(elem).css("background-color",$scope.grids[idx].link.color);
+                });        
             }
-        });
+        },true);
         
-        $scope.$watch(function(scope) { // links,rendered -> grids.group
+        // links,rendered -> grids.group
+        $scope.$watch(function(scope) { 
             return {
                 links : scope.links,
                 rendered : scope.rendered
@@ -58,7 +66,12 @@ define(["module"],
         },function() {
             if (!$scope.rendered || $scope.links === undefined)
                 return;
-            var m = map[$scope.links.length];
+            var count = $scope.links.length;
+            if (count > max ) {
+                count = max;
+            }                
+
+            var m = map[count];
             var groups = [];
             
             for (var i = -1 ; i < 4;i++) {
@@ -73,7 +86,6 @@ define(["module"],
             for (var i = 0 ; i < 4;i++) {
                 $scope.grids[i].group = groups[m[i]];
             }
-            
         },
         true);
         
@@ -127,9 +139,9 @@ define(["module"],
                         $($scope.grids[idx].group).each(function(i,elem) {
                            $(elem).css("background-color","yellow");
                         });
-                    },function(event) {
+                    },function(event) { //unhover
                         event.preventDefault();
-                        if ($scope.grids[idx].group == undefined) {
+                        if ($scope.grids[idx].group === undefined) {
                             $(parent).css("background-color",$scope.grids[idx].link.color);  
                         }
                         $($scope.grids[idx].group).each(function(i,elem) {
@@ -139,7 +151,7 @@ define(["module"],
                     $(elem).css("background-color",$scope.grids[idx].link.color);  
                     
                     $(elem).click(function(event) {
-                        var link = undefined;
+                        var link;
 
                         if ($scope.grids[idx].link.color != "transparent"){
                             link = $scope.grids[idx].link;

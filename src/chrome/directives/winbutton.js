@@ -33,9 +33,13 @@ define(["module"],
         
         $scope.$watch("links",function() { // links -> grids.link
             if ($scope.links) {
+                var count = $scope.links.length;
+                if (count >3 ) {
+                    count = 3;
+                }
                 
                 if ($scope.links[0] &&  $scope.links[0].color) {                   
-                    var m = map[$scope.links.length];
+                    var m = map[count];
                     for (var i = 0 ; i < 4;i++){
                         var link = { color : "transparent" };
                         if (m[i] >= 0)
@@ -50,9 +54,9 @@ define(["module"],
             return {
                 links : scope.links,
                 rendered : scope.rendered
-            }
+            };
         },function() {
-            if (!$scope.rendered || $scope.links == undefined)
+            if (!$scope.rendered || $scope.links === undefined)
                 return;
             var m = map[$scope.links.length];
             var groups = [];
@@ -76,9 +80,9 @@ define(["module"],
         $scope.$watch(function(scope) {
             return scope.orientation + scope.ratio;
         },function() {
-            if ($scope.ratio == undefined ||
-                $scope.orientation == undefined) 
-                return
+            if ($scope.ratio === undefined ||
+                $scope.orientation === undefined) 
+                return;
             
             var cls = "",
                  ratio = $scope.ratio || "",
@@ -99,7 +103,7 @@ define(["module"],
                 w: scope.element.width() ,
                 h: scope.element.height(),
                 rendered : scope.rendered 
-            }
+            };
         }, function() {
             if (!$scope.rendered)
                 return false;
@@ -138,7 +142,7 @@ define(["module"],
                         var link = undefined;
 
                         if ($scope.grids[idx].link.color != "transparent"){
-                            link = $scope.grids[idx].link
+                            link = $scope.grids[idx].link;
                         }
                         event.preventDefault();
                         $scope.onClick({ $event :event, 

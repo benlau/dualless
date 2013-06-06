@@ -163,17 +163,28 @@ Controller.$inject = ["$scope",
     app.factory("WindowManager",WindowManagerService);
     
     app.run(function($rootScope) {
-        // @TODO Load from localStorage
-        $rootScope.bookmark = {
-            // Links for each button
-            links : {
-                "H_70_30_1" : [{
-                    color : "#f4b400",
-                    title : "Google Keep",
-                    url : "https://drive.google.com/keep"    
-                }]
-            }
-        };
+        
+        if (localStorage.bookmark === undefined) {
+            // Initial data. For testing purpose
+            localStorage.bookmark = JSON.stringify({
+                // Links for each button
+                links : {
+                    "H_70_30_1" : [{
+                        color : "#f4b400",
+                        title : "Google Keep",
+                        url : "https://drive.google.com/keep"    
+                    }]
+                }
+            });
+        }
+        
+        $rootScope.bookmark = JSON.parse(localStorage.bookmark);
+        
+        $rootScope.$watch(function(){ // Save bookmark to localStorage
+            return $rootScope.bookmark;   
+        } ,function() {
+            localStorage.bookmark = JSON.stringify($rootScope.bookmark);
+        },true);
     });
 	
 	$(document).ready(function() {

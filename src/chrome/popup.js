@@ -4,8 +4,6 @@ requirejs.config({
 	}
 });
 
-var PopupCtrl;
-
 require([ "dualless/views/panel",
           "dualless/directives/bookmarklist",
           "dualless/directives/winbutton",
@@ -121,9 +119,9 @@ Controller.$inject = ["$scope",
 
 //PopupCtrl = Controller;
 
-	var module = angular.module("popup",[]);
+	var app = angular.module("popup",[]);
 	
-	module.config(['$routeProvider', function configRouteProvider($routeProvider) {
+	app.config(['$routeProvider', function configRouteProvider($routeProvider) {
         
 			$routeProvider.when("/panel/:orientation",PanelView);
 
@@ -145,13 +143,13 @@ Controller.$inject = ["$scope",
 			
 	}]);
 	
-	//module.directive('hsplitpanel',splitpanel("H"));
-	//module.directive('vsplitpanel',splitpanel("V"));
-	module.directive('bookmarklist',bookmarklist);
-	module.directive('bookmarkeditor',bookmarkeditor);
-    module.directive('bookmarkitem',bookmarkitem);
-    module.directive('winbutton',winbutton);
-	module.directive('onRepeatFinish',function() {
+	//app.directive('hsplitpanel',splitpanel("H"));
+	//app.directive('vsplitpanel',splitpanel("V"));
+	app.directive('bookmarklist',bookmarklist);
+	app.directive('bookmarkeditor',bookmarkeditor);
+    app.directive('bookmarkitem',bookmarkitem);
+    app.directive('winbutton',winbutton);
+	app.directive('onRepeatFinish',function() {
 		return {
 			restrict: 'A',
 			link : function(scope,element,attr) {
@@ -162,9 +160,9 @@ Controller.$inject = ["$scope",
 		};
 	});
 	
-    module.factory("WindowManager",WindowManagerService);
+    app.factory("WindowManager",WindowManagerService);
     
-    module.run(function($rootScope) {
+    app.run(function($rootScope) {
         // @TODO Load from localStorage
         $rootScope.bookmark = {
             // Links for each button

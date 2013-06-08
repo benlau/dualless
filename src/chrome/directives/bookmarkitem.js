@@ -7,6 +7,9 @@ define(["module"],
     arr.pop();
     uri = arr.join("/");
     
+    var sheet = "<link  href='" + uri + "/../directives/bookmarkitem.css' rel='stylesheet'>";
+	$("head").append(sheet);
+ 
     function Controller($scope) {
         
         $scope.$watch(function(scope) {

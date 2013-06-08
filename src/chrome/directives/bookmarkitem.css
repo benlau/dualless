@@ -1,0 +1,23 @@
+.bookmark-item-container {
+    display : inline-block;    
+    height : 20px;
+}
+
+.bookmark-item-color-box {
+    width : 15px;
+    height : 15px;
+    background-color : blue;
+    margin-top : 2px;
+}
+
+.bookmark-item-title {
+    width : 120px;
+    height : 20px;
+    display : inline-block;
+    overflow : hidden;
+}
+
+.bookmark-item-remove-button {
+    height : 20px;
+    display : inline-block;
+}

@@ -1,9 +1,16 @@
 
-<div>
-    <div style="background-color:{{color}};width:20px;height:20px;display:inline-block" ng-click="toggle()">
-        <div style="margin-left:auto;margin-right:auto;width:13px;height:13px;margin-top:3px">
-            <img src="img/glyphicons_335_pushpin.png" width="13" height="13" ng-show="pin" ng-hide="!pin">
-        </div>
+<div class="bookmark-item">
+    <div class="bookmark-item-container">
+        <div class="bookmark-item-color-box"></div>
     </div>
-    <div style="display:inline-block">{{title}}</div>
+
+    <div class="bookmark-item-container">
+        <div class="bookmark-item-title">{{title}}</div>
+
+    </div>
+
+    <div class="bookmark-item-container">
+        <div class="bookmark-item-remove-button">[-]</div>
+    </div>
+
 </div>

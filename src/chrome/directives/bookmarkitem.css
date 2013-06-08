@@ -1,4 +1,9 @@
-.bookmark-item-container {
+.bookmark-item {
+    height : 20px;   
+    overflow : hidden;
+}
+
+.bookmark-item-grid {
     display : inline-block;    
     height : 20px;
 }
@@ -8,6 +13,11 @@
     height : 15px;
     background-color : blue;
     margin-top : 2px;
+}
+
+.bookmark-item-text {
+    vertical-align : text-top;
+    margin-top : -6px;
 }
 
 .bookmark-item-title {

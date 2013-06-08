@@ -7,14 +7,12 @@ requirejs.config({
 });
 
 require(["view/browser",
-         "view/component",
-         "dualless/directive/hsplitpanel",
-         "dualless/directive/vsplitpanel"
+         "view/component"
          ],
 	     function app(browser,
-	    		 		components,
-	    		 		hsplitpanel,
-	    		 		vsplitpanel){
+                      components,
+                      panel
+                      ){
 
 	var module = angular.module('main', []);
 	
@@ -30,12 +28,7 @@ require(["view/browser",
 	  	$routeProvider.when('/browser', browser );
 	  	
 	  	$routeProvider.when('/component', components);
-	
-	  	
 	}]);
-
-	module.directive('hsplitpanel',hsplitpanel);
-	module.directive('vsplitpanel',vsplitpanel);
 
 	
 	$(document).ready(function() {

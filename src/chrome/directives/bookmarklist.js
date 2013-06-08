@@ -21,7 +21,11 @@ define(["module"],
             };
             
             $scope.onSelect({ options : split});
-        }
+        };
+        
+        $scope.remove = function(idx) {
+            $scope.links.splice(idx,1);
+        };
     }
 	
 	function factory() {
@@ -31,7 +35,7 @@ define(["module"],
             templateUrl : uri + "/bookmarklist.html",
             controller: Controller,
             restrict : 'E',
-            scope : { model:"=model",
+            scope : { links:"=links",
                        onSelect: "&"
                      }
 		};

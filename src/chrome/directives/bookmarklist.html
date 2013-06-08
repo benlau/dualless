@@ -1,5 +1,5 @@
 <div>
-    <div ng-repeat="bookmark in model">
-        <bookmarkitem link="bookmark"></bookmarkitem>
+    <div ng-repeat="link in links">
+        <bookmarkitem link="link" on-remove="remove($index)"></bookmarkitem>
     </div>
 </div>

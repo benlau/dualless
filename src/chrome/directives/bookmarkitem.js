@@ -27,8 +27,8 @@ define(["module"],
             });
         });
         
-        $scope.toggle = function() {
-            $scope.pin = ! $scope.pin;
+        $scope.remove = function() {
+            $scope.onRemove({});
         }
     }
 	
@@ -39,7 +39,8 @@ define(["module"],
             templateUrl : uri + "/bookmarkitem.html",
             controller: Controller,
             restrict : 'E',
-            scope : { link : "="
+            scope : { link : "=",
+                      onRemove : "&"
                      },
             link : function(scope,iElement, iAttrs, controller) {
                 

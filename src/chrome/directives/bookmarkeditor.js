@@ -9,11 +9,27 @@ define(["module"],
 	var sheet = "<link  href='" + uri + "/../directives/bookmarkeditor.css' rel='stylesheet'>";
 	$("head").append(sheet);
 
-    function Controller($scope) {
+    function Controller($scope,$element) {
+        $scope.title = "";
+        $scope.url = "";
+        
         $scope.colors = [];
         for (var i = 0 ; i < 18;i++){
             $scope.colors.push("#f4b400");
         }
+        
+        $scope.$watch(function(){
+            return $scope.link;
+        }, function() {
+            if ($scope.link === undefined) {
+                $($element).addClass("bookmark-editor-disabled");
+                $($element).find(".bookmark-editor-input").attr("disabled","disabled");
+            } else {
+                $($element).removeClass("bookmark-editor-disabled");
+                $($element).find(".bookmark-editor-input").attr("disabled","");                
+            }
+        },
+        true);
     }
 
     function factory() {
@@ -23,8 +39,10 @@ define(["module"],
             templateUrl : uri + "/bookmarkeditor.html",
             controller: Controller,
             restrict : 'E',
-            require : "?ngModel"
-        }
+            scope : {
+                "link" : "=link"
+            }
+        };
         return def;
     }
 

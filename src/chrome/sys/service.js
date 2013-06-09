@@ -2,6 +2,9 @@
  */
 
 define(function() {
+    if (chrome === undefined || chrome.extension === undefined)
+        return;
+    
     var bg = chrome.extension.getBackgroundPage(),
          manager = bg.manager(),
 	     scr = {}, // Clone of screen object

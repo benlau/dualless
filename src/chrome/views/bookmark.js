@@ -34,17 +34,20 @@ define(["module"],
                            url : tab.url
                           };
 
+        // bookmark.links => links , buttons
         $rootScope.$watch(function(scope) {
-            return scope.bookmark.links;
+            return scope.bookmark.links.length;
         },function() {
             $scope.$evalAsync(function() {
                 $scope.links = $rootScope.bookmark.links[$scope.key];               
                 $scope.buttons = [{},{}];
                 $scope.buttons[$scope.position] = $scope.links;
                 $scope.buttons[1 - $scope.position]= undefined;
+                delete $scope.selected;
             });
         },true);
-        
+
+        // links => bookmark.links        
         $scope.$watch(function(scope) {
             return scope.links;    
         },function() {
@@ -61,6 +64,13 @@ define(["module"],
             $scope.pending.color = "blue";
             $scope.links.push($scope.pending);
             delete $scope.pending;
+        };
+        
+        // Select a link. It will update $scope.selected
+        $scope.select = function(idx) {
+            if (idx >= $scope.links.length )
+                return;
+            $scope.selected = $scope.links[idx];
         };
          
         /* 

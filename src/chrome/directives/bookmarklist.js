@@ -9,6 +9,7 @@ define(["module"],
 
     
     function Controller($scope) {       
+    /*
         $scope.click = function(url) {
             var split = { // Split argument
                 orientation : 'H',
@@ -22,9 +23,13 @@ define(["module"],
             
             $scope.onSelect({ options : split});
         };
-        
+      */  
         $scope.remove = function(idx) {
             $scope.links.splice(idx,1);
+        };
+        
+        $scope.select = function(idx) {
+            $scope.onSelect({$index : idx});    
         };
     }
 	

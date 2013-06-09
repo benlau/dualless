@@ -15,7 +15,7 @@
     <hr style="margin: 2px 0px 2px 0px">
 </div>
 
-<bookmarklist links="links" on-select="split(options)"></bookmarklist>
-<bookmarkeditor model="bookmark"></bookmarkeditor>
+<bookmarklist links="links" on-select="select($index)"></bookmarklist>
+<bookmarkeditor link="selected"></bookmarkeditor>
 
 <div ng-click="back()">Back</div>

@@ -27,9 +27,15 @@ define(["module"],
             });
         });
         
-        $scope.remove = function() {
+        $scope.remove = function($event) {
+            $event.stopPropagation();
             $scope.onRemove({});
-        }
+        };
+
+        $scope.select = function($event) {
+            $event.stopPropagation();
+            $scope.onSelect({});
+        };
     }
 	
 	function factory() {
@@ -40,7 +46,8 @@ define(["module"],
             controller: Controller,
             restrict : 'E',
             scope : { link : "=",
-                      onRemove : "&"
+                      onRemove : "&",
+                      onSelect : "&"
                      },
             link : function(scope,iElement, iAttrs, controller) {
                 

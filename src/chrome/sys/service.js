@@ -2,7 +2,7 @@
  */
 
 define(function() {
-  	var bg = chrome.extension.getBackgroundPage(),
+    var bg = chrome.extension.getBackgroundPage(),
          manager = bg.manager(),
 	     scr = {}, // Clone of screen object
          win, // The current window

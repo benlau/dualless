@@ -10,7 +10,8 @@ require([ "dualless/views/panel",
           "dualless/views/bookmark",
           "dualless/directives/bookmarkeditor",
           "dualless/directives/bookmarkitem",
-          "dualless/sys/service"
+          "dualless/sys/service",
+          "dualless/directives/colorpicker"
           ],
           function popup(PanelView,
                             bookmarklist,
@@ -18,7 +19,8 @@ require([ "dualless/views/panel",
                             bookmark,
                             bookmarkeditor,
                             bookmarkitem,
-                            WindowManagerService
+                            WindowManagerService,
+                            colorPicker
                             ){
 
 	var app = angular.module("popup",[]);
@@ -36,6 +38,7 @@ require([ "dualless/views/panel",
 	app.directive('bookmarkeditor',bookmarkeditor);
     app.directive('bookmarkitem',bookmarkitem);
     app.directive('winbutton',winbutton);
+    app.directive('colorPicker',colorPicker);    
 	app.directive('onRepeatFinish',function() {
 		return {
 			restrict: 'A',

@@ -17,7 +17,6 @@ define(["module"],
         }, function() {
             $scope.title = $scope.link.title;
             $scope.color = $scope.link.color;
-            $scope.pin = $scope.link.pin;
         },
         true);
         

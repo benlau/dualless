@@ -11,6 +11,8 @@
     margin-left : 5px;
     margin-right : -20px;
     margin-bottom : -1.2em;
+    width : 15px;
+    height : 15px;
 }
 
 .bookmark-editor-field {
@@ -44,6 +46,14 @@
     width : 15px;
     height: 15px;
     float : left;
-    margin-right : 5px;
-    margin-bottom : 5px;
+    margin-right : 2px;
+    margin-bottom : 2px;
+    border-width : 3px 3px 3px 3px;
+    border-color: white;
+    border-style : solid solid solid solid;    
 }
+
+.bookmark-editor-color-grid:hover {
+    border-color: red;
+}
+

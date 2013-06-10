@@ -1,5 +1,5 @@
 <div class="bookmark-editor">
-    <div class="bookmark-editor-icon"><img src="img/glyphicons_335_pushpin.png" width=15 height=15></div>
+    <div class="bookmark-editor-icon" style="background-color:{{color}}"></div>
     <form>
     <div class="bookmark-editor-field">
         <div class="bookmark-editor-label">Title:</div>
@@ -15,11 +15,11 @@
         <input type='text' class="bookmark-editor-input" ng-model="url"></input>
         </div>
     </div>
+    </form>
     
     <div class="bookmark-editor-color-picker">
-        <div ng-repeat="color in colors" class="bookmark-editor-color-grid" style="background-color:{{color}}"></div>
+        <div ng-repeat="color in colors" class="bookmark-editor-color-grid" style="background-color:{{color}}" ng-click="setColor(color) "></div>
     </div>
     
-    </form>
 
 </div>

@@ -1,8 +1,7 @@
 <div class="bookmark-editor">
-    <div class="bookmark-editor-icon" style="background-color:{{color}}"></div>
     <form>
     <div class="bookmark-editor-field">
-        <div class="bookmark-editor-label">Title:</div>
+        <div class="bookmark-editor-label">Title: </div>
 
         <div class="bookmark-editor-content">
         <input type='text' class="bookmark-editor-input" ng-model="title"></input>
@@ -10,14 +9,23 @@
     </div>
 
     <div class="bookmark-editor-field">
-        <div class="bookmark-editor-label">URL:</div>
+        <div class="bookmark-editor-label">Url: </div>
         <div class="bookmark-editor-content">
         <input type='text' class="bookmark-editor-input" ng-model="url"></input>
         </div>
     </div>
-    </form>
     
-    <div class="bookmark-editor-color-picker">
+    <div class="bookmark-editor-field">
+        <div class="bookmark-editor-label">Color: </div>
+        <div class="bookmark-editor-content">
+            <span class="bookmark-editor-color-picker" data-color="#FF0000" data-color-format="rgb"  color-picker>
+            </span><input type='text' class="bookmark-editor-color-input" ng-model="color"></input>        
+        </div>
+    </div>
+    </form>
+  
+    
+    <div class="bookmark-editor-color-palette">
         <div ng-repeat="color in colors" class="bookmark-editor-color-grid" style="background-color:{{color}}" ng-click="setColor(color) "></div>
     </div>
 

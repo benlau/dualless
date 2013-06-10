@@ -38,7 +38,7 @@ define(["module"],
                 $($element).find(".bookmark-editor-input").attr("disabled","disabled");
                 $scope.title = "";
                 $scope.url = "";
-                $scope.color = "transparent";
+                $scope.color = "";
             } else {
                 $($element).removeClass("bookmark-editor-disabled");
                 $($element).find(".bookmark-editor-input").removeAttr("disabled","");                

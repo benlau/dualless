@@ -20,23 +20,58 @@
 }
 
 .bookmark-editor-label {
-    width : 50px;
+    width : 35px;
     display : inline-block;
     text-align : right;
-    margin-left : 10px;
+    margin-left : 5px;
     margin-right : 5px;
+    vertical-align: bottom;    
 }
 
 .bookmark-editor-content {
+    max-width : 90px;
     display : inline-block;
+    vertical-align: bottom;    
 }
 
-.bookmark-editor-content input{
-    width : 90px;
-    margin : 0px 0px 0px 0px;
+.bookmark-editor-input {
+    margin : 0px 0px 0px 5px;
+    width : 100%;
+    display : inline-block;
+    vertical-align: bottom;    
+}
+
+.bookmark-editor input {
+    margin-bottom : 0px;
 }
 
 .bookmark-editor-color-picker {
+    width : 15px;
+    height: 16px;
+    display : inline-block;
+    margin : 0px 5px 0px 5px;
+    cursor : pointer;
+    background-color : blue;
+    border-width : 1px 1px 1px 1px;
+    border-style : solid  solid solid solid;
+    border-color : #ccc #ccc #ccc;
+    border-radius : 3px;
+    vertical-align: bottom;    
+}
+
+.bookmark-editor-color-input {
+    margin : 0px 0px 0px 0px;
+    width : 62px;
+    vertical-align: bottom;    
+}
+
+.bookmark-editor-color-input input {
+    border-top-left-radius : 0px;
+    border-bottom-left-radius : 0px;    
+}
+
+
+.bookmark-editor-color-palette {
     width : 120px;
     margin-top : 15px;
     margin-left : 40px;
@@ -51,6 +86,7 @@
     border-width : 3px 3px 3px 3px;
     border-color: white;
     border-style : solid solid solid solid;    
+    display: inline-block;
 }
 
 .bookmark-editor-color-grid:hover {

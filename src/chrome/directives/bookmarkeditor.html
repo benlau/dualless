@@ -18,8 +18,8 @@
     <div class="bookmark-editor-field">
         <div class="bookmark-editor-label">Color: </div>
         <div class="bookmark-editor-content">
-            <span class="bookmark-editor-color-picker" data-color="#FF0000" data-color-format="rgb"  color-picker>
-            </span><input type='text' class="bookmark-editor-color-input" ng-model="color"></input>        
+            <div class="bookmark-editor-color-picker" color-picker value="color">
+            </div><input type='text' class="bookmark-editor-color-input" ng-model="color"></input>        
         </div>
     </div>
     </form>
@@ -29,6 +29,5 @@
         <div ng-repeat="color in colors" class="bookmark-editor-color-grid" style="background-color:{{color}}" ng-click="setColor(color) "></div>
     </div>
 
-    <div color-picker data-color="#FF0000" data-color-format="rgb"> More </div>    
 
 </div>

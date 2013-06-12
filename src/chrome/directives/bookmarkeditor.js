@@ -25,6 +25,8 @@ define(["module"],
                          "black"];
                          
         $scope.setColor = function(color) {
+            if ($scope.link === undefined)
+                return;
             $scope.color = color;    
         };
         
@@ -67,6 +69,7 @@ define(["module"],
         
         $scope.$watch("color",function() {
            var color = $scope.color;
+           console.log(color);
            if (color.match("^ *RGB")){
                 var str = color.replace(/.*RGB.*\(/,"").replace(/\).*/,"");
                 var token = str.split(",");
@@ -74,7 +77,10 @@ define(["module"],
                    token[idx] = parseInt(val,0);
                 });
                 var hex = "#" + ((1 << 24) + (token[0] << 16) + (token[1] << 8) + token[2]).toString(16).slice(1);
-                $scope.color = hex;
+                
+                $scope.$evalAsync(function() {
+                    $scope.color = hex;
+                });
            }
         });
         
@@ -89,6 +95,15 @@ define(["module"],
             restrict : 'E',
             scope : {
                 "link" : "=link"
+            },
+            link : function(scope,element) {
+                $(element).find(".bookmark-editor-color-grid").hover(function(elem) {
+                    if (scope.link !== undefined) {
+                        $(elem).css("border-color","red");
+                    }
+                },function() {
+                    $(elem).css("border-color","transparent");
+                });
             }
         };
         return def;

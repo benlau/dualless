@@ -69,7 +69,6 @@ define(["module"],
         
         $scope.$watch("color",function() {
            var color = $scope.color;
-           console.log(color);
            if (color.match("^ *RGB")){
                 var str = color.replace(/.*RGB.*\(/,"").replace(/\).*/,"");
                 var token = str.split(",");

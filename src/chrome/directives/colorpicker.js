@@ -6,17 +6,12 @@ define(["module",
         "dualless/lib/bootstrap-colorpicker"],
          function(self) {
              
-    function Controller($scope,$element){
+    function Controller($scope,$element,$rootScope){
         var picker = $($element).colorpicker();
         
+        $scope.value = "";
+        
         $scope.$watch("value",function(){
-            /*
-            $scope.$evalAsync(function() {
-                $($element).colorpicker('setValue',$scope.value);
-            });
-            */
-//            $element.val($scope.value);
-//            $element.data('colorpicker').color.setColor($scope.value);
             $($element).colorpicker('setValue',$scope.value);
         });
 
@@ -25,12 +20,18 @@ define(["module",
             var v = ev.color.toHex();
             if (v == $scope.value)
                 return;
-            $scope.$apply(function() {
+            
+            if ($rootScope.$root.$$phase == "$digest") {
                 $scope.value = v;
-            });
+            } else {
+                $scope.$apply(function() {
+                    $scope.value = v;
+                });
+            }
 
         });
     }
+    
     
     function factory() {
         var def = {

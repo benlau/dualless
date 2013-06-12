@@ -11,6 +11,9 @@ define(["module"],
     arr.pop();
     uri = arr.join("/");
 
+	var sheet = "<link  href='" + uri + "/bookmark.css' rel='stylesheet'>";
+	$("head").append(sheet);
+
     function Controller($scope,
                         $routeParams,
                         $rootScope,

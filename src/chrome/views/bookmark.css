@@ -1,0 +1,13 @@
+.bookmark-container {
+    height : 370px;
+}
+
+.bookmark-footer {
+    clear : both;
+    positive: relative;
+    z-index : 10;
+    height : 2em ;
+    margin-top : -2em;
+    margin-bottom : 0px;
+}
+

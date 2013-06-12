@@ -35,13 +35,13 @@ define(["module"],
 
             if ($scope.link === undefined) {
                 $($element).addClass("bookmark-editor-disabled");
-                $($element).find(".bookmark-editor-input").attr("disabled","disabled");
+                $($element).find(".bookmark-editor-input , .bookmark-editor-color-input").attr("disabled","disabled");
                 $scope.title = "";
                 $scope.url = "";
                 $scope.color = "";
             } else {
                 $($element).removeClass("bookmark-editor-disabled");
-                $($element).find(".bookmark-editor-input").removeAttr("disabled","");                
+                $($element).find(".bookmark-editor-input , .bookmark-editor-color-input").removeAttr("disabled","");                
                 $scope.title = $scope.link.title;
                 $scope.url = $scope.link.url;
                 $scope.color = $scope.link.color;
@@ -64,6 +64,19 @@ define(["module"],
             }
         },
         true);
+        
+        $scope.$watch("color",function() {
+           var color = $scope.color;
+           if (color.match("^ *RGB")){
+                var str = color.replace(/.*RGB.*\(/,"").replace(/\).*/,"");
+                var token = str.split(",");
+                $(token).each(function(idx,val) {
+                   token[idx] = parseInt(val,0);
+                });
+                var hex = "#" + ((1 << 24) + (token[0] << 16) + (token[1] << 8) + token[2]).toString(16).slice(1);
+                $scope.color = hex;
+           }
+        });
         
     }
 

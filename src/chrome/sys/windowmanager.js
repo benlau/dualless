@@ -29,7 +29,7 @@ define(["dualless/sys/viewport",
                        TaskRunner,
                        TabTracker) {
 
-	WindowManager = function() {
+	var WindowManager = function() {
         var manager = this;
         
 		this._os = os();
@@ -285,7 +285,7 @@ define(["dualless/sys/viewport",
 		    manager.updateWindows({autoMatching: true,
                                       window : options.window},runner.listener());
         });
-    	
+
         runner.step(function(list) {
 			$.extend(options,{ windows: list
                                 });
@@ -316,7 +316,7 @@ define(["dualless/sys/viewport",
                                        url : options.tab.url},
                                        runner.listener());
             } else if (link) {
-                var tab = manager._tracker.tab(link.id),
+                var tab = manager._tracker.tab(link.url),
                      info = {
                          windowId : options.windows[1].id
                      }
@@ -347,7 +347,7 @@ define(["dualless/sys/viewport",
             if (tab != undefined) {
                 manager.events.emit("tabCreated",tab);
                 if (link)
-                    manager._tracker.add(link.id,tab); // start tracking
+                    manager._tracker.add(link.url,tab); // start tracking
             }
             runner.next();
         });
@@ -410,7 +410,7 @@ define(["dualless/sys/viewport",
                 skipTabsMoving = true; 
             } else if (action.link) {
                                
-                var tab = manager._tracker.tab(link.id)
+                var tab = manager._tracker.tab(link.url)
                      
                 if (tab) { // Find tracked tab. It should move it.
                     createData.tabId = tab.id
@@ -434,7 +434,7 @@ define(["dualless/sys/viewport",
             
             if (link) {
                 manager.events.emit("tabCreated",win.tabs[0]);
-                manager._tracker.add(link.id,win.tabs[0]);
+                manager._tracker.add(link.url,win.tabs[0]);
             }
             
             if (tabs.length == 0 ||

@@ -54,10 +54,14 @@ define(["module"],
                 $($scope.element).children().each(function(idx,elem) {
                     $(elem).css("background-color",$scope.grids[idx].link.color);
                     var title = $scope.grids[idx].link.title;
+                    var draggable = true;
+                    
                     if (title === undefined) { 
                         title = "Press 'middle' mouse key to duplicate current site";    
+                        draggable = false;
                     }
                     $(elem).attr("title",title);
+                    $(elem).attr("draggable",draggable);
                 });
             }
         },true);
@@ -165,6 +169,48 @@ define(["module"],
                         $scope.onClick({ $event :event, 
                                            $link : link
                                         });
+                    });
+                    
+                    $(elem).on("dragstart",function(ev) {
+                        var link;                        
+                        link = $scope.grids[idx].link;
+                        ev.originalEvent.dataTransfer.setData("application/json",JSON.stringify({
+                            link : link
+                        }));
+                        
+                        $scope.draging = {
+                            index : idx,
+                            link : link
+                        }
+                    });
+                    
+                    $(elem).on("dragover",function(ev) {
+                        // Always true in testing.
+                        // @TODO Prevent dragover on itself
+                        // @TODO Prevent dragover on a button with full of grid.
+                        ev.preventDefault();
+                    });
+                    
+                    $(elem).on("drop",function(ev) {
+                        // It is receiver of drag
+                        ev.preventDefault();                        
+                        var data = JSON.parse(ev.originalEvent.dataTransfer.getData("application/json"));
+                        // @TODO : validation
+                        $scope.$apply(function() {
+                            if ($scope.links === undefined) 
+                                $scope.links = [];
+                            $scope.links.push(data.link);                            
+                        });
+                    });
+                    
+                    $(elem).on("dragend",function(ev) {
+                        var draging = $scope.draging;
+                        delete $scope.draging;
+                        if (ev.originalEvent.dataTransfer.dropEffect== "none") 
+                            return;
+                        $scope.$apply(function() {
+                           $scope.links.splice(draging.index , 1); 
+                        });
                     });
                     
                 })(idx,$scope.element);

@@ -34,7 +34,8 @@ define(["module"],
         
         
         $scope.$watch(function() {
-            return $scope.links;    
+            return {links : $scope.links,
+                    rendered : $scope.rendered};
         },function() { // links -> grids.link,color of element
             if ($scope.links) {
                 var count = $scope.links.length;
@@ -42,18 +43,22 @@ define(["module"],
                     count = max;
                 }
                 
-                if ($scope.links[0] &&  $scope.links[0].color) {                   
-                    var m = map[count];
-                    for (var i = 0 ; i < 4;i++){
-                        var link = { color : "transparent" };
-                        if (m[i] >= 0)
-                            link = $scope.links[m[i]];
-                        $scope.grids[i].link = link;
-                    }
+                var m = map[count];
+                for (var i = 0 ; i < 4;i++){
+                    var link = { color : "transparent" };
+                    if (m[i] >= 0)
+                        link = $scope.links[m[i]];
+                    $scope.grids[i].link = link;
                 }
+
                 $($scope.element).children().each(function(idx,elem) {
                     $(elem).css("background-color",$scope.grids[idx].link.color);
-                });        
+                    var title = $scope.grids[idx].link.title;
+                    if (title === undefined) { 
+                        title = "Press 'middle' mouse key to duplicate current site";    
+                    }
+                    $(elem).attr("title",title);
+                });
             }
         },true);
         
@@ -108,7 +113,8 @@ define(["module"],
             $($element).addClass(cls);
             $($element).addClass(cls + ratio);            
         });
-        
+
+        // Initialize the grid elements
         $scope.$watch(function(scope) {
             return { 
                 orientation : scope.orientation,
@@ -120,7 +126,6 @@ define(["module"],
             if (!$scope.rendered)
                 return false;
             
-            // Initialize the grid elements
             $($scope.element).children().each(function(idx,elem) {
                 if ($scope.orientation == "H") {
                    $(elem).width($scope.element.width()/2);
@@ -133,7 +138,7 @@ define(["module"],
                 (function(idx,parent) {
                     $(elem).hover(function(event) {
                         event.preventDefault();
-                        if ($scope.grids[idx].group == undefined) {
+                        if ($scope.grids[idx].group === undefined) {
                             $(parent).css("background-color","yellow");
                         }
                         $($scope.grids[idx].group).each(function(i,elem) {
@@ -189,14 +194,6 @@ define(["module"],
             },
             link : function(scope, element, attrs, ngModel) {
                 scope.element = element;
-                
-                /*
-                $(element).hover(function() {
-                    $(element).css("background-color","yellow");  
-                },function() {
-                    $(element).css("background-color","transparent");  
-                });
-                */
 
                 $(element).addClass("split-panel-win");
 

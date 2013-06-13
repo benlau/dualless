@@ -11,19 +11,6 @@ define(["module"],
 
     function Controller($scope,$element) {
         
-        $scope.colors = ["RGB(152,0,0)",
-                         "RGB(255,0,0)",
-                         "RGB(255,153,0)",
-                         "RGB(255,255,0)",
-                         "RGB(0,255,0)",                         
-                         "RGB(0,255,255)",                         
-                         "RGB(74,134,232)",
-                         "RGB(0,0,255)",                         
-                         "RGB(153,0,255)",
-                         "RGB(255,0,255)",
-                         "#f4b400", // Google Drive
-                         "black"];
-                         
         $scope.setColor = function(color) {
             if ($scope.link === undefined)
                 return;
@@ -93,7 +80,8 @@ define(["module"],
             controller: Controller,
             restrict : 'E',
             scope : {
-                "link" : "=link"
+                "link" : "=link",
+                "colors" : "="
             },
             link : function(scope,element) {
                 $(element).find(".bookmark-editor-color-grid").hover(function(elem) {

@@ -149,7 +149,9 @@ define(["module"],
                 
                 // Setup the event for each grid
                 (function(idx,parent) {
-                    var grid = $scope.grids[idx];
+                    var grid = $scope.grids[idx],
+                        title = grid.link.title || "";
+
                     $(elem).hover(function(event) {
                         event.preventDefault();
                         if ($scope.grids[idx].group === undefined) {
@@ -160,7 +162,7 @@ define(["module"],
                            $(elem).css("background-color","yellow");
                         });
                         
-                        $(elem).html("<span>" + grid.link.title + "</span>");
+                        $(elem).html("<span>" + title + "</span>");
                         
                     },function(event) { //unhover
                         event.preventDefault();

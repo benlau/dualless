@@ -3,8 +3,10 @@
  * 
  */
 
-define(["module"],
-        function(self) {
+define(["module",
+        "dualless/models/site"],
+        function(self,
+                 Site) {
    
     var uri = self.uri;
     var arr = uri.split("/");
@@ -77,7 +79,17 @@ define(["module"],
         $scope.add = function() {
             if ($scope.links === undefined)
                 $scope.links = [];
-            $scope.pending.color = "blue";
+            
+            var color = $scope.colors[ Math.floor(Math.random() * $scope.colors.length ) ];
+            
+            console.log(color);
+            var site = Site.find($scope.pending.url);
+
+            if (site) {
+                color = site.color;
+            }
+            
+            $scope.pending.color = color;
             $scope.links.push($scope.pending);
             delete $scope.pending;
         };

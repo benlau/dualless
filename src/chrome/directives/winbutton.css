@@ -1,0 +1,8 @@
+
+.win-button div {
+    overflow : hidden;  
+}
+
+.win-button div span {
+    margin-left : 2px;
+}

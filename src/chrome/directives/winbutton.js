@@ -9,6 +9,14 @@
 
 define(["module"],
          function(self) {
+
+    var uri = self.uri;
+    var arr = uri.split("/");
+    arr.pop();
+    uri = arr.join("/");	    
+
+    var sheet = "<link  href='" + uri + "/../directives/winbutton.css' rel='stylesheet'>";
+    $("head").append(sheet);
     
     var max = 3;
     
@@ -139,15 +147,21 @@ define(["module"],
                    $(elem).height($scope.element.height());                    
                 }
                 
+                // Setup the event for each grid
                 (function(idx,parent) {
+                    var grid = $scope.grids[idx];
                     $(elem).hover(function(event) {
                         event.preventDefault();
                         if ($scope.grids[idx].group === undefined) {
                             $(parent).css("background-color","yellow");
                         }
                         $($scope.grids[idx].group).each(function(i,elem) {
+                            // highlight the whoe group
                            $(elem).css("background-color","yellow");
                         });
+                        
+                        $(elem).html("<span>" + grid.link.title + "</span>");
+                        
                     },function(event) { //unhover
                         event.preventDefault();
                         if ($scope.grids[idx].group === undefined) {
@@ -156,6 +170,7 @@ define(["module"],
                         $($scope.grids[idx].group).each(function(i,elem) {
                            $(elem).css("background-color",$scope.grids[idx].link.color);  
                         });
+                        $(elem).html("");
                     });
                     $(elem).css("background-color",$scope.grids[idx].link.color);  
                     
@@ -181,7 +196,7 @@ define(["module"],
                         $scope.draging = {
                             index : idx,
                             link : link
-                        }
+                        };
                     });
                     
                     $(elem).on("dragover",function(ev) {
@@ -226,7 +241,7 @@ define(["module"],
         var def = {
             replace: true,
             transclude: false,
-            template : "<div><div ng-repeat='i in [1,2,3,4]' style='float:left' on-repeat-finish='$parent.rendered = true' ></div></div>",
+            template : "<div class='win-button'><div ng-repeat='i in [1,2,3,4]' style='float:left' on-repeat-finish='$parent.rendered = true' ></div></div>",
             controller: Controller,
             restrict : 'E',
             require : "?ngModel",

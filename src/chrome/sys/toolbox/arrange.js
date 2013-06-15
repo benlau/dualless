@@ -87,6 +87,7 @@ define(["dualless/sys/toolbox/resize",
             var windows = options.windows,
                  os = options.os,
                  viewport = options.viewport,
+                 recalculated = false,
                  retry = 0; // May retry for layout depend on the OS without resize the viewport
 
             if (windows.length != 2) {
@@ -112,18 +113,29 @@ define(["dualless/sys/toolbox/resize",
                         retry--;
                         accept = false;
                         arrange(options,final);
-                    } else if (!viewport.isModified()
+                    } 
+                    
+                    // Ubuntu(Unity) unlike Mac or Window, the screen
+                    // size is not equal to the view port size.
+                    // 
+                    // On Dualless v0.3 , a viewport detection is 
+                    // made here. However, the result is not accuracy
+                    // and sometimes may be wrong.                  
+                    // Therefore the function is disabled. 
+                    
+                    /*
+                    else if (!viewport.isModified()
                                && !viewport.isDetectable()
                                && !recalculated) {
                         if (viewport._os == "Linux")
                             retry = 1; // Reset retry count.
                         recalculated = true;
-                        viewport.calc(rects1[0], rects2[1]);
+                        viewport.calc(rects[0], rects[1]);
                         //rects = viewport.split(options);
                         accept = false;
                         arrange(options,final);
                     };
-                
+                    */
                 }
                 
                 if (accept) {

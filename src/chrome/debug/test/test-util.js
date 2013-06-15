@@ -23,11 +23,13 @@ define(["module",
 	module("Utility and misc Test");
 	
 	test("os",function() {
-		ok(os != undefined);
+		ok(os !== undefined);
 		ok(typeof os == "function");
 	});
 	
 	asyncTest("closeAllOtherWindow", function test_closeAllOtherWindow(){
+
+        console.log("Test case : closeAllOtherWindow");
 		
 		// This test case is written in using $.Deferred()'s pipe() method
 		// Show the different with task runner.
@@ -86,7 +88,7 @@ define(["module",
 			});
 			return p;
 		}).done(function() {
-			console.log("Final");
+            console.log("End of test case : closeAllOtherWindow");			
 			QUnit.start();
 		});
 

@@ -20,6 +20,12 @@ define(function() {
         { name : "Plurk",
           pattern : "plurk.com",
           color : "#cf682f"
+        },
+        
+        {
+          name : "Google+",
+          pattern: "https://plus.google.com",
+          color : "da4835"   
         }
         
     ];

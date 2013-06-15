@@ -5,7 +5,7 @@ define(function taskrunner(){
 	 * 
 	 */
 
-	TaskRunner = function() {
+	var TaskRunner = function() {
 		this._tasks = [];
 		this._lastArgument;
 		this._lastStep = 0;

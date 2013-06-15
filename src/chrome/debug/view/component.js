@@ -10,9 +10,6 @@ define(["module"],
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
 	
-	console.log(manager);
-	console.log(manager.os());
-	
 	var currentWin;
 	var currentTab;
 	

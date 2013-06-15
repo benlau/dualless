@@ -176,6 +176,7 @@ define(["module",
 		var currentTab;
 		
 //		manager.reset();
+        console.log("Test case : Single Window with multiple tab. Split horizontally");
 		
 		runner.step(function(){
 			manager.currentWindowTab(function(win,tab) {
@@ -209,37 +210,47 @@ define(["module",
 		});
 		
 		
-		runner.run(function() {
+		runner.step(function() {
+            console.log("Remaining tasks" , runner.size());
 			manager.split({ param1 : 3 , param2 : 7 , orientation :"H" , position:1},function(windows) {
+
 				console.log("after split",windows);
-				ok(windows != undefined,"split() should return the splited windows");
+				ok(windows !== undefined,"split() should return the splited windows");
 				
-				if (windows != undefined ) {
+				if (windows !== undefined ) {
 					ok(windows.length == 2,"split() should return the splited windows");
 				}
-				setTimeout(function(){
-					manager.updateWindows({sort: true},function (windows) {
-						ok(windows.length == 2);
-						var current = windows[0];
-						ok(current.tabs.length == 1,"After split , the current tab should be the only tab in current window");
-						ok(current.left > windows[1].left,"The current window should be in the right of screen");
-						console.log(current);
-						console.log(windows[1]);
-						var rect1 = new Rect(windows[0]);
-						var rect2 = new Rect(windows[1]);
-						var intersect = rect1.intersect(rect2);
-						
-						ok(intersect.size() == 0,"It should have no intersect between managed windows. First window = " + 
-																    rect1.toString() + 
-																    ". Second Window = " + rect2.toString() +
-																    ". Overlapped Window = " + intersect.toString());
-						
-						console.log("New viewport size" , manager.viewport().size());
-						QUnit.start();
-					});
-				},500);
+				setTimeout(runner.listener(),500);
 			});
 		});
+		
+		runner.step(function() {
+		    console.log("Remaining tasks" , runner.size());
+		    manager.updateWindows({sort: true},runner.listener());
+	    });
+		
+		runner.run(function(windows) {
+		    console.log("Final checking of test case : Single Window with multiple tab. Split horizontally");
+			ok(windows.length == 2);
+			var current = windows[0];
+			ok(current.tabs.length == 1,"After split , the current tab should be the only tab in current window");
+			ok(current.left > windows[1].left,"The current window should be in the right of screen");
+			console.log(current);
+			console.log(windows[1]);
+			var rect1 = new Rect(windows[0]);
+			var rect2 = new Rect(windows[1]);
+			var intersect = rect1.intersect(rect2);
+			
+			ok(intersect.size() === 0,"It should have no intersect between managed windows. First window = " + 
+													    rect1.toString() + 
+													    ". Second Window = " + rect2.toString() +
+													    ". Overlapped Window = " + intersect.toString());
+			
+			console.log("New viewport size" , manager.viewport().size());
+            console.log("End of test case : Single Window with multiple tab. Split horizontally");
+			QUnit.start();
+		});
+		
 	});
 	
 	asyncTest("Two Windows , HSplit then VSplit",function testTwoWindowsHSplitVSplit() {
@@ -576,7 +587,7 @@ define(["module",
 			chrome.tabs.create({windowId : testlib.currentWindow().id,
 								  url : "chrome://chrome/extensions",
 								  active : false
-								 } , runner.listener())
+								 } , runner.listener());
 		});
 		
 		delay(runner,300);
@@ -619,7 +630,7 @@ define(["module",
 		delay(runner,300);
 
 		runner.run(function() {
-			ok(runner.size() == 0,"All step is finished");		
+			ok(runner.size() === 0,"All step is finished");		
 			QUnit.start();
 		});
 	});
@@ -628,6 +639,8 @@ define(["module",
         // Simulate a bookmark mode
         var runner = new TaskRunner();
 		var bkTab;
+		
+        console.log("Test case : Boomark");
         
         runner.step(function() {
            chrome.tabs.create({url : "chrome://extensions/",
@@ -636,7 +649,7 @@ define(["module",
         });
         
         runner.step(function(tab) {
-            ok(tab!=undefined);
+            ok(tab!==undefined);
             bkTab = tab;
             manager.split({
                 orientation : "H",
@@ -651,7 +664,7 @@ define(["module",
         runner.step(function() {
             //  move the bookmark tab to paired window
             var winId = manager.pair(testlib.currentWindow().id).id;
-            ok(winId!=undefined);
+            ok(winId!==undefined);
             chrome.tabs.move(bkTab.id,
                              { windowId : winId,
                                index: 0},
@@ -674,6 +687,7 @@ define(["module",
         });
 
         runner.run(function() {
+            console.log("End of test case : bookmark");
             QUnit.start();
         });
 

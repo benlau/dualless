@@ -85,8 +85,9 @@ define(["module",
 	});
 	
 	asyncTest("ResizeWindow", function testViewportResize() {
+	    console.log("Test case: Resize Window");
 		/* Test the Viewport.resize() */
-		var runner = new TaskRunner;
+		var runner = new TaskRunner();
 		var currentWin;
 		var target;
 		var viewport = new Viewport({os: manager.os()});
@@ -126,14 +127,15 @@ define(["module",
 		runner.step(function(win) {
 			var rect1 = target;
 			var rect2 = new Rect(win);
-			console.log(target,win)
-			ok(rect1.equal(rect2), "Viewport.resize() return when the window is updated completely");
+			console.log(target,win);
+			ok(rect1.equal(rect2), "The window size after Viewport.resize() is not correct. Target = " + rect1.toString() + " Current = " + rect2.toString());
 //			setTimeout(runner.listener(),500);
 			runner.next();
 		});
 
 		runner.run(function(){
-			QUnit.start();
+	        console.log("End of test case: Resize Window");
+            QUnit.start();
 		});
 		
 	});

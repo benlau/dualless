@@ -19,7 +19,7 @@ define(["dualless/sys/viewport",
 		 "dualless/sys/os",
 		 "dualless/lib/eventemitter",
 		 "dualless/sys/toolbox",
-         "dualless/util/taskrunner",
+         "dualless/utils/taskrunner",
          "dualless/sys/tabtracker"
          ], 
 		function sys(Viewport,

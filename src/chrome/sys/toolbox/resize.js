@@ -1,5 +1,5 @@
 
-define(["dualless/util/rect"],
+define(["dualless/utils/rect"],
          function(Rect) {
 
   	/** Resize a window

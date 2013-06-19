@@ -1,4 +1,4 @@
-define(["dualless/util/rect",
+define(["dualless/utils/rect",
         "dualless/sys/os",
         "dualless/sys/toolbox"], 
 		function sys(Rect,

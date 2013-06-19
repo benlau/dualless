@@ -1,7 +1,7 @@
 /* Information View */
 
 define(["module",
-        "dualless/util/rect"],
+        "dualless/utils/rect"],
 		function info(self,
 						Rect) {
 	var uri = self.uri;

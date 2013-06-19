@@ -7,8 +7,8 @@
  */
 
 define(["dualless/sys/toolbox/resize",
-         "dualless/util/rect",
-         "dualless/util/taskrunner"
+         "dualless/utils/rect",
+         "dualless/utils/taskrunner"
          ],
         function(resize,
                    Rect,
@@ -33,7 +33,7 @@ define(["dualless/sys/toolbox/resize",
                 var updateInfo = {};
                 $.extend(updateInfo,rects[i].toData());
                 
-                if (i == 0)
+                if (i === 0)
                     updateInfo.focused = true;
         //				console.log("Resize",windows[i].id,updateInfo,windows[i]);
                 

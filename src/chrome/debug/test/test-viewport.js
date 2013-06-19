@@ -1,6 +1,6 @@
 define(["module",
-        "dualless/util/taskrunner",
-        "dualless/util/rect",
+        "dualless/utils/taskrunner",
+        "dualless/utils/rect",
         "dualless/sys/viewport",
         "dualless/sys/toolbox",
         "testlib"],

@@ -1,9 +1,11 @@
 define(["dualless/utils/rect",
         "dualless/sys/os",
-        "dualless/sys/toolbox"], 
+        "dualless/sys/toolbox",
+        "dualless/utils/split"], 
 		function sys(Rect,
                         os,
-						toolbox) {
+						toolbox,
+						split) {
 	
 	/** Viewport controller
 	 * 
@@ -125,58 +127,9 @@ define(["dualless/utils/rect",
 	 */
 	
 	Viewport.prototype.split = function(options) {
-		var param1 = options.param1;
-		var param2 = options.param2;
-		var orientation = options.orientation;
-		var position = options.position;
-		
-		var ratio = param1 / (param1 + param2);
-//		console.log(ratio);
-		
-		var left = this._size.left;
-		var top = this._size.top;
-		var width = this._size.width;
-		var height = this._size.height;
-		
-		var length; // The length of rect1 (depend on orientation)
-		
-		if (orientation == "H") {
-			length = parseInt(width * ratio);
-			width=length;
-		} else {
-			length = parseInt(height * ratio);
-			height=length;		
-		}
-		
-       var rect1 = new Rect({
-    		 left : left,
-	        top : top,
-	        width : width,
-	        height : height
-        });
-
-       if (orientation == "H") {
-    	   	 left = left + length +1;
-    	   	 width = this._size.width - length - 1;
-       } else {
-        	 top = top + length + 1;
-        	 height = this._size.height - length - 1;
-        } 
-
-       var rect2 = new Rect({
-      		 left : left,
-  	        top : top,
-  	        width : width,
-  	        height : height
-          });
-       
-       var res = [rect1,rect2];
-       if (position != 0)
-    	   res = [rect2,rect1];
-
-//		console.log("Viewport.split",options,this._size,rect1,rect2);
-       
-       return res;
+        console.log("split",split);
+	    var res = split(this._size,options);
+        return res;
 	};
 	
 	/** Attach a handler to viewport's resize event

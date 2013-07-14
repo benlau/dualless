@@ -1,0 +1,15 @@
+
+.dualless-tooltip {
+    position : absolute;
+    z-index : 100;
+    left : 30px;
+    overflow : hidden;
+    width : 130px;
+    font-size : 1.2em;
+    white-space: nowrap
+}
+
+.dualless-tooltip-title {
+    margin-left : 2px;
+    margin-top : 0.7em;
+}

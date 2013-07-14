@@ -7,8 +7,10 @@
  * it is used for bookmarked links.
  */
 
-define(["module"],
-         function(self) {
+define(["module",
+         "dualless/widgets/tooltip"],
+         function(self,
+                    Tooltip) {
 
     var uri = self.uri;
     var arr = uri.split("/");
@@ -21,6 +23,8 @@ define(["module"],
     var max = 3;
     
     function Controller($scope,$element,$timeout) {
+        
+        tooltip = new Tooltip();
         
         $scope.color = "transparent";        
         $scope.rendered = false;
@@ -40,6 +44,13 @@ define(["module"],
                     [0,1,-1,-1],
                     [0,1,2,-1] ];
         
+        $scope.setTooltipVisible = function(show){
+            if (show) {
+                tooltip.show();
+            } else {
+                tooltip.hide();
+            }
+        }
         
         $scope.$watch(function() {
             return {links : $scope.links,
@@ -162,7 +173,11 @@ define(["module"],
                            $(elem).css("background-color","yellow");
                         });
                         
-                        $(elem).html("<span>" + title + "</span>");
+                        //$(elem).html("<span>" + title + "</span>");
+                        var offset = $(elem).offset();
+                        tooltip.title(title);
+                        tooltip.position(offset.left, offset.top + $(elem).height());
+                        tooltip.show();
                         
                     },function(event) { //unhover
                         event.preventDefault();
@@ -172,7 +187,8 @@ define(["module"],
                         $($scope.grids[idx].group).each(function(i,elem) {
                            $(elem).css("background-color",$scope.grids[idx].link.color);  
                         });
-                        $(elem).html("");
+                        //$(elem).html("");
+                        tooltip.hide();
                     });
                     $(elem).css("background-color",$scope.grids[idx].link.color);  
                     
@@ -263,6 +279,7 @@ define(["module"],
                 element.bind('contextmenu', function(event) {
                     scope.$apply(function(scope) {
                         event.preventDefault();
+                        scope.setTooltipVisible(false);
                         scope.onRightClick();
                     });
                 });                

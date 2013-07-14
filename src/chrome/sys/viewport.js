@@ -121,17 +121,6 @@ define(["dualless/utils/rect",
 	    this.setSize(newSize);
 	};
 	
-	/** Given a split parameter. Return the rectangles of splitted windows.
-	 * 
-	 * @param options
-	 */
-	
-	Viewport.prototype.split = function(options) {
-        console.log("split",split);
-	    var res = split(this._size,options);
-        return res;
-	};
-	
 	/** Attach a handler to viewport's resize event
 	 * @param callback
 	 */

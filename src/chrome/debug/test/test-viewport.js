@@ -3,12 +3,14 @@ define(["module",
         "dualless/utils/rect",
         "dualless/sys/viewport",
         "dualless/sys/toolbox",
+        "dualless/utils/split",
         "testlib"],
 		function testViewport(self,
 						TaskRunner,
 						Rect,
 						Viewport,
-                        toolbox) {
+                        toolbox,
+                        split) {
 
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
@@ -31,7 +33,7 @@ define(["module",
 				
 		viewport.setSize(rect);
 				
-		var rects = viewport.split({param1 : 3,
+		var rects = split(viewport.size(),{param1 : 3,
 						   param2 : 7,
 						   orientation : "H",
 						   position : 0});			
@@ -48,7 +50,7 @@ define(["module",
 		rect = new Rect(24,65,1983,1128);
 		console.log(rect);
 		viewport.setSize(rect);
-		rects = viewport.split({param1 : 3,
+		rects = split(viewport.size(),{param1 : 3,
 			   param2 : 7,
 			   orientation : "H",
 			   position : 0});			

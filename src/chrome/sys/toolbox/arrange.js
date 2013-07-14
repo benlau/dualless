@@ -8,11 +8,13 @@
 
 define(["dualless/sys/toolbox/resize",
          "dualless/utils/rect",
-         "dualless/utils/taskrunner"
+         "dualless/utils/taskrunner",
+         "dualless/utils/split"
          ],
         function(resize,
                    Rect,
-                   TaskRunner) {
+                   TaskRunner,
+                   split) {
 
     function arrange(options,callback) {
         var windows = options.windows,
@@ -23,7 +25,7 @@ define(["dualless/sys/toolbox/resize",
              runner = new TaskRunner(),
              rects ; // The rectangles of window.
 
-        rects = viewport.split(options); // The rectangles of window.
+        rects = split(viewport.size(),options); // The rectangles of window.
         
         runner.step(function() {
             var condition = [];

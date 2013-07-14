@@ -16,7 +16,7 @@ define(["dualless/sys/toolbox/resize",
                    TaskRunner,
                    split) {
 
-    function arrange(options,callback) {
+    function arrange(target,options,callback) {
         var windows = options.windows,
              viewport = options.viewport,
              os = options.os,
@@ -25,33 +25,34 @@ define(["dualless/sys/toolbox/resize",
              runner = new TaskRunner(),
              rects ; // The rectangles of window.
 
-        rects = split(viewport.size(),options); // The rectangles of window.
-        
+        rects = split(target,options); // The rectangles of window.
+//        console.log("arrange",target,rects);
+       
         runner.step(function() {
+            // Call resize in parallel.
+            // Nested call do not work well on Windows. Moreover, the response time may be slow					
+            // Moreover, nested call can not resolve the alignment problem in Unity
+
             var condition = [];
             updatedWindows = [];
-        //			console.log(rects[0].__proto__.constructor.name);
             for (var i = 1 ; i >= 0 ; i--) {
                 var updateInfo = {};
                 $.extend(updateInfo,rects[i].toData());
                 
                 if (i === 0)
                     updateInfo.focused = true;
-        //				console.log("Resize",windows[i].id,updateInfo,windows[i]);
                 
                 (function(win) {		
                     var deferred = $.Deferred();
                     condition.push(deferred);
                     resize({window : win,
                             updateInfo : updateInfo,
-                            os : viewport._os
+                            os : os
                             },function(win) {
                                updatedWindows.push(win);
                                deferred.resolve();	
                             });
                 })(windows[i]);
-                // Call resize in parallel.
-                // Nested call do not work well on Windows. Moreover, the response time may be slow					
             }
 
             $.when.apply(null,condition).done(function() {
@@ -100,7 +101,7 @@ define(["dualless/sys/toolbox/resize",
             //this.detect(options.screen); // Detect the screen size and update viewport if needed
 
             if (os == "Linux") {
-                retry = 1; // "Linux" should retry one for time without update the viewport.
+                retry = 1; // "Linux" should retry one more time without update the viewport.
                             // It is a dirty hack to resolve the issue with Unity
             }
 
@@ -114,7 +115,7 @@ define(["dualless/sys/toolbox/resize",
                     if (retry > 0) { // Just retry without touch the viewport size
                         retry--;
                         accept = false;
-                        arrange(options,final);
+                        arrange(rects[0].unite(rects[1]),options,final);
                     } 
                     
                     // Ubuntu(Unity) unlike Mac or Window, the screen
@@ -146,7 +147,7 @@ define(["dualless/sys/toolbox/resize",
                 }
             };
 
-            arrange(options,final);
+            arrange(options.viewport.size(),options,final);
        
    };
     

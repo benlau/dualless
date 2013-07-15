@@ -5,11 +5,16 @@
     left : 30px;
     overflow : hidden;
     width : 130px;
-    font-size : 1.2em;
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 .dualless-tooltip-title {
     margin-left : 2px;
     margin-top : 0.7em;
+    padding-left : 0.5em;
+    font-size : 1em;
+    background-color : #eff9c8;
+    border-color: #dde1db #dde1db #dde1db #dde1db;
+    border-width : 1px 1px 1px 1px;
+    border-style : solid solid solid solid;
 }

@@ -24,7 +24,7 @@ define(["module",
     
     function Controller($scope,$element,$timeout) {
         
-        tooltip = new Tooltip();
+        var tooltip = new Tooltip();
         
         $scope.color = "transparent";        
         $scope.rendered = false;
@@ -50,7 +50,7 @@ define(["module",
             } else {
                 tooltip.hide();
             }
-        }
+        };
         
         $scope.$watch(function() {
             return {links : $scope.links,
@@ -74,12 +74,9 @@ define(["module",
                     $(elem).css("background-color",$scope.grids[idx].link.color);
                     var title = $scope.grids[idx].link.title;
                     var draggable = true;
-                    
                     if (title === undefined) { 
-                        title = "Press 'middle' mouse key to duplicate current site";    
                         draggable = false;
                     }
-                    $(elem).attr("title",title);
                     $(elem).attr("draggable",draggable);
                 });
             }
@@ -147,7 +144,7 @@ define(["module",
             };
         }, function() {
             if (!$scope.rendered)
-                return false;
+                return false;            
             
             $($scope.element).children().each(function(idx,elem) {
                 if ($scope.orientation == "H") {
@@ -164,7 +161,6 @@ define(["module",
                         title = grid.link.title || "";
 
                     $(elem).hover(function(event) {
-                        event.preventDefault();
                         if ($scope.grids[idx].group === undefined) {
                             $(parent).css("background-color","yellow");
                         }
@@ -173,14 +169,21 @@ define(["module",
                            $(elem).css("background-color","yellow");
                         });
                         
-                        //$(elem).html("<span>" + title + "</span>");
-                        var offset = $(elem).offset();
-                        tooltip.title(title);
-                        tooltip.position(offset.left, offset.top + $(elem).height());
-                        tooltip.show();
+                        if (title === "") {
+                            var hint = "Press 'middle' mouse key to duplicate current site";    
+                            $(elem).attr("title",hint);
+                        } else {
+                            event.preventDefault();
+                            
+                            //$(elem).html("<span>" + title + "</span>");
+                            var offset = $(elem).offset();
+                            tooltip.title(title);
+                            tooltip.position(offset.left, offset.top + $(elem).height());
+                            tooltip.show();
+                        }
                         
                     },function(event) { //unhover
-                        event.preventDefault();
+//                        event.preventDefault();
                         if ($scope.grids[idx].group === undefined) {
                             $(parent).css("background-color",$scope.grids[idx].link.color);  
                         }

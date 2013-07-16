@@ -74,7 +74,6 @@ define(["module",
         $(elem).hover(function(event) {
              var link = grid.link || {},
                   title = link.title || "";
-            console.log("hover",grid);
 
             if (grid.group === undefined) {
                 $(parent).css("background-color","yellow");
@@ -116,10 +115,23 @@ define(["module",
                                $link : link
                             });
         });
-
+                    
+        $(elem).on("dragstart",function(ev) {
+            var link = grid.link;
+            
+//            ev.originalEvent.dataTransfer.effectAllowed = 'move';
+            ev.originalEvent.dataTransfer.setData("application/json",JSON.stringify({
+                link : link
+            }));           
+        });
+        
+        $(elem).on("dragend",function(ev) {
+            if (ev.originalEvent.dataTransfer.dropEffect== "none") 
+                return;
+            grid.events.emit("remove");
+        });
 
         $(elem).css("background-color",grid.color());  
-        
     }
     
     /** Window Button
@@ -135,23 +147,59 @@ define(["module",
         var self = this;
         
         for (var i = 0 ; i < 4;i++){
-            var grid = new Grid();
-            grid.events.on("click",function(data) {
-               self.events.emit("click",data); 
-            });
-            this.grids.push(grid);
+            (function(idx) {
+                
+                var grid = new Grid();
+                grid.events.on("click",function(data) {
+                   self.events.emit("click",data); 
+                });
+
+                grid.events.on("remove",function(data) {
+                    var count = self._links.length;
+                    if (count >= max)
+                        count = max - 1;
+                    var m = map[count];
+                    self._links.splice(m[idx],1);
+                    self.events.emit("dragged");
+                });
+                
+                self.grids.push(grid);
+            })(i);
         }
 
     }
     
     WinButton.prototype.setup = function(elem) {
         this.element = elem;
+        var self = this;
+        
+        $(elem).on("dragover",function(ev) {
+            // @TODO Prevent dragover on itself
+            if (self._links.length < max) {
+                ev.preventDefault();
+            }
+        });
+
+        $(elem).on("drop",function(ev) {
+            // It is receiver of drag
+            if (self._links.length >= max) {
+                return;
+            }
+            ev.preventDefault();
+            var data = JSON.parse(ev.originalEvent.dataTransfer.getData("application/json"));
+            self._links.push(data.link);
+            self.events.emit("drop");
+        });
     }
     
     /** Setup the links for a WinButton
      */
     
     WinButton.prototype.links = function(links) {
+        if (arguments.length == 0) {
+            return this._links;
+        }
+        
         this._links = links;
         var count = links.length;
         if (count > max ) {
@@ -202,16 +250,28 @@ define(["module",
             }
             $(elem).attr("draggable",draggable);
         }
-    }
-    
-    
+    }   
     
     function Controller($scope,$element,$timeout) {
         
         var tooltip = new Tooltip(); // @TODO: Move tooltip into WinButton
+        
         var winButton = new WinButton();
+        
         winButton.events.on("click",function(data) {
            $scope.onClick(data); 
+        });
+
+        winButton.events.on("drop",function() {
+            $scope.$apply(function() {
+                $scope.links = winButton.links();
+            });
+        });
+        
+        winButton.events.on("dragged",function() {
+            $scope.$apply(function() {
+                $scope.links = winButton.links();
+            });
         });
         
         $scope.rendered = false;
@@ -226,6 +286,10 @@ define(["module",
                 tooltip.hide();
             }
         };
+        
+        $scope.linkFunc = function(element) {
+            winButton.setup(element);    
+        }
         
         $scope.$watch(function() {
             return {links : $scope.links,
@@ -287,65 +351,6 @@ define(["module",
                          link = grid.link || {},
                          title = link.title || "";
                     
-                    /*
-                    $(elem).click(function(event) {
-                        var link;
-
-                        if ($scope.grids[idx].link !== undefined){
-                            link = $scope.grids[idx].link;
-                        }
-                        event.preventDefault();
-                        $scope.onClick({ $event :event, 
-                                           $link : link
-                                        });
-                    });
-                    */
-                    
-                    $(elem).on("dragstart",function(ev) {
-                        var link;
-                        link = $scope.grids[idx].link;
-                        ev.originalEvent.dataTransfer.setData("application/json",JSON.stringify({
-                            link : link
-                        }));
-                        
-                        $scope.draging = {
-                            index : idx,
-                            link : link
-                        };
-                    });
-                    
-                    $(elem).on("dragover",function(ev) {
-                        // Always true in testing.
-                        // @TODO Prevent dragover on itself
-                        // @TODO Prevent dragover on a button with full of grid.
-                        ev.preventDefault();
-                    });
-                    
-                    $(elem).on("drop",function(ev) {
-                        // It is receiver of drag
-                        ev.preventDefault();                        
-                        var data = JSON.parse(ev.originalEvent.dataTransfer.getData("application/json"));
-                        // @TODO : validation
-                        $scope.$apply(function() {
-                            if ($scope.links === undefined) 
-                                $scope.links = [];
-                            $scope.links.push(data.link);                            
-                        });
-                    });
-                    
-                    $(elem).on("dragend",function(ev) {
-                        var draging = $scope.draging;
-                        delete $scope.draging;
-                        console.log("dragend",ev.originalEvent.dataTransfer.dropEffect);
-                        if (ev.originalEvent.dataTransfer.dropEffect== "none") 
-                            return;
-                        $scope.$apply(function() {
-                           console.log("splice",$scope.links,draging.index);
-                           $scope.links.splice(draging.index , 1); 
-                           console.log("splice",$scope.links,draging.index);
-                        });
-                    });
-                    
                 })(idx,$scope.element);
                 
                 $scope.$evalAsync(function(scope) {
@@ -377,6 +382,8 @@ define(["module",
             },
             link : function(scope, element, attrs, ngModel) {
                 scope.element = element;
+                
+                scope.linkFunc(element);
 
                 $(element).addClass("split-panel-win");
 

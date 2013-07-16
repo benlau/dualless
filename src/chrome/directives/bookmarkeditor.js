@@ -17,6 +17,12 @@ define(["module"],
             $scope.color = color;    
         };
         
+        $scope.confirmColorText = function() {
+            $scope.$apply(function() {
+                $scope.color = $scope.colorText;
+            });
+        }
+        
         // link => title , url
         $scope.$watch(function(){
             return $scope.link;
@@ -68,8 +74,8 @@ define(["module"],
                     $scope.color = hex;
                 });
            }
-        });
-        
+           $scope.colorText = $scope.color;
+        });       
     }
 
     function factory() {
@@ -90,6 +96,15 @@ define(["module"],
                     }
                 },function() {
                     $(elem).css("border-color","transparent");
+                });
+                
+                $(element).find(".bookmark-editor-color-input").focusout(function() {
+                    scope.confirmColorText(); 
+                });
+                
+                $(element).find(".bookmark-editor-color-input").keyup(function(e) {
+                    if (e.keyCode == 13)
+                        scope.confirmColorText(); 
                 });
             }
         };

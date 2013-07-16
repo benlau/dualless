@@ -22,6 +22,13 @@ define(["module",
     
     var max = 3; // Max no. of links on a winbutton
 
+    // Mapping of links to grids (depend on the no. of link)
+    var map = [ [-1,-1,-1,-1],
+                [0,0,-1,-1],
+                [0,1,-1,-1],
+                [0,1,2,-1] ];
+
+
     /** Collection of element */
     function Group () {
         this.elements = []
@@ -96,26 +103,93 @@ define(["module",
         
     }
     
+    /** Window Button
+     */
+    
+    function WinButton() {
+        this._links = [];
+        
+        this.grids = [];
+        
+        for (var i = 0 ; i < 4;i++){
+            var grid = new Grid();
+            this.grids.push(grid);
+        }
+    }
+    
+    WinButton.prototype.setup = function(elem) {
+        this.element = elem;
+    }
+    
+    /** Setup the links for a WinButton
+     */
+    
+    WinButton.prototype.links = function(links) {
+        this._links = links;
+        var count = links.length;
+        if (count > max ) {
+            count = max;
+        }
+        
+        var m = map[count];
+        for (var i = 0 ; i < 4;i++){
+            var link = { color : "transparent" }; // @TODO Remove default link
+            if (m[i] >= 0)
+                link = links[m[i]];
+            this.grids[i].link = link;
+        }
+        
+        var groups = [];
+        
+        for (var i = -1 ; i < 4;i++) {
+            groups[i] = new Group();
+            for (var j in m) {
+                if (m[j] == i) {
+                    groups[i].push(this.grids[j].element);
+                }
+            }
+        }
+        
+        for (var i = 0 ; i < 4;i++) {
+            this.grids[i].group = groups[m[i]];
+        }        
+    }
+    
+    
+    
+    /** Refresh the display according to the property changes
+     */
+    
+    WinButton.prototype.refresh = function() {
+        var element = this.element;
+        
+        for (var i = 0 ; i < this.grids.length;i++) {
+            var grid = this.grids[i],
+                 elem = grid.element,
+                 link = grid.link || {},
+                 title = link.title ;
+                 
+            $(elem).css("background-color",grid.color());
+            
+            var draggable = true;
+            if (title === undefined) { 
+                draggable = false;
+            }
+            $(elem).attr("draggable",draggable);
+        }
+    }
+    
+    
+    
     function Controller($scope,$element,$timeout) {
         
-        var tooltip = new Tooltip();
+        var tooltip = new Tooltip(); // @TODO: Move tooltip into WinButton
+        var winButton = new WinButton();
         
-        //$scope.color = "transparent";        
         $scope.rendered = false;
         
         // The information of children grid
-        $scope.grids = [];
-
-        for (var i = 0 ; i < 4;i++){
-            var grid = new Grid();
-            $scope.grids.push(grid);
-        }
-        
-        // Mapping of links to grids (depend on the no. of link)
-        var map = [ [-1,-1,-1,-1],
-                    [0,0,-1,-1],
-                    [0,1,-1,-1],
-                    [0,1,2,-1] ];
+        $scope.grids = winButton.grids;
         
         $scope.setTooltipVisible = function(show){
             if (show) {
@@ -127,65 +201,13 @@ define(["module",
         
         $scope.$watch(function() {
             return {links : $scope.links,
-                    rendered : $scope.rendered};
+                     initialized :  $scope.initialized};
         },function() { // links -> grids.link,color of element
             if ($scope.links) {
-                var count = $scope.links.length;
-                if (count > max ) {
-                    count = max;
-                }
-                
-                var m = map[count];
-                for (var i = 0 ; i < 4;i++){
-                    var link = { color : "transparent" };
-                    if (m[i] >= 0)
-                        link = $scope.links[m[i]];
-                    $scope.grids[i].link = link;
-                }
-
-                $($scope.element).children().each(function(idx,elem) {
-                    $(elem).css("background-color",$scope.grids[idx].color());
-                    var title = $scope.grids[idx].link.title;
-                    var draggable = true;
-                    if (title === undefined) { 
-                        draggable = false;
-                    }
-                    $(elem).attr("draggable",draggable);
-                });
+                winButton.links($scope.links);
+                winButton.refresh();
             }
         },true);
-        
-        // links,rendered -> grids.group
-        $scope.$watch(function(scope) { 
-            return {
-                links : scope.links,
-                rendered : scope.rendered
-            };
-        },function() {
-            if (!$scope.rendered || $scope.links === undefined)
-                return;
-            var count = $scope.links.length;
-            if (count > max ) {
-                count = max;
-            }                
-
-            var m = map[count];
-            var groups = [];
-            
-            for (var i = -1 ; i < 4;i++) {
-                groups[i] = new Group();
-                for (var j in m) {
-                    if (m[j] == i) {
-                        groups[i].push($($scope.element).children()[j]);
-                    }
-                }
-            }
-            
-            for (var i = 0 ; i < 4;i++) {
-                $scope.grids[i].group = groups[m[i]];
-            }
-        },
-        true);
         
         $scope.$watch(function(scope) {
             return scope.orientation + scope.ratio;
@@ -295,6 +317,10 @@ define(["module",
                     });
                     
                 })(idx,$scope.element);
+                
+                $scope.$evalAsync(function(scope) {
+                   scope.initialized = true;
+                });
         
             }); // End of watch
         },

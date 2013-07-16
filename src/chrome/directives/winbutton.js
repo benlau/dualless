@@ -20,7 +20,22 @@ define(["module",
     var sheet = "<link  href='" + uri + "/../directives/winbutton.css' rel='stylesheet'>";
     $("head").append(sheet);
     
-    var max = 3;
+    var max = 3; // Max no. of links on a winbutton
+
+    /** Collection of element */
+    function Group () {
+        this.elements = []
+    }    
+    
+    Group.prototype.push = function(elem){
+        this.elements.push(elem);
+    }
+    
+    Group.prototype.css = function(attr,value) {
+        $(this.elements).each(function(idx,elem){
+            $(elem).css(attr,value);
+        });
+    }
     
     function Controller($scope,$element,$timeout) {
         
@@ -100,7 +115,7 @@ define(["module",
             var groups = [];
             
             for (var i = -1 ; i < 4;i++) {
-                groups[i] = [];
+                groups[i] = new Group();
                 for (var j in m) {
                     if (m[j] == i) {
                         groups[i].push($($scope.element).children()[j]);
@@ -163,11 +178,9 @@ define(["module",
                     $(elem).hover(function(event) {
                         if ($scope.grids[idx].group === undefined) {
                             $(parent).css("background-color","yellow");
+                        } else {
+                            $scope.grids[idx].group.css("background-color","yellow");
                         }
-                        $($scope.grids[idx].group).each(function(i,elem) {
-                            // highlight the whoe group
-                           $(elem).css("background-color","yellow");
-                        });
                         
                         if (title === "") {
                             var hint = "Press 'middle' mouse key to duplicate current site";    
@@ -175,7 +188,6 @@ define(["module",
                         } else {
                             event.preventDefault();
                             
-                            //$(elem).html("<span>" + title + "</span>");
                             var offset = $(elem).offset();
                             tooltip.title(title);
                             tooltip.position(offset.left, offset.top + $(elem).height());
@@ -183,14 +195,12 @@ define(["module",
                         }
                         
                     },function(event) { //unhover
-//                        event.preventDefault();
+                        //event.preventDefault();
                         if ($scope.grids[idx].group === undefined) {
                             $(parent).css("background-color",$scope.grids[idx].link.color);  
+                        } else {
+                            $scope.grids[idx].group.css("background-color",$scope.grids[idx].link.color);  
                         }
-                        $($scope.grids[idx].group).each(function(i,elem) {
-                           $(elem).css("background-color",$scope.grids[idx].link.color);  
-                        });
-                        //$(elem).html("");
                         tooltip.hide();
                     });
                     $(elem).css("background-color",$scope.grids[idx].link.color);  
@@ -208,7 +218,7 @@ define(["module",
                     });
                     
                     $(elem).on("dragstart",function(ev) {
-                        var link;                        
+                        var link;
                         link = $scope.grids[idx].link;
                         ev.originalEvent.dataTransfer.setData("application/json",JSON.stringify({
                             link : link
@@ -242,10 +252,13 @@ define(["module",
                     $(elem).on("dragend",function(ev) {
                         var draging = $scope.draging;
                         delete $scope.draging;
+                        console.log("dragend",ev.originalEvent.dataTransfer.dropEffect);
                         if (ev.originalEvent.dataTransfer.dropEffect== "none") 
                             return;
                         $scope.$apply(function() {
+                           console.log("splice",$scope.links,draging.index);
                            $scope.links.splice(draging.index , 1); 
+                           console.log("splice",$scope.links,draging.index);
                         });
                     });
                     

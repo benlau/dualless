@@ -10,8 +10,8 @@
 
 <hr style="margin: 2px 0px 2px 0px">
 
-<div style="margin:0px 0px 5px 0px" ng-show="pending" ng-click="add()">
-    <div style="width:170px;height:1.2em;overflow:hidden;">[+] {{pending.title}}</div>
+<div style="margin:0px 0px 5px 0px" ng-show="pending && links.length < 3" ng-click="add()">
+    <div class="bookmark-add-link" ng-show="links.length < 3">+ {{pending.title}}</div>
     <hr style="margin: 2px 0px 2px 0px">
 </div>
 

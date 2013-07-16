@@ -37,20 +37,78 @@ define(["module",
         });
     }
     
+    /** Grid - A divided sub-button within winbutton 
+     */
+    function Grid() {
+        this.link = undefined;
+        this.group = undefined;
+    }
+
+    Grid.prototype.color = function() {
+        var color = "transparent";
+        if (this.link &&
+            this.link.color) {
+            color = this.link.color;
+        }
+        return color;
+    }
+    
+    /** Setup the grid 
+     */
+    Grid.prototype.setup = function(elem,parent,tooltip) {
+        this.element = elem;
+        this.parent = parent;
+        
+        var grid = this,
+             link = grid.link || {},
+             title = link.title || "";
+
+        $(elem).hover(function(event) {
+            if (grid.group === undefined) {
+                $(parent).css("background-color","yellow");
+            } else {
+                grid.group.css("background-color","yellow");
+            }
+            
+            if (title === "") {
+                var hint = "Press 'middle' mouse key to duplicate current site";    
+                $(elem).attr("title",hint);
+            } else {
+                event.preventDefault();
+                
+                var offset = $(elem).offset();
+                tooltip.title(title);
+                tooltip.position(offset.left, offset.top + $(elem).height());
+                tooltip.show();
+            }
+            
+        },function(event) { //unhover
+            //event.preventDefault();
+            if (grid.group === undefined) {
+                $(parent).css("background-color","transparent");  
+            } else {
+                grid.group.css("background-color",grid.color());  
+            }
+            tooltip.hide();
+        });
+
+        $(elem).css("background-color",grid.color());  
+        
+    }
+    
     function Controller($scope,$element,$timeout) {
         
         var tooltip = new Tooltip();
         
-        $scope.color = "transparent";        
+        //$scope.color = "transparent";        
         $scope.rendered = false;
         
         // The information of children grid
         $scope.grids = [];
 
         for (var i = 0 ; i < 4;i++){
-            $scope.grids.push( { link : { color : "transparent"
-                                    }
-            });
+            var grid = new Grid();
+            $scope.grids.push(grid);
         }
         
         // Mapping of links to grids (depend on the no. of link)
@@ -86,7 +144,7 @@ define(["module",
                 }
 
                 $($scope.element).children().each(function(idx,elem) {
-                    $(elem).css("background-color",$scope.grids[idx].link.color);
+                    $(elem).css("background-color",$scope.grids[idx].color());
                     var title = $scope.grids[idx].link.title;
                     var draggable = true;
                     if (title === undefined) { 
@@ -170,45 +228,19 @@ define(["module",
                    $(elem).height($scope.element.height());                    
                 }
                 
+                var grid = $scope.grids[idx];
+                grid.setup(elem,parent,tooltip);
+                
                 // Setup the event for each grid
                 (function(idx,parent) {
                     var grid = $scope.grids[idx],
-                        title = grid.link.title || "";
-
-                    $(elem).hover(function(event) {
-                        if ($scope.grids[idx].group === undefined) {
-                            $(parent).css("background-color","yellow");
-                        } else {
-                            $scope.grids[idx].group.css("background-color","yellow");
-                        }
-                        
-                        if (title === "") {
-                            var hint = "Press 'middle' mouse key to duplicate current site";    
-                            $(elem).attr("title",hint);
-                        } else {
-                            event.preventDefault();
-                            
-                            var offset = $(elem).offset();
-                            tooltip.title(title);
-                            tooltip.position(offset.left, offset.top + $(elem).height());
-                            tooltip.show();
-                        }
-                        
-                    },function(event) { //unhover
-                        //event.preventDefault();
-                        if ($scope.grids[idx].group === undefined) {
-                            $(parent).css("background-color",$scope.grids[idx].link.color);  
-                        } else {
-                            $scope.grids[idx].group.css("background-color",$scope.grids[idx].link.color);  
-                        }
-                        tooltip.hide();
-                    });
-                    $(elem).css("background-color",$scope.grids[idx].link.color);  
+                         link = grid.link || {},
+                         title = link.title || "";
                     
                     $(elem).click(function(event) {
                         var link;
 
-                        if ($scope.grids[idx].link.color != "transparent"){
+                        if ($scope.grids[idx].link !== undefined){
                             link = $scope.grids[idx].link;
                         }
                         event.preventDefault();

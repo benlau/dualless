@@ -34,7 +34,7 @@ define(["module",
     /** Collection of element */
     function Group () {
         this.elements = []
-    }    
+    };    
     
     Group.prototype.push = function(elem){
         this.elements.push(elem);
@@ -75,11 +75,7 @@ define(["module",
              var link = grid.link || {},
                   title = link.title || "";
 
-            if (grid.group === undefined) {
-                $(parent).css("background-color","yellow");
-            } else {
-                grid.group.css("background-color","yellow");
-            }
+            grid.group.css("background-color","yellow");
             
             if (title === "") {
                 var hint = "Press 'middle' mouse key to duplicate current site";    
@@ -95,11 +91,7 @@ define(["module",
             
         },function(event) { //unhover
             //event.preventDefault();
-            if (grid.group === undefined) {
-                $(parent).css("background-color","transparent");  
-            } else {
-                grid.group.css("background-color",grid.color());  
-            }
+            grid.group.css("background-color",grid.color());  
             tooltip.hide();
         });
 
@@ -166,7 +158,6 @@ define(["module",
                 self.grids.push(grid);
             })(i);
         }
-
     }
     
     WinButton.prototype.setup = function(elem) {
@@ -174,7 +165,6 @@ define(["module",
         var self = this;
         
         $(elem).on("dragover",function(ev) {
-            // @TODO Prevent dragover on itself
             if (self._links.length < max) {
                 ev.preventDefault();
             }
@@ -196,10 +186,10 @@ define(["module",
      */
     
     WinButton.prototype.links = function(links) {
-        if (arguments.length == 0) {
+        if (arguments.length === 0) {
             return this._links;
-        }
-        
+        }      
+       
         this._links = links;
         var count = links.length;
         if (count > max ) {
@@ -207,8 +197,9 @@ define(["module",
         }
         
         var m = map[count];
+        var link;
         for (var i = 0 ; i < 4;i++){
-            var link = undefined;
+            link = undefined;
             if (m[i] >= 0)
                 link = links[m[i]];
             this.grids[i].link = link;
@@ -228,13 +219,12 @@ define(["module",
         for (var i = 0 ; i < 4;i++) {
             this.grids[i].group = groups[m[i]];
         }
-    }
+    };
     
     /** Refresh the display according to the property changes
      */
     
     WinButton.prototype.refresh = function() {
-        var element = this.element;
         
         for (var i = 0 ; i < this.grids.length;i++) {
             var grid = this.grids[i],
@@ -250,7 +240,7 @@ define(["module",
             }
             $(elem).attr("draggable",draggable);
         }
-    }   
+    };   
     
     function Controller($scope,$element,$timeout) {
         
@@ -275,7 +265,6 @@ define(["module",
         });
         
         $scope.rendered = false;
-        
         // The information of children grid
         $scope.grids = winButton.grids;
         
@@ -289,16 +278,19 @@ define(["module",
         
         $scope.linkFunc = function(element) {
             winButton.setup(element);    
-        }
+        };
         
         $scope.$watch(function() {
             return {links : $scope.links,
                      initialized :  $scope.initialized};
         },function() { // links -> grids.link,color of element
-            if ($scope.links) {
-                winButton.links($scope.links);
-                winButton.refresh();
+            var links = $scope.links;
+            if (links === undefined) {
+                links = [];
             }
+            winButton.links(links);
+            winButton.refresh();
+
         },true);
         
         $scope.$watch(function(scope) {
@@ -343,15 +335,7 @@ define(["module",
                 }
                 
                 var grid = $scope.grids[idx];
-                grid.setup(elem,parent,tooltip);
-                
-                // Setup the event for each grid
-                (function(idx,parent) {
-                    var grid = $scope.grids[idx],
-                         link = grid.link || {},
-                         title = link.title || "";
-                    
-                })(idx,$scope.element);
+                grid.setup(elem,parent,tooltip);               
                 
                 $scope.$evalAsync(function(scope) {
                    scope.initialized = true;

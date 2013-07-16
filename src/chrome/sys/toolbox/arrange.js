@@ -115,7 +115,10 @@ define(["dualless/sys/toolbox/resize",
                     if (retry > 0) { // Just retry without touch the viewport size
                         retry--;
                         accept = false;
-                        arrange(rects[0].unite(rects[1]),options,final);
+                        //arrange(rects[0].unite(rects[1]),options,final); 
+                        
+                        // Using united size as target is worse then before.
+                        arrange(options.viewport.size(),options,final);
                     } 
                     
                     // Ubuntu(Unity) unlike Mac or Window, the screen

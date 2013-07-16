@@ -45,8 +45,18 @@ define(["module"],
                 
             $scope.choices = arr;
             
-            $scope.orientation = $routeParams.orientation.toUpperCase();
+            if ($routeParams.orientation) {
+                $scope.orientation = $routeParams.orientation.toUpperCase();
+            } else {
+                $scope.orientation = localStorage.panelLastMode;    
+                if ($scope.orientation != "H" &&
+                    $scope.orientation != "V")
+                    $scope.orientation = "H";
+            }
 
+            localStorage.panelLastMode = $scope.orientation;
+
+            
             $scope.split = function (param1,param2,position,link,event) {
                 var args = {param1: param1,
                             param2: param2,

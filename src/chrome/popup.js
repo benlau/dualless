@@ -27,10 +27,11 @@ require([ "dualless/views/panel",
 	
 	app.config(['$routeProvider', function configRouteProvider($routeProvider) {
         
+        $routeProvider.when("/panel",PanelView);
         $routeProvider.when("/panel/:orientation",PanelView);
         $routeProvider.when("/bookmark/:orientation/:param1/:param2/:position",bookmark);
         // @TODO - Enable to remember the horizontal or vertical mode.
-        $routeProvider.otherwise({redirectTo : "/panel/h" });
+        $routeProvider.otherwise({redirectTo : "/panel" });
 			
 	}]);
 	

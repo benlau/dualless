@@ -8,9 +8,11 @@
  */
 
 define(["module",
-         "dualless/widgets/tooltip"],
+         "dualless/widgets/tooltip",
+         "dualless/lib/eventemitter"],
          function(self,
-                    Tooltip) {
+                    Tooltip,
+                    EventEmitter) {
 
     var uri = self.uri;
     var arr = uri.split("/");
@@ -49,6 +51,7 @@ define(["module",
     function Grid() {
         this.link = undefined;
         this.group = undefined;
+        this.events = new EventEmitter();
     }
 
     Grid.prototype.color = function() {
@@ -66,11 +69,13 @@ define(["module",
         this.element = elem;
         this.parent = parent;
         
-        var grid = this,
-             link = grid.link || {},
-             title = link.title || "";
+        var grid = this;
 
         $(elem).hover(function(event) {
+             var link = grid.link || {},
+                  title = link.title || "";
+            console.log("hover",grid);
+
             if (grid.group === undefined) {
                 $(parent).css("background-color","yellow");
             } else {
@@ -99,6 +104,20 @@ define(["module",
             tooltip.hide();
         });
 
+        $(elem).click(function(event) {
+            var link;
+
+            if (grid.link !== undefined) {
+                link = grid.link;
+            }
+            event.preventDefault();
+            
+            grid.events.emit("click",{ $event :event, 
+                               $link : link
+                            });
+        });
+
+
         $(elem).css("background-color",grid.color());  
         
     }
@@ -110,11 +129,19 @@ define(["module",
         this._links = [];
         
         this.grids = [];
+
+        this.events = new EventEmitter(); 
+        
+        var self = this;
         
         for (var i = 0 ; i < 4;i++){
             var grid = new Grid();
+            grid.events.on("click",function(data) {
+               self.events.emit("click",data); 
+            });
             this.grids.push(grid);
         }
+
     }
     
     WinButton.prototype.setup = function(elem) {
@@ -133,7 +160,7 @@ define(["module",
         
         var m = map[count];
         for (var i = 0 ; i < 4;i++){
-            var link = { color : "transparent" }; // @TODO Remove default link
+            var link = undefined;
             if (m[i] >= 0)
                 link = links[m[i]];
             this.grids[i].link = link;
@@ -152,10 +179,8 @@ define(["module",
         
         for (var i = 0 ; i < 4;i++) {
             this.grids[i].group = groups[m[i]];
-        }        
+        }
     }
-    
-    
     
     /** Refresh the display according to the property changes
      */
@@ -185,6 +210,9 @@ define(["module",
         
         var tooltip = new Tooltip(); // @TODO: Move tooltip into WinButton
         var winButton = new WinButton();
+        winButton.events.on("click",function(data) {
+           $scope.onClick(data); 
+        });
         
         $scope.rendered = false;
         
@@ -259,6 +287,7 @@ define(["module",
                          link = grid.link || {},
                          title = link.title || "";
                     
+                    /*
                     $(elem).click(function(event) {
                         var link;
 
@@ -270,6 +299,7 @@ define(["module",
                                            $link : link
                                         });
                     });
+                    */
                     
                     $(elem).on("dragstart",function(ev) {
                         var link;

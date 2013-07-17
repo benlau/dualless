@@ -58,6 +58,9 @@ define(["module",
         },function() {
             $scope.$evalAsync(function() {
                 $scope.links = $rootScope.bookmark.links[$scope.key];               
+                if ($scope.links === undefined) {
+                    $scope.links = [];
+                }
                 $scope.buttons = [{},{}];
                 $scope.buttons[$scope.position] = $scope.links;
                 $scope.buttons[1 - $scope.position]= undefined;

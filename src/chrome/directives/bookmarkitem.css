@@ -3,6 +3,14 @@
     overflow : hidden;
 }
 
+.bookmark-item:hover {
+    background-color:#eff2f7;
+}
+
+.bookmark-item-selected {
+    background-color:#d8dfea;
+}
+
 .bookmark-item-grid {
     display : inline-block;    
     height : 20px;

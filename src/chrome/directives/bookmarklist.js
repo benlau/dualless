@@ -29,7 +29,8 @@ define(["module"],
         };
         
         $scope.select = function(idx) {
-            $scope.onSelect({$index : idx});    
+            $scope.onSelect({$index : idx});
+            $scope.$broadcast("selected" , {code : idx});
         };
     }
 	

@@ -10,7 +10,7 @@ define(["module"],
     var sheet = "<link  href='" + uri + "/../directives/bookmarkitem.css' rel='stylesheet'>";
 	$("head").append(sheet);
  
-    function Controller($scope) {
+    function Controller($scope,$element) {
         
         $scope.$watch(function(scope) {
             return scope.link;
@@ -34,7 +34,14 @@ define(["module"],
         $scope.select = function($event) {
             $event.stopPropagation();
             $scope.onSelect({});
+            $($element).addClass("bookmark-item-selected");
         };
+        
+        $scope.$on("selected",function(event,data) {
+            if (data.code != $scope.code) {
+                $($element).removeClass("bookmark-item-selected");                
+            }
+        });
     }
 	
 	function factory() {
@@ -45,6 +52,7 @@ define(["module"],
             controller: Controller,
             restrict : 'E',
             scope : { link : "=",
+                      code : "=",
                       onRemove : "&",
                       onSelect : "&"
                      },

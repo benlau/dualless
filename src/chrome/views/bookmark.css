@@ -2,8 +2,15 @@
     height : 370px;
 }
 
+.bookmark-add-symbol {
+    display:inline-block;
+    vertical-align:middle;
+    padding-bottom:3px;
+    margin-right:2px
+}
+    
 .bookmark-add-link {
-    width:170px;
+    width:155px;
     height:1.2em;
     overflow:hidden;
     font-weight:bold;
@@ -11,6 +18,7 @@
     margin-bottom: 0.3em;
     font-size : 1.2em;
     text-decoration:underline;
+    display: inline-block;
 }
 
 .bookmark-footer {

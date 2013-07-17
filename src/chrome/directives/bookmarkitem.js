@@ -42,6 +42,18 @@ define(["module"],
                 $($element).removeClass("bookmark-item-selected");                
             }
         });
+        
+        $scope.linkFunc = function(element) {
+            var removeButton = $(element).find(".bookmark-item-remove-button");
+            console.log(removeButton);
+            $(element).hover(function () {
+                $(removeButton).css("visibility","visible");
+            },function() {
+                // unhover
+                $(removeButton).css("visibility","hidden");                
+            });
+            $(removeButton).css("visibility","hidden");                
+        }
     }
 	
 	function factory() {
@@ -57,7 +69,7 @@ define(["module"],
                       onSelect : "&"
                      },
             link : function(scope,iElement, iAttrs, controller) {
-                
+                scope.linkFunc(iElement);
             }
 		};
 		return def;

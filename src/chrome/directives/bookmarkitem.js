@@ -45,7 +45,6 @@ define(["module"],
         
         $scope.linkFunc = function(element) {
             var removeButton = $(element).find(".bookmark-item-remove-button");
-            console.log(removeButton);
             $(element).hover(function () {
                 $(removeButton).css("visibility","visible");
             },function() {

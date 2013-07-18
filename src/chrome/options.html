@@ -46,13 +46,14 @@ body {
                     </ul>
                     </div>
                 </td></tr>
-            <tr><td><p>Viewport - The maximum screen size</p>
-                       Viewport is the maximum space that your browser could use. Sometimes the detection may fail , especially for 
-                       platform like Linux. In this case , you may press the "reset" button to restore the viewport to default value.      
-                    <br>
-                    <br> The current viewport is {{viewport}}</br>
-                    <br><i>Remarks: Future version may allow to set custom viewport</i>   
-                <td><a class="btn" ng-click="resetViewport()">Reset</a></td>
+            <tr><td><p>Bookmark</p>
+                    With the feature of bookmark , you could relaunch your favor site in a new tab and windows will be splitted in the way you like.                           </td>
+                <td>
+                    <ul class="nav nav-pills">
+                        <li></><a class="btn" ng-click="options.bookmark.clear()">Clear</a></li>
+                        <li><a class="btn" ng-click="options.bookmark.restoretoDefault()">Default</a></li>
+                    </ul>
+                </td>
             </tr>
          </table>
             

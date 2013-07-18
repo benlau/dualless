@@ -1,0 +1,27 @@
+[
+  {
+    "pattern": "drive.google.com/keep",
+    "color": "#f4b400",
+    "name": "Google Keep"
+  },
+  {
+    "pattern": "trello.com",
+    "color": "#23658b",
+    "name": "Trello"
+  },
+  {
+    "pattern": "plurk.com",
+    "color": "#cf682f",
+    "name": "Plurk"
+  },
+  {
+    "pattern": "plus.google.com",
+    "color": "#da4835",
+    "name": "Google+"
+  },
+  {
+    "pattern": "rememberthemilk.com",
+    "color": "#ffffff",
+    "name": "Remember the Milk"
+  }
+]

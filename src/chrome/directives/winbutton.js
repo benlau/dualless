@@ -78,7 +78,16 @@ define(["module",
             grid.group.css("background-color","yellow");
             
             if (title === "") {
-                var hint = "Press 'middle' mouse key to duplicate current site";    
+                var hint;
+                switch (Math.floor((Math.random()*3))) { // Hint is not always show
+                    case 0:
+                        hint = "Press 'middle' click to duplicate current site";    
+                        break;
+                        
+                    case 1:
+                        hint = "Press 'right' click for bookmark management";    
+                        break;
+                }
                 $(elem).attr("title",hint);
             } else {
                 event.preventDefault();

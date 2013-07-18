@@ -119,7 +119,7 @@ define(["module",
                     
         $(elem).on("dragstart",function(ev) {
             var link = grid.link;
-            
+            tooltip.hide();
 //            ev.originalEvent.dataTransfer.effectAllowed = 'move';
             ev.originalEvent.dataTransfer.setData("application/json",JSON.stringify({
                 link : link

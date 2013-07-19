@@ -90,6 +90,19 @@ define(function() {
                tab.index = info.newPosition;
            }
        });
+       
+       chrome.tabs.onUpdated.addListener(function(tabId, changeInfo,tab) {
+           var key = self.key(tabId);
+           var a1 = document.createElement('a'),
+               a2 = document.createElement('a');
+           
+           a1.href = changeInfo.url;
+           a2.href = key;
+           if (a1 != a2) {
+               self.remove(key);
+           }
+       });
+       
    }
     
    return TabTracker; 

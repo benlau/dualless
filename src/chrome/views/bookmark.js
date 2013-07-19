@@ -65,9 +65,13 @@ define(["module",
                     $scope.links = [];
                 }
                 $scope.buttons = [{},{}];
-                $scope.buttons[$scope.position] = $scope.links;
-                $scope.buttons[1 - $scope.position]= undefined;
-                delete $scope.selected;
+                $scope.buttons[$scope.position] = {
+                    links : $scope.links,
+                    disable : false
+                };
+                $scope.buttons[1 - $scope.position] = {
+                    disable : true
+                };
             });
         },true);
 

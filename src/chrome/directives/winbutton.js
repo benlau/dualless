@@ -251,8 +251,7 @@ define(["module",
         }
     };   
     
-    function Controller($scope,$element,$timeout) {
-        
+    function Controller($scope,$element,$timeout) {       
         var tooltip = new Tooltip(); // @TODO: Move tooltip into WinButton
         
         var winButton = new WinButton();
@@ -286,8 +285,26 @@ define(["module",
         };
         
         $scope.linkFunc = function(element) {
-            winButton.setup(element);    
+            winButton.setup(element);
+            $scope.element = element;
         };
+        
+        $scope.$watch(function() {
+            return $scope.disable;   
+        },function() {
+            if ($scope.disable) {
+
+                $timeout(function() {
+                    var mask = $("<div style='z-index:1;position:absolute;background:gray;opacity:0.4'></div>");
+                    $("body").append(mask);
+                    
+                    var offset = $($scope.element).offset();
+                    $(mask).css({top : offset.top, left : offset.left});
+                    $(mask).width($($scope.element).width() + 2);
+                    $(mask).height($($scope.element).height() +2 );
+                });
+           }
+        });
         
         $scope.$watch(function() {
             return {links : $scope.links,
@@ -369,6 +386,7 @@ define(["module",
                 orientation : "@",
                 ratio : "@",
                 key : "@",
+                disable : "=",
                 links : "=links",
                 onClick : "&",
                 onRightClick : "&"

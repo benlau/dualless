@@ -2,9 +2,9 @@
     <div class="split-panel-box">
         <div class="split-panel-label"><span>{{param1}}:{{param2}}</span></div>
         <div class="split-panel-screen">
-            <winbutton orientation="{{orientation}}" ratio="{{param1}}0" links="buttons[0]" ></winbutton>
+            <winbutton orientation="{{orientation}}" ratio="{{param1}}0" links="buttons[0].links" disable="buttons[0].disable"></winbutton>
             <div class="{{orientation | lowercase}}split-panel-spacer"></div>
-            <winbutton orientation="{{orientation}}" ratio="{{param2}}0" links="buttons[1]"></winbutton>
+            <winbutton orientation="{{orientation}}" ratio="{{param2}}0" links="buttons[1].links" disable="buttons[1].disable"></winbutton>
         </div>
     </div>
 

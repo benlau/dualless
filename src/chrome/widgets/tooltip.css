@@ -2,9 +2,9 @@
 .dualless-tooltip {
     position : absolute;
     z-index : 100;
-    left : 30px;
+    left : 29px;
     overflow : hidden;
-    width : 130px;
+    width : 125px;
     white-space: nowrap;
 }
 

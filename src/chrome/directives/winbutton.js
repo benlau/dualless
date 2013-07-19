@@ -302,6 +302,10 @@ define(["module",
                     $(mask).css({top : offset.top, left : offset.left});
                     $(mask).width($($scope.element).width() + 2);
                     $(mask).height($($scope.element).height() +2 );
+                    
+                    $scope.$on("$destroy",function() {
+                        $(mask).remove(); 
+                    });
                 });
            }
         });

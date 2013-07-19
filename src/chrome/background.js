@@ -31,6 +31,8 @@ require(["sys/windowmanager",
 	// Pairing mode
 	if (_manager.os() != "MacOS") { // It is not needed for Mac!
 		_manager.events.on("focusChanged",function(winId) {
+            if (localStorage.pairingModeEnabled == 0)
+                return;
 			var windows = _manager.windows();
 			toolbox.pair(winId,windows);
 		});

@@ -34,7 +34,8 @@ define(["module",
                                    $scope.position
          );
 
-        $scope.colors = ["RGB(152,0,0)",
+        $scope.colors = ["#000000",
+                         "RGB(152,0,0)",
                          "RGB(255,0,0)",
                          "RGB(255,153,0)",
                          "RGB(255,255,0)",
@@ -44,8 +45,8 @@ define(["module",
                          "RGB(0,0,255)",                         
                          "RGB(153,0,255)",
                          "RGB(255,0,255)",
-                         "#f4b400", // Google Drive
-                         "#ffffff"];
+                         "#f4b400" // Google Drive
+                         ];
         
         // The link of current browsing page. It is pending to add to bookmark
         $scope.pending = { title : tab.title,

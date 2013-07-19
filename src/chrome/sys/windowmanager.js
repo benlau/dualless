@@ -282,8 +282,27 @@ define(["dualless/sys/viewport",
                             });
 	
         runner.step(function() {
+            // Update the windows information.
 		    manager.updateWindows({autoMatching: true,
                                       window : options.window},runner.listener());
+        });
+        
+        runner.step(function(list) {
+            // If the current tab is tracked , it should swap the position and remove the action
+            var action = options.action || {},
+                link = action.link;
+            
+            if (!link)
+                runner.next(list);
+            
+            var trackedTab = manager._tracker.tab(link.url);
+            manager.currentWindowTab(function(win,currentTab) {
+                if (trackedTab && trackedTab.id == currentTab.id) {
+                    options.position = 1 - options.position;   
+                    delete options.action.link;
+                }
+                runner.next(list);
+            });
         });
 
         runner.step(function(list) {
@@ -410,7 +429,7 @@ define(["dualless/sys/viewport",
                 skipTabsMoving = true; 
             } else if (action.link) {
                                
-                var tab = manager._tracker.tab(link.url)
+                var tab = manager._tracker.tab(link.url);
                      
                 if (tab) { // Find tracked tab. It should move it.
                     createData.tabId = tab.id

@@ -86,7 +86,6 @@ define(["module",
             
             var color = $scope.colors[ Math.floor(Math.random() * $scope.colors.length ) ];
             
-            console.log(color);
             var site = Site.find($scope.pending.url);
 
             if (site) {

@@ -35,11 +35,15 @@ define(["module"],
             $event.stopPropagation();
             $scope.onSelect({});
             $($element).addClass("bookmark-item-selected");
+
         };
         
         $scope.$on("selected",function(event,data) {
+            console.log("selected",data);
             if (data.code != $scope.code) {
                 $($element).removeClass("bookmark-item-selected");                
+            } else {
+                $($element).addClass("bookmark-item-selected");
             }
         });
         

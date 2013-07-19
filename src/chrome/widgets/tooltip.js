@@ -14,9 +14,10 @@ define(["module"],
     var sheet = "<link href='" + uri + "/tooltip.css' rel='stylesheet'>";
     $("head").append(sheet);
     
+    var element = $("<div class='dualless-tooltip'></div>");
+            
     function Tooltip() {
-        this.element = $("<div class='dualless-tooltip'></div>");
-
+        this.element = element;
         $("body").append(this.element);
     }
     

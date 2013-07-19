@@ -1,5 +1,5 @@
 <div>
     <div ng-repeat="link in links">
-        <bookmarkitem link="link" on-remove="remove($index)" on-select="select($index);" code="$index"></bookmarkitem>
+        <bookmarkitem link="link" on-remove="remove($index)" on-click="select($index);" selected="selected == $index"></bookmarkitem>
     </div>
 </div>

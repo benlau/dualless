@@ -31,6 +31,7 @@ define(["module"],
             $scope.onRemove({});
         };
 
+        /*
         $scope.select = function($event) {
             $event.stopPropagation();
             $scope.onSelect({});
@@ -46,6 +47,21 @@ define(["module"],
                 $($element).addClass("bookmark-item-selected");
             }
         });
+        */
+
+        $scope.click = function($event) {
+            $scope.onClick({});
+        }
+        
+        $scope.$watch(function() {
+            return $scope.selected;
+        },function() {
+            if ($scope.selected) {
+                $($element).addClass("bookmark-item-selected");
+            } else {
+                $($element).removeClass("bookmark-item-selected");                                
+            }
+        });
         
         $scope.linkFunc = function(element) {
             var removeButton = $(element).find(".bookmark-item-remove-button");
@@ -56,7 +72,8 @@ define(["module"],
                 $(removeButton).css("visibility","hidden");                
             });
             $(removeButton).css("visibility","hidden");                
-        }
+        }        
+
     }
 	
 	function factory() {
@@ -67,9 +84,9 @@ define(["module"],
             controller: Controller,
             restrict : 'E',
             scope : { link : "=",
-                      code : "=",
+                      selected : "=",
                       onRemove : "&",
-                      onSelect : "&"
+                      onClick : "&"
                      },
             link : function(scope,iElement, iAttrs, controller) {
                 scope.linkFunc(iElement);

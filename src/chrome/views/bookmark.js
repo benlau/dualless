@@ -48,10 +48,12 @@ define(["module",
                          "#f4b400" // Google Drive
                          ];
         
+        $scope.selectedLink = undefined;
+        
         // The link of current browsing page. It is pending to add to bookmark
         $scope.pending = { title : tab.title,
                            url : tab.url
-                          };
+                          };                         
 
         // bookmark.links => links , buttons
         $rootScope.$watch(function(scope) {
@@ -95,87 +97,7 @@ define(["module",
             $scope.pending.color = color;
             $scope.links.push($scope.pending);
             delete $scope.pending;
-        };
-        
-        // Select a link. It will update $scope.selected
-        $scope.select = function(idx) {
-            if (idx >= $scope.links.length )
-                return;
-            $scope.selected = $scope.links[idx];
-        };
-         
-        /* 
-         // bookmarks.links , bookmarks.bindings => links
-         $rootScope.$watch(function(scope) {
-             return {
-                 links : scope.bookmarks.links,
-                 bindings : scope.bookmarks.bindings
-             };
-         },function() {
-             $scope.links = {}; // Clear all the value as links could be removed.
-
-             $scope.$evalAsync(function() {
-                 for (var i in $rootScope.bookmarks.links) {
-                     $scope.links[i] = { pin : false }; // Extra attribute is added
-                     
-                     $.extend($scope.links[i],$rootScope.bookmarks.links[i]);
-                     var bindings = $.grep($rootScope.bookmarks.bindings,function(value) {
-                         return value.key == $scope.key;
-                     });
-                     if (bindings.length > 0)
-                        $scope.links[i].pin = true;
-                 }                 
-             });
-         }, 
-         true);
-         
-         // links => bookmarks.links , bookmarks.bindings
-         $scope.$watch(function() {
-             return $scope.links;
-         } , function() { // Write back the change to $rootScope
-            $rootScope.$evalAsync(function() {
-                 $scope.bookmarks.links = []
-                 for (var i in $scope.links) {
-                    var link = {};
-                    $.extend(link,$scope.links[i]);
-                    var pin = link.pin;
-                    delete link.pin;
-                    $scope.bookmarks.links.push(link);
-                    
-                    if (pin) {
-                        
-                        $rootScope.bookmarks.bindings.push({
-                           key : $scope.key,
-                           id : link.id 
-                        });
-                        
-                    } else {
-                        var bindings = $.grep($rootScope.bookmarks.bindings, function(value) { 
-                            return value.key == $scope.key && value.id == link.id;
-                        },true );
-                        $rootScope.bookmarks.bindings = bindings;
-                    }
-                 }
-                 // @TODO : Update binding
-            });
-         },
-         true);
-
-         // $rootScope -> buttons
-         $rootScope.$watch(function(scope) {
-             return scope.bookmarks.buttons;
-         },function() {
-             $scope.$evalAsync(function() {
-                 $scope.buttons = [{},{}];
-                 console.log($rootScope.bookmarks.buttons,$scope.key);
-                 var button = $rootScope.bookmarks.buttons[$scope.key];
-                 $scope.buttons[$scope.position] = button;
-                 $scope.buttons[1 - $scope.position]= undefined;
-                 console.log($scope.buttons);
-             });
-         },
-         true);
-         */
+        };       
          
          $scope.back = function() {
              history.back();

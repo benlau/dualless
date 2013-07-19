@@ -29,8 +29,30 @@ define(function() {
    /** Find a tracking tab by the key and return in async operation
     */
    
-   TabTracker.prototype.tabAsync = function(key,callback) {
-       callback(this._tabs[key]);
+   TabTracker.prototype.tabAsync = function(url,callback) {
+        var tab = this._tabs[url];
+       
+        if (tab) {
+            callback(tab);
+            return;
+        }
+       
+        chrome.windows.getAll({populate : true},function(windows) {
+            $(windows).each(function(idx,w){
+                
+                $(w.tabs).each(function(idx,t) {
+                     if (t.url == url) { // Assumption changed. Key is URL.
+                         tab = t;
+                         return false;
+                     }
+                });
+                if (tab)
+                    return false;
+            });
+            callback(tab);
+
+        });
+
    }
    
    /** Find the key 

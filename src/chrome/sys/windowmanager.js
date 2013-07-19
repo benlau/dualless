@@ -276,6 +276,8 @@ define(["dualless/sys/viewport",
         var manager = this,
              runner = new TaskRunner();
         
+        // The flow of split is very complicated. It should fork a new class to handle it
+        
         manager._viewport.detect(options.screen);
         $.extend(options,{ viewport: manager._viewport,
                              os : manager._os
@@ -292,16 +294,18 @@ define(["dualless/sys/viewport",
             var action = options.action || {},
                 link = action.link;
             
-            if (!link)
+            if (!link) {
                 runner.next(list);
-            
-            var trackedTab = manager._tracker.tab(link.url);
-            manager.currentWindowTab(function(win,currentTab) {
-                if (trackedTab && trackedTab.id == currentTab.id) {
-                    options.position = 1 - options.position;   
-                    delete options.action.link;
-                }
-                runner.next(list);
+                return;
+            }
+            manager._tracker.tabAsync(link.url,function(trackedTab) {
+                manager.currentWindowTab(function(win,currentTab) {
+                    if (trackedTab && trackedTab.id == currentTab.id) {
+                        options.position = 1 - options.position;   
+                        delete options.action.link;
+                    }
+                    runner.next(list);
+                });
             });
         });
 
@@ -324,8 +328,12 @@ define(["dualless/sys/viewport",
             toolbox.arrange(options,runner.listener());			
         });
         
-        // Post action handler
         runner.step(function() {
+            manager._findTrackedTab(options.action,runner.listener());
+        });
+        
+        // Post action handler
+        runner.step(function(trackedTab) {
             var action = options.action || {},
                  duplicate = action.duplicate,
                  link = action.link;
@@ -335,7 +343,7 @@ define(["dualless/sys/viewport",
                                        url : options.tab.url},
                                        runner.listener());
             } else if (link) {
-                var tab = manager._tracker.tab(link.url),
+                var tab = trackedTab,
                      info = {
                          windowId : options.windows[1].id
                      }
@@ -418,6 +426,10 @@ define(["dualless/sys/viewport",
         });        
 
         runner.step(function() {
+            manager._findTrackedTab(options.action,runner.listener());
+        });
+        
+        runner.step(function(trackedTab) {
             // Pre-processing of action
             var createData = {
                  focused : false
@@ -429,7 +441,7 @@ define(["dualless/sys/viewport",
                 skipTabsMoving = true; 
             } else if (action.link) {
                                
-                var tab = manager._tracker.tab(link.url);
+                var tab = trackedTab;
                      
                 if (tab) { // Find tracked tab. It should move it.
                     createData.tabId = tab.id
@@ -530,6 +542,18 @@ define(["dualless/sys/viewport",
 			}
 		}
 	}
-	
+
+    WindowManager.prototype._findTrackedTab = function(action,callback) {
+        var action = action || {},
+            link = action.link
+        
+        if (!link) {
+            callback();
+            return;
+        }
+        
+        this._tracker.tabAsync(link.url,callback);
+    }
+    
 	return WindowManager;
 });

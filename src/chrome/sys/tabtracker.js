@@ -25,6 +25,13 @@ define(function() {
    TabTracker.prototype.tab = function(key) {
        return this._tabs[key];
    }
+
+   /** Find a tracking tab by the key and return in async operation
+    */
+   
+   TabTracker.prototype.tabAsync = function(key,callback) {
+       callback(this._tabs[key]);
+   }
    
    /** Find the key 
     */

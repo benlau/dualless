@@ -1,9 +1,14 @@
+requirejs.config({
+	paths : {
+		"dualless" : "."
+	}
+});
+
+require([ "dualless/data/bookmarkdata"],
+        function(bookmarkData) {    
 
 function OptionsController($scope) {
 	/* Pairing Mode */
-	
-//	var bg = chrome.extension.getBackgroundPage();
-//	var manager = bg.manager();
 	
 	function updatePairingButton(val) {
 		var list;
@@ -15,36 +20,22 @@ function OptionsController($scope) {
 		$scope.pairingButtonState = list;
 	}
 	
-//	function updateViewport(){
-//		var geom = manager.viewport().size().toString();
-//		if (geom != $scope.viewport){
-//			$scope.$apply("viewport = " + geom);
-//		}
-//	}
-//	
-//	$scope.viewport = manager.viewport().size().toString();
-	
 	$scope.setPairingMode = function(val){
 		localStorage.pairingModeEnabled = val;
 		updatePairingButton(val);
 	};
 	
-//	$scope.resetViewport = function(){
-//		manager.viewport().reset(window.screen);
-//		$scope.viewport = manager.viewport().size().toString();
-//	};	
-//
 	updatePairingButton(localStorage.pairingModeEnabled);
     
     $scope.options = {}
     
     $scope.options.bookmark = {
         clear : function(){
-            localStorage.bookmark = {};
+            localStorage.bookmark = JSON.stringify({});
         },
         
         restoreToDefault : function() {
-            delete localStorage.bookmark; // popup.js will create the default bookmark
+            localStorage.bookmark = JSON.stringify(bookmarkData.data());
         }
     }
     
@@ -53,3 +44,10 @@ function OptionsController($scope) {
 		manager.viewport().unbind(updateViewport);	
 	});
 }
+
+    var app = angular.module("options",[]);
+    app.controller("OptionsController",OptionsController);
+    $(document).ready(function() {
+		angular.bootstrap(document,["options"]);
+	});	
+})

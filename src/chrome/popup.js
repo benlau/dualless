@@ -11,7 +11,8 @@ require([ "dualless/views/panel",
           "dualless/directives/bookmarkeditor",
           "dualless/directives/bookmarkitem",
           "dualless/sys/service",
-          "dualless/directives/colorpicker"
+          "dualless/directives/colorpicker",
+          "dualless/data/bookmarkdata"
           ],
           function popup(PanelView,
                             bookmarklist,
@@ -20,7 +21,8 @@ require([ "dualless/views/panel",
                             bookmarkeditor,
                             bookmarkitem,
                             WindowManagerService,
-                            colorPicker
+                            colorPicker,
+                            bookmarkData
                             ){
 
 	var app = angular.module("popup",[]);
@@ -77,22 +79,24 @@ require([ "dualless/views/panel",
     app.run(function($rootScope) {
         
         if (localStorage.bookmark === undefined) {
-            // Initial data. For testing purpose
-            localStorage.bookmark = JSON.stringify({
-                // Links for each button
-                links : {
-                    "H_70_30_1" : [{
-                        color : "#f4b400",
-                        title : "Google Keep",
-                        url : "https://drive.google.com/keep"    
-                    }]
-                }
-            });
+            console.log("Load data bookmark",bookmarkData.data());
+            // Initial data
+            localStorage.bookmark = JSON.stringify(bookmarkData.data());
         }
         
-        $rootScope.bookmark = JSON.parse(localStorage.bookmark);
-        if ($rootScope.bookmark.links === undefined)
-            $rootScope.bookmark.links = {}
+        try {
+            $rootScope.bookmark = JSON.parse(localStorage.bookmark);
+            
+            if ($rootScope.bookmark.links === undefined) // In case the data is corrupted
+                $rootScope.bookmark.links = {}
+
+        } catch (e) {
+            console.log("Loading bookmark fail : " + e);
+            console.log("Create a empty bookmark");
+            $rootScope.bookmark = {
+                links : {}    
+            }
+        }
         
         $rootScope.$watch(function(){ // Save bookmark to localStorage
             return $rootScope.bookmark;   

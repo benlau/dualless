@@ -1,6 +1,7 @@
 /* Pair Display Tool */
 
-define(function(){
+define(["dualless/utils/taskrunner"],
+        function(TaskRunner){
     
 	/*
 	function PairDisplay() {
@@ -43,9 +44,10 @@ define(function(){
 	 */
 	
 	function pair(winId,windows) {
-	
 		if (frozen || windows.length ==1 || winId == chrome.windows.WINDOW_ID_NONE)
 			return;		
+            
+	    var runner = new TaskRunner();
 										
         var pos = 0;
         if (windows[1].id == winId){
@@ -63,7 +65,47 @@ define(function(){
                 display.frozen = false; 
           },1000); // Un-freeze after 1000ms
           */
-			
+          
+        runner.step(function() { // Refresh the latest status of window
+            var condition = [];
+            var updatedWindows = [];
+            
+            for (var i = 0 ; i < windows.length ; i++) {              
+                (function(win) {		
+                    var deferred = $.Deferred();
+                    condition.push(deferred);
+                    chrome.windows.get(win.id,{},function(w) {
+                        updatedWindows.push(w);
+                        deferred.resolve();	
+                    });
+                })(windows[i]);
+            }
+
+            $.when.apply(null,condition).done(function() {
+                runner.next(updatedWindows);
+            });
+            
+        });
+        
+        runner.step(function(updatedWindows) {
+            var stop = false;
+            for (var i = 0 ; i < updatedWindows.length;i++) {
+                if (updatedWindows[i].state == "minimized") {
+                    stop = true;
+                    break;
+                }
+            }
+            
+            if (stop) {
+                runner.stop()
+            } else {
+                runner.next();
+            }
+        });
+		
+        runner.step(function() {	
+            
+            
 			/* Approach 2 */
 			/* This method works better in Ubuntu/Unity */
 
@@ -78,10 +120,16 @@ define(function(){
 				chrome.windows.update(windows[pos].id , {focused: true},function() {
 				});
 			});
+
 			/* Remarks: Do not set state to "normal". If the window is maximized, it will force to rollback to previous
 			 * size. It is quite annoying.  
 
 			 */	
+        });
+        
+        runner.run(function() {
+        });
+        
 	};
 
 	/** Pairing by using drawAttention

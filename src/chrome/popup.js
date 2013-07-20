@@ -91,6 +91,8 @@ require([ "dualless/views/panel",
         }
         
         $rootScope.bookmark = JSON.parse(localStorage.bookmark);
+        if ($rootScope.bookmark.links === undefined)
+            $rootScope.bookmark.links = {}
         
         $rootScope.$watch(function(){ // Save bookmark to localStorage
             return $rootScope.bookmark;   

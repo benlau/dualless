@@ -10,6 +10,7 @@ requirejs.config({
 
 define([
         "test-util",
+        "test-chrome",
         "test-viewport",
         "test-windowmanager",
         "module"

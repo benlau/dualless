@@ -30,8 +30,8 @@ define(["dualless/sys/toolbox/resize",
        
         runner.step(function() {
             // Call resize in parallel.
-            // Nested call do not work well on Windows. Moreover, the response time may be slow					
-            // Moreover, nested call can not resolve the alignment problem in Unity
+            // Nested call do not work well on Windows and the response time may be slow					
+            // p.s Nested call can not resolve the alignment / overlapping problem in Ubuntu/Unity
 
             var condition = [];
             updatedWindows = [];
@@ -60,6 +60,21 @@ define(["dualless/sys/toolbox/resize",
             });
             
         });     
+        
+        runner.run(function() { // Tuning in sequence order
+
+            var updatedWindowsRect = []; // The rect object of the updated window
+            $(updatedWindows).each(function(idx,win) {
+                var r = new Rect(win);
+                updatedWindowsRect.push(r);
+            });
+            
+            var condition = [];
+            for (var i = 0 ; i < rects.length;i++) {
+                
+            }
+            
+        });
 
         runner.run(function() {
             // Calculate the result

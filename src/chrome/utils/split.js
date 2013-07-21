@@ -108,7 +108,7 @@ define(["dualless/utils/rect"],
        
        var res = [rect1,rect2];
        
-       adjustByMinSize(rect,res,minSize);
+       adjustByMinSize(rect,res,options.minSize);
        
        if (position !== 0)
            res = [rect2,rect1];

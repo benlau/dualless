@@ -79,10 +79,11 @@ define(["module",
         console.log(rects);
         ok(rects.length == 2);
         ok(rects[1].width == 594);
+        options.minSize = { width : 796 , 
+                              height : 100} ; // Min size
 
         // Test min size
-        rects = split(rect,options, { width : 796 , 
-                                         height : 100} ); // Min size
+        rects = split(rect,options); 
 
         ok(rects.length == 2);
         console.log(rects);
@@ -95,9 +96,10 @@ define(["module",
 
         options.param1 = 5;
         options.param2 = 5;
+        options.minSize = { width : 1050 , 
+                              height : 100} ;
         
-        rects = split(rect,options, { width : 1050 , 
-                                         height : 100 } ); 
+        rects = split(rect,options); 
 
         console.log(rects);
         ok(rects[0].width == 991);

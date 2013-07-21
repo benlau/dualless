@@ -60,21 +60,6 @@ define(["dualless/sys/toolbox/resize",
             });
             
         });     
-        
-        runner.run(function() { // Tuning in sequence order
-
-            var updatedWindowsRect = []; // The rect object of the updated window
-            $(updatedWindows).each(function(idx,win) {
-                var r = new Rect(win);
-                updatedWindowsRect.push(r);
-            });
-            
-            var condition = [];
-            for (var i = 0 ; i < rects.length;i++) {
-                
-            }
-            
-        });
 
         runner.run(function() {
             // Calculate the result
@@ -115,25 +100,38 @@ define(["dualless/sys/toolbox/resize",
 
             //this.detect(options.screen); // Detect the screen size and update viewport if needed
 
-            if (os == "Linux") {
-                retry = 1; // "Linux" should retry one more time without update the viewport.
+            //if (os == "Linux") {
+                retry = 1;  // Retry is not limited to Linux only. Since the retry mechanism
+                             // is changed to handle min size of a Chrome window
+                
+                            // Outdated mechenism:
+                            // "Linux" should retry one more time without update the viewport.
                             // It is a dirty hack to resolve the issue with Unity
-            }
+            //}
 
             function final(result) {
                 var imperfect = result.imperfect,
                      rects = result.rects,
                      accept = true;
-                
+
                 if (imperfect) {
 
-                    if (retry > 0) { // Just retry without touch the viewport size
+                    if (retry > 0) { // Retry with min window size set
                         retry--;
                         accept = false;
                         //arrange(rects[0].unite(rects[1]),options,final); 
                         
                         // Using united size as target is worse then before.
-                        arrange(options.viewport.size(),options,final);
+                        var minSize = {
+                            width  : Math.min(rects[0].width,rects[1].width),
+                            height : Math.min(rects[0].height,rects[1].height),
+                        }
+                        
+                        var retryOptions = {};
+                        $.extend(retryOptions,options);
+                        retryOptions.minSize = minSize;
+                        
+                        arrange(options.viewport.size(),retryOptions,final);
                     } 
                     
                     // Ubuntu(Unity) unlike Mac or Window, the screen
@@ -160,7 +158,7 @@ define(["dualless/sys/toolbox/resize",
                 }
                 
                 if (accept) {
-                    if (callback!=undefined)
+                    if (callback!==undefined)
                         callback();
                 }
             };

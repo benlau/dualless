@@ -16,7 +16,8 @@ define(["module",
 						TaskRunner,
 						Rect,
 						Viewport,
-						os) {
+						os,
+                        split) {
 	
 	var bg = chrome.extension.getBackgroundPage();
 	var manager = bg.manager();
@@ -58,5 +59,51 @@ define(["module",
 		console.log(r1,r2,r3);
 		
 	});
+    
+    test("Split calculation",function () {
+        var rect = {
+            top : 24,
+            left : 65,
+            width : 2048 - 65,
+            height : 1152 - 24
+            },
+            options = {
+                param1 : 7,
+                param2 : 3,
+                position : 0,
+                orientation : "H"
+            },
+            rects = [];
+            
+        rects = split(rect , options);
+        console.log(rects);
+        ok(rects.length == 2);
+        ok(rects[1].width == 594);
+
+        // Test min size
+        rects = split(rect,options, { width : 796 , 
+                                         height : 100} ); // Min size
+
+        ok(rects.length == 2);
+        console.log(rects);
+        ok(rects[1].left == 1252);
+        ok(rects[1].top == 24);
+        ok(rects[1].width == 796 , "Min size should be 796");
+
+        // Min size is larger than half. The split function
+        // should ignore as it not achievable
+
+        options.param1 = 5;
+        options.param2 = 5;
+        
+        rects = split(rect,options, { width : 1050 , 
+                                         height : 100 } ); 
+
+        console.log(rects);
+        ok(rects[0].width == 991);
+        ok(rects[1].width == 991);
+
+        
+    });
 
 });

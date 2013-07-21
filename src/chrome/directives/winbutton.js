@@ -353,15 +353,29 @@ define(["module",
             };
         }, function() {
             if (!$scope.rendered)
-                return false;            
+                return false;
+
+            var width = $scope.element.width();     
+            var height = $scope.element.height();            
             
-            $($scope.element).children().each(function(idx,elem) {
+            var title = $($scope.element).find(".win-button-title");
+            if (title) {
                 if ($scope.orientation == "H") {
-                   $(elem).width($scope.element.width()/2);
-                   $(elem).height($scope.element.height()/2);
+                    $(title).addClass("win-button-title-h");
+
                 } else {
-                   $(elem).width($scope.element.width()/4);
-                   $(elem).height($scope.element.height());                    
+                    $(title).addClass("win-button-title-v");
+                }                
+                height = $scope.element.height() - title.height();
+            }
+            
+            $($scope.element).find(".win-button-grid").each(function(idx,elem) {
+                if ($scope.orientation == "H") {
+                   $(elem).width(width/2);
+                   $(elem).height(height/2);
+                } else {
+                   $(elem).width(width/4);
+                   $(elem).height(height);                    
                 }
                 
                 var grid = $scope.grids[idx];
@@ -382,7 +396,7 @@ define(["module",
         var def = {
             replace: true,
             transclude: false,
-            template : "<div class='win-button'><div ng-repeat='i in [1,2,3,4]' style='float:left' on-repeat-finish='$parent.rendered = true' ></div></div>",
+            template : "<div class='win-button'><div class='win-button-title'></div><div class='win-button-grid' ng-repeat='i in [1,2,3,4]' style='float:left' on-repeat-finish='$parent.rendered = true' ></div></div>",
             controller: Controller,
             restrict : 'E',
             require : "?ngModel",

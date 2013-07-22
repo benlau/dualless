@@ -93,12 +93,16 @@ define(function() {
        
        chrome.tabs.onUpdated.addListener(function(tabId, changeInfo,tab) {
            var key = self.key(tabId);
+
+           if (!key || !changeInfo.url) 
+               return;
            var a1 = document.createElement('a'),
                a2 = document.createElement('a');
            
            a1.href = changeInfo.url;
            a2.href = key;
-           if (a1 != a2) {
+
+           if (a1.hostname != a2.hostname) {
                self.remove(key);
            }
        });

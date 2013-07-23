@@ -1,5 +1,6 @@
 <html ng-csp>
 
+<link href="lib/bootstrap-2.0.4/css/bootstrap.css" rel="stylesheet">
 <style>
 body {
   overflow-x:hidden;
@@ -10,8 +11,41 @@ body {
   padding-right: 5px;
 }
 
+.btn {
+    font : "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;    
+    color: white;
+    background-color : #4d90fe;
+    background-image : -webkit-linear-gradient(top, rgb(77, 144, 254), rgb(71, 135, 237));
+    border-bottom-color: rgb(48, 121, 237);
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    
+    border-left-color: rgb(48, 121, 237);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: rgb(48, 121, 237);
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-top-color: rgb(48, 121, 237);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-top-style: solid;
+    border-top-width: 1px;    
+    ​text-shadow:none !important;
+}
+
+.btn:hover {
+    background-image : -webkit-linear-gradient(top, rgb(77, 144, 254), #357ae8);
+    background-color : #357ae8;
+    background-position : 0 0;
+    color : white;
+    ​text-shadow: none;
+}
+
 </style>
-<link href="lib/bootstrap-2.0.4/css/bootstrap.min.css" rel="stylesheet">
 <script src="lib/jquery-1.7.1.min.js"></script>
 <script src="lib/angular-1.0.1.min.js"></script>
 <script src="lib/bootstrap-2.0.4/js/bootstrap.min.js"></script>

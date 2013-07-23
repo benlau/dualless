@@ -26,7 +26,7 @@ define(["dualless/sys/toolbox/resize",
              rects ; // The rectangles of window.
 
         rects = split(target,options); // The rectangles of window.
-//        console.log("arrange",target,rects);
+        console.log("arrange",target,rects);
        
         runner.step(function() {
             // Call resize in parallel.
@@ -100,19 +100,23 @@ define(["dualless/sys/toolbox/resize",
 
             //this.detect(options.screen); // Detect the screen size and update viewport if needed
 
-            //if (os == "Linux") {
-                retry = 1;  // Retry is not limited to Linux only. Since the retry mechanism
-                             // is changed to handle min size of a Chrome window
-                
-                            // Outdated mechenism:
-                            // "Linux" should retry one more time without update the viewport.
-                            // It is a dirty hack to resolve the issue with Unity
-            //}
+            retry = 1; // Unlike v3.0, retry is not limited to Linux only. Since the retry mechanism
+                       // is changed to solve the min size problem in Chrome window
+            
+            if (os == "Linux") {
+                retry++;  
+                // The first retry will handle the minimium window size problem in Chrome
+                // The second retry is made for Ubuntu/Unity , 
+                // somtimes the window may not on the correct position.
+                // Try one more time should fix the problem.
+            }
 
             function final(result) {
                 var imperfect = result.imperfect,
                      rects = result.rects,
                      accept = true;
+
+                console.log("final",rects);
 
                 if (imperfect) {
 

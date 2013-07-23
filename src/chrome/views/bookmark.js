@@ -4,7 +4,7 @@
  */
 
 define(["module",
-        "dualless/models/site"],
+        "dualless/data/site"],
         function(self,
                  Site) {
    

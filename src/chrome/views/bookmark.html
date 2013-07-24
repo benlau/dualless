@@ -22,6 +22,7 @@
 </div> <!-- bookmark-container //-->
 
 <div class="bookmark-footer">
-    <div ng-click="back()" class="btn">Back</div>
+    <div ng-click="back()" class="btn" style="float:left">Back</div> 
+    <div class="btn" style="float:right" ng-disabled='links.length == 0' ng-click="open()"> Open</div>
 </div>
 

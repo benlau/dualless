@@ -108,6 +108,24 @@ define(["module",
              $scope.$evalAsync();
          };
          
+         /** Open the selected link on new tab and split
+          */
+         $scope.open = function() {
+             console.log("open",$scope.selectedLink);
+             var options = {};
+             options.param1 =  parseInt($scope.param1);
+             options.param2 =  parseInt($scope.param2);
+             options.orientation = $scope.orientation;
+             options.position = $scope.position;
+             options.action = {};
+             options.action.link = $scope.selectedLink;
+                  
+             if ($scope.selectedLink !== undefined) {
+                 console.log("split",options);
+                 WindowManager.split(options);                
+             }
+         }
+         
     }
     
     Controller.inject = ["$scope" , 

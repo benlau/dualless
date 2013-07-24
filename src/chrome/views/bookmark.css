@@ -29,8 +29,13 @@
     height : 2.2em ;
     margin-top : -2.2em;
     margin-bottom : 0px;
-    margin-left : 5px;
 }
+
+.bookmark-footer div {
+    margin-bottom : 5px;
+    margin-left : 0px;
+}
+
 
 #bookmark-list {
     height : 80px;

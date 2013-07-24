@@ -26,7 +26,7 @@ define(["dualless/sys/toolbox/resize",
              rects ; // The rectangles of window.
 
         rects = split(target,options); // The rectangles of window.
-        console.log("arrange",target,rects);
+//        console.log("arrange",target,rects);
        
         runner.step(function() {
             // Call resize in parallel.
@@ -116,7 +116,7 @@ define(["dualless/sys/toolbox/resize",
                      rects = result.rects,
                      accept = true;
 
-                console.log("final",rects);
+//                console.log("final",rects);
 
                 if (imperfect) {
 

@@ -111,7 +111,6 @@ define(["module",
          /** Open the selected link on new tab and split
           */
          $scope.open = function() {
-             console.log("open",$scope.selectedLink);
              var options = {};
              options.param1 =  parseInt($scope.param1);
              options.param2 =  parseInt($scope.param2);
@@ -121,7 +120,6 @@ define(["module",
              options.action.link = $scope.selectedLink;
                   
              if ($scope.selectedLink !== undefined) {
-                 console.log("split",options);
                  WindowManager.split(options);                
              }
          }

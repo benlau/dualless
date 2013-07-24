@@ -8,6 +8,8 @@ require([ "dualless/data/bookmarkdata"],
         function(bookmarkData) {    
 
 function OptionsController($scope) {
+    $scope.options = {}
+    
 	/* Pairing Mode */
 	
 	function updatePairingButton(val) {
@@ -27,7 +29,16 @@ function OptionsController($scope) {
 	
 	updatePairingButton(localStorage.pairingModeEnabled);
     
-    $scope.options = {}
+    /* Auto Maximize Mode */
+    
+    $scope.autoMaximizeModeEnabled = localStorage.autoMaximizeModeEnabled;
+    
+    $scope.$watch("autoMaximizeModeEnabled",function() {
+        localStorage.autoMaximizeModeEnabled = $scope.autoMaximizeModeEnabled;
+    });
+    
+    
+    /* Bookmark */
     
     $scope.options.bookmark = {
         clear : function(){

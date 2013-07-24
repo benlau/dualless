@@ -46,6 +46,18 @@ body {
                     </ul>
                     </div>
                 </td></tr>
+            <tr>
+                <td><p>Auto Maximize Mode</p>
+                After window splitted, if one of the window close, the remaining one will be maximized to occupy all the space
+                </td>
+                <td>
+                    <ul class="nav nav-pills">
+                        <li ng-class="{active:autoMaximizeModeEnabled != 0}"><a ng-click="autoMaximizeModeEnabled = 1">Enable</a></li>
+                        <li ng-class="{active:autoMaximizeModeEnabled == 0}"><a ng-click="autoMaximizeModeEnabled = 0">Disable</a></li>
+                    </ul>
+                </td>
+            </tr>
+
             <tr><td><p>Bookmark</p>
                     With the feature of bookmark , you could relaunch your favor site in a new tab and windows will be splitted in the way you like.                           </td>
                 <td>

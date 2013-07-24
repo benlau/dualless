@@ -46,6 +46,10 @@ define(["module",
         });
     }
     
+    Group.prototype.get = function(index) {
+        return this.elements[index];    
+    }
+    
     /** Grid - A divided sub-button within winbutton 
      */
     function Grid() {
@@ -133,6 +137,28 @@ define(["module",
         });
 
         $(elem).css("background-color",grid.color());  
+    }
+    
+    Grid.prototype.refresh = function() {
+        var  elem = this.element,
+             link = this.link || {},
+             title = link.title ;
+             
+        $(elem).css("background-color",this.color());
+        
+        var draggable = true;
+        if (title === undefined) { 
+            draggable = false;
+        }
+        $(elem).attr("draggable",draggable);
+        
+        var html = "";
+        if (this.link !== undefined &&
+            this.group.get(0) == elem ) {
+            html = "<div><img src='img/glyphicons_072_bookmark.png' style='padding:2px 0px 0px 2px;' height='" + $(elem).height() * 0.7  + "' ></div>"
+        }            
+        $(elem).html(html);
+        
     }
     
     /** Window Button
@@ -236,18 +262,8 @@ define(["module",
     WinButton.prototype.refresh = function() {
         
         for (var i = 0 ; i < this.grids.length;i++) {
-            var grid = this.grids[i],
-                 elem = grid.element,
-                 link = grid.link || {},
-                 title = link.title ;
-                 
-            $(elem).css("background-color",grid.color());
-            
-            var draggable = true;
-            if (title === undefined) { 
-                draggable = false;
-            }
-            $(elem).attr("draggable",draggable);
+            var grid = this.grids[i];
+            grid.refresh();
         }
     };   
     

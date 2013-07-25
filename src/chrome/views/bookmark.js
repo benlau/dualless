@@ -115,7 +115,7 @@ define(["module",
              options.param1 =  parseInt($scope.param1);
              options.param2 =  parseInt($scope.param2);
              options.orientation = $scope.orientation;
-             options.position = $scope.position;
+             options.position = 1 - parseInt($scope.position);
              options.action = {};
              options.action.link = $scope.selectedLink;
                   

@@ -29,7 +29,7 @@
 }
 
 .bookmark-editor-content {
-    max-width : 90px;
+    max-width : 125px;
     display : inline-block;
     vertical-align: bottom;    
 }
@@ -60,7 +60,7 @@
 
 .bookmark-editor-color-input {
     margin : 0px 0px 0px 0px;
-    width : 62px;
+    width : 98px;
     vertical-align: bottom;    
 }
 
@@ -73,7 +73,7 @@
 .bookmark-editor-color-palette {
     width : 150px;
     margin-top : 15px;
-    margin-left : 5px;
+    margin-left : 20px;
 }
 
 .bookmark-editor-color-grid {

@@ -1,6 +1,6 @@
 {
   "name": "Dualless",
-  "version": "0.3.99.2",
+  "version": "0.3.99.3",
   "description": "Dualless - For those who don't have dual monitor.",
   "manifest_version": 2,
   "browser_action": {

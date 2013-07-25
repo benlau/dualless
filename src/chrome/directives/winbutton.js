@@ -69,7 +69,7 @@ define(["module",
     
     /** Setup the grid 
      */
-    Grid.prototype.setup = function(elem,parent,tooltip) {
+    Grid.prototype.setup = function(elem,parent,tooltip,defaultTitle) {
         this.element = elem;
         this.parent = parent;
         
@@ -91,6 +91,13 @@ define(["module",
                     case 1:
                         hint = "Press 'right' click for bookmark management";    
                         break;
+                    default:
+                        hint = "";
+                        break;
+                }
+                                
+                if (defaultTitle !== undefined) {
+                    hint = defaultTitle;
                 }
                 $(elem).attr("title",hint);
             } else {
@@ -395,7 +402,7 @@ define(["module",
                 }
                 
                 var grid = $scope.grids[idx];
-                grid.setup(elem,parent,tooltip);               
+                grid.setup(elem,parent,tooltip,$scope.title);               
                 
                 $scope.$evalAsync(function(scope) {
                    scope.initialized = true;
@@ -422,6 +429,7 @@ define(["module",
                 key : "@",
                 disable : "=",
                 links : "=links",
+                title : "@",
                 onClick : "&",
                 onRightClick : "&"
             },

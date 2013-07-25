@@ -9,8 +9,8 @@ define(["module"],
 
     var initialData = {
         "links": {
-            "H_50_50_1": [{
-                "color": "#4a86e8",
+            "H_60_40_1": [{
+                "color": "#479bf2",
                 "title": "Explore bookmark",
                 "url": "http://dualless.blogspot.com/p/bookmark.html"
             }]

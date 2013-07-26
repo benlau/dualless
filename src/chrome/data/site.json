@@ -35,6 +35,11 @@
     "name": "GMail"
   },
   {
+    "color": "#d93838",
+    "pattern": "mail.google.com",
+    "name": "GMail"
+  },
+  {
     "color": "#00aeed",
     "pattern": "twitter.com",
     "name": "Twitter.com"

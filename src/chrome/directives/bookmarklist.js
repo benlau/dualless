@@ -9,21 +9,10 @@ define(["module"],
     
     function Controller($scope,$timeout) {       
         $scope.selected = -1;
+        $scope.linkCount = 0;
         
         $scope.remove = function(idx) {
             $scope.links.splice(idx,1);
-             
-            $timeout(function() {
-                $scope.$apply(function() {
-                    if ($scope.links.length == 0) {
-                        $scope.select(-1);
-                    } else if ($scope.selected >= $scope.links.length) {
-                        $scope.select($scope.links.length - 1);
-                    } else {
-                        $scope.select($scope.selected);
-                    }
-                });
-            });
         };
         
         $scope.select = function(idx) {
@@ -47,9 +36,27 @@ define(["module"],
                 });
             }
             
-            if ($scope.selected <0 && $scope.links.length > 0) { // First time loading
-                 select(0);
-            }
+            if ($scope.links.length >  $scope.linkCount) { 
+            
+				if ($scope.selected <0) { // First time loading
+					 select(0);
+				} else {
+					select($scope.links.length - 1); // new link added
+				}
+				
+			} else {
+				
+				if ($scope.links.length == 0) {
+					$scope.select(-1);
+				} else if ($scope.selected >= $scope.links.length) {
+					$scope.select($scope.links.length - 1);
+				} else {
+					$scope.select($scope.selected);
+				}
+				
+			}
+			
+			$scope.linkCount = $scope.links.length;
         });
     }
 	

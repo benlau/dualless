@@ -1,9 +1,10 @@
-Release 0.4(RC)
+Release 0.4
 =============
 
+Features
  * Added auto maximize mode
   * After splitted, if one of the window close, the remaining one will be maximized to occupy all the space
- * Bookmark mode
+ * Added bookmark support
  
 Code improvement
  * Improved the coding style related to scope and two way binding.

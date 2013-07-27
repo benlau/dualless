@@ -20,7 +20,7 @@ require(["debug/view/component",
 	module.config(['$routeProvider', function configRouteProvider($routeProvider) {
 		  	  	
 		$routeProvider.when('/info', information);
-	  	$routeProvider.when('/component', component);
+	  	//$routeProvider.when('/component', component);
 	  	
 	  	$routeProvider.when('/preparetest', {templateUrl: "view/preparetest.html"});
 	

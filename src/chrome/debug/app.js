@@ -7,18 +7,19 @@ requirejs.config({
 	baseUrl : ".."
 });
 
-require(["debug/view/component",
-         "debug/view/information",
-         "dualless/directives/winbutton"
+import {Information} from "./view/information.js";
+import {WinButton}  from "../directives/winbutton.js";
+
+require([
          ],
-	     function app(component,
-	    		 		information,
-	    		 		winbutton){
+	     function app(){
 
 	var module = angular.module('main', []);
 	
 	module.config(['$routeProvider', function configRouteProvider($routeProvider) {
-		  	  	
+		
+		const information = Information();
+
 		$routeProvider.when('/info', information);
 	  	//$routeProvider.when('/component', component);
 	  	
@@ -28,7 +29,7 @@ require(["debug/view/component",
 	  	
 	}]);
 
-    module.directive('winbutton',winbutton);
+    module.directive('winbutton',WinButton());
 	
 	$(document).ready(function() {
 		angular.bootstrap(document,["main"]);

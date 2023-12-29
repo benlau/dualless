@@ -13,547 +13,376 @@
  * 
  * - tabCreated     A new tab is created by WindowManager.
  * 
- * */
+ */
 
-define(["dualless/sys/viewport",
-		 "dualless/sys/os",
-		 "dualless/lib/eventemitter",
-		 "dualless/sys/toolbox",
-         "dualless/utils/taskrunner",
-         "dualless/sys/tabtracker"
-         ], 
-		function sys(Viewport,
-					   os,
-					   EventEmitter,
-					   toolbox,
-                       TaskRunner,
-                       TabTracker) {
 
-	var WindowManager = function() {
-        var manager = this;
-        
-		this._os = os();
-		this._viewport = new Viewport();
-		this._windows = []; // Managed windows
-		
-		this.events = new EventEmitter();
-        
-        this._tracker = new TabTracker();
-        this._tracker.start();
-		
-		chrome.windows.onRemoved.addListener(function ( winId){
-			if (manager.isManaged(winId)) {
-                manager.take(winId);
-                manager.events.emit("removed",winId);
-			}
-		});
+import { Viewport } from "./viewport.js";
+import { os } from "./os.js";
+import { EventEmitter } from "./eventemitter.js";
+import { TabTracker } from "./tabtracker.js";
+import { layout } from "./ops/layout.js";
+import { merge } from "./ops/merge.js";
+import { log, error } from "./logger.js";
+import { pair } from "./ops/pair.js";
+import { perferenceInstance } from "./preference.js";
 
-		chrome.windows.onFocusChanged.addListener(function (winId){
-			if (manager.isManaged(winId)) {
-				manager.events.emit("focusChanged",winId);
-			} else {
-				manager.events.emit("focusChanged",chrome.windows.WINDOW_ID_NONE);
-			}
-		});		
-	};
-	
-	/** Return the detected os
-	 * 
-	 * @returns {String}
-	 */
-	
-	WindowManager.prototype.os = function() {
-		return this._os;
-	};
-	
-	WindowManager.prototype.viewport = function(){
-		return this._viewport;
-	};
-	
-	/** Check is a window maximized.
-	 * @param win The window returned by chrome.windows.get()
-	 * @returns
-	 */
-	WindowManager.prototype.isMaximized= function(win) {
-		var res;
-		
-		if (win.state != undefined) { // Working method for new version of Chrome
-			return win.state == "maximized";
-		}
+/**
+ * @typedef {import('../types/splitcommand').SplitCommand} SplitCommand
+ * @typedef {import('./mergeoptions.js').MergeOptions} MergeOptions
+ */
 
-	    // Old version of Chrome do not provide any method to check window status.
-		
-		if (this._os == "Windows") {
-			// Dirty hack for windows
-			res = (win.left == -8 && win.top == -8 && win.width == window.screen.availWidth + 16);
-		} else if (this._os == "MacOS") {
-			res = false; // MacOS do not have the concept of maximize.
-		} else {
-			// It do not works for Unity
-			res = (win.left == 0 && win.width == window.screen.availWidth);
-		}
-	    return res;
-	};
-	
-	/** Get current window information
-	 * 
-	 * @param callback The callback parameter should specify a function that looks like this: (function callback(winidw) )
-	 */
-	
-	WindowManager.prototype.currentWindow = function(callback) {
-
-		chrome.windows.getCurrent({populate: true}, function(win){
-			callback(win);
-		});
-	};
-	
-	/** Get the current window and tab
-	 * 
-	 * @param callback
-	 */
-	
-	WindowManager.prototype.currentWindowTab = function(callback) {
-	    chrome.tabs.getSelected(null,function(tab) {
-	        chrome.windows.get(tab.windowId,{populate : true},function(win) {
-	        	callback(win,tab);
-	         });
-	    });
-	};
-	
-	/** Get managed windows list
-	 * 
-	 * @returns Array of managed windows 
-	 */
-	
-	WindowManager.prototype.windows = function() {
-        if (arguments.length > 0) {
-            var windows = []
-            for (var i =0 ; i < arguments.length && i < 2;i++) {
-                windows.push(arguments[i]);
-            }
-            this._windows = windows;
-        }
-		return this._windows;
-	};
-    	
-	/** Return true if the input window is managed by the Window Manager  
-	 * 
-	 * @param win Either the ID or a Chrome Window object.
-	 */
-	
-	WindowManager.prototype.isManaged = function(win) {
-		var id;
-		if (typeof win == "number") {
-			id = win;
-		} else {
-			id = win.id;
-		}
-		
-		var res = false;
-		$(this._windows).each(function(idx,w) {
-			if (w.id == id) {
-				res = true;
-			}
-		});
-		return res;
-	};
-    
-    /** Based on the input window id, find the another paired window. If no such pair was found, return undefined.
-     */
-            
-    WindowManager.prototype.pair = function(winId) {
-        var pos = -1,
-            pwin;
-        
-        for (var i in this._windows) {
-            var w = this._windows[i];
-            if (w.id == winId) {
-                pos = i;
-                break;
-            }
-        }
-        
-        if (pos >= 0) {
-            pwin = this._windows[1 - pos];    
-        }
-        
-        return pwin;
+function debounce(func, wait) {
+    const context = {
     }
-	
-	/** Update the managed windows information. May purge record out if the windows is already destroyed.
-	 * 
-	 * @param options Options for update behaviour
-	 * 
-	 * options.window - If it is set , it will be always in the beginning of the return window list
-	 * 
-	 * @param callback It will be called when the operation is completed.
-	 */	
-	
-	WindowManager.prototype.updateWindows = function(options,callback) {
-		var manager = this;
-		
-		var setting = {
-			// TRUE if the no. of managed window is not full. It find add another windows randomly
-			autoMatching : false,
-			// TRUE if the current windows list should be sorted(The focus window in the beginning)
-			sort : false
-		};
-		
-		$.extend(setting,options);
-		options = setting;
-		
-		chrome.windows.getAll({populate : true},function(windows) {
-			var list = [];
-			$(windows).each(function(idx,w){
-				if (manager.isManaged(w)){
-					list.push(w);
-				}
-			});
-			manager._windows = list;
-			
-			if (options.window != undefined) {
-				var win = options.window;
-				if (manager.isManaged(options.window.id)) {
-					for (var i = 0 ; i < manager._windows.length;i++) {
-						if (manager._windows[i].id == options.window.id) {
-							win = manager._windows[i]; // Updated with tabs information
-							manager._windows.splice(i,1);
-							break;
-						}
-					}
-				}
-				manager._windows.unshift(win);
-				while (manager._windows.length > 2)
-					manager._windows.pop();
-			}
 
-			// Find another windows
-			if (options.autoMatching
-				&& manager._windows.length <2) {
-				$(windows).each(function(idx,w) {
-					if (!manager.isManaged(w)) {
-						manager._windows.push(w);
-					}
-					if (manager._windows.length >=2)
-						return false;
-				});
-			}
-			
-			if (setting.sort) {
-				if (manager._windows.length >= 2 
-					&& manager._windows[1].focused) {
-					var tmp = manager._windows[0]; 
-					manager._windows[0] = manager._windows[1];
-					manager._windows[1] = tmp;
-				}
-			}
-			
-			if (callback!=undefined)
-				callback(manager._windows);
-		});
-	};
+    return (...args) => {
+        if (context.handler !== undefined) {
+            clearTimeout(context.handler);
+        }
 
-	/** Reset the WindowManager to initialize state
-	 * 
-	 */
-	
-	WindowManager.prototype.reset = function() {
-		this._windows = [];
-		this._viewport.reset();
-	};
-		
-	/** Split windows
-	 * @params options Options for split
-	 * 
-	 * The basic parameter could be found in trySplit
-	 * 
-	 * Extra parameter:
-	 *   options.window - The current window
-	 * 
-	 */
-	
-    WindowManager.prototype.split = function(options,callback) {
-        var manager = this,
-             runner = new TaskRunner();
-        
-        // The flow of split is very complicated. It should fork a new class to handle it
-        
-        manager._viewport.detect(options.screen);
-        $.extend(options,{ viewport: manager._viewport,
-                             os : manager._os
-                            });
-	
-        runner.step(function() {
-            // Update the windows information.
-		    manager.updateWindows({autoMatching: true,
-                                      window : options.window},runner.listener());
-        });
-        
-        runner.step(function(list) {
-            // If the current tab is tracked , it should swap the position and remove the action
-            var action = options.action || {},
-                link = action.link;
-            
-            if (!link) {
-                runner.next(list);
-                return;
-            }
-            manager._tracker.tabAsync(link.url,function(trackedTab) {
-                manager.currentWindowTab(function(win,currentTab) {
-                    if (trackedTab && trackedTab.id == currentTab.id) {
-                        options.position = 1 - options.position;   
-                        delete options.action.link;
-                    }
-                    runner.next(list);
-                });
-            });
-        });
+        context.handler = setTimeout(() => {
+            context.handler = undefined;
+            func(...args);
+        }, wait);
+    }
+}
 
-        runner.step(function(list) {
-			$.extend(options,{ windows: list
-                                });
-                                
-            if (list.length == 1) {
-                manager.createPairedWindow(options,function(newWin) {
-                    manager._windows.push(newWin);
-                    options.windows = manager._windows;
-                    runner.next(options);
-                });
-            } else {
-                runner.next(options);
-            }            
-        });
-        
-        runner.step(function (options) {
-            toolbox.arrange(options,runner.listener());			
-        });
-        
-        runner.step(function() {
-            manager._findTrackedTab(options.action,runner.listener());
-        });
-        
-        // Post action handler
-        runner.step(function(trackedTab) {
-            var action = options.action || {},
-                 duplicate = action.duplicate,
-                 link = action.link;
+class RunQueue {
 
-            if (duplicate) {
-                 chrome.tabs.create({windowId : options.windows[1].id,
-                                       url : options.tab.url},
-                                       runner.listener());
-            } else if (link) {
-                var tab = trackedTab,
-                     info = {
-                         windowId : options.windows[1].id
-                     }
-                if (tab) { // Find tracked tab. It should move it.
-                    info.index = 0;
-                    chrome.tabs.move(tab.id,info,function() {
-                        chrome.tabs.update(tab.id,
-                                            {active:true
-                                            }
-                                            ,function() {
-                                                runner.next(tab);                       
-                                            });
-                    });
-                } else {
-                    info.url = link.url;
-                    chrome.tabs.create(info,runner.listener());                    
-                }
+    constructor() {
+        this.queue = [];
+        this.isRunning = false;
+    }
 
-            } else {
-                runner.next();   
-            }
-        });
-        
-        runner.step(function(tab) {
-            var action = options.action || {},
-                 link = action.link;
+    enqueue(func) {
+        this.queue.push(func);
+        this._process();
+    }
 
-            if (tab != undefined) {
-                manager.events.emit("tabCreated",tab);
-                if (link)
-                    manager._tracker.add(link.url,tab); // start tracking
-            }
-            runner.next();
-        });
-        
-        runner.run(function () {
-            if (callback)
-                callback(manager._windows);            
-        });
-    
-	};
-
-	/** Create a new window as a pair of input window and move all the tab except the current tab 
-	 * 
-	 * @param rects
-	 */
-	
-	WindowManager.prototype.createPairedWindow = function(options,callback) {
-//		console.log("WindowManager._createAndMove",this._windows);
-        var manager = this,
-             win = options.window,
-             tab = options.tab,
-             action = options.action || {},
-             link = action.link,
-             newWin = undefined,
-             tabs = [],
-             skipTabsMoving = false,
-             runner = new TaskRunner();
-        
-        runner.step(function() {
-            // In case window and tab is not provided. Let's do auto detection.
-           if (window == undefined || tab == undefined) {
-               manager.currentWindowTab(function(p1,p2){
-                  win = p1;
-                  tab = p2; 
-                  runner.next();
-               });
-           } else {
-               runner.next();  
-           }
-        });
-        
-        runner.step(function() {
-            for (var i in win.tabs) {
-                if (win.tabs[i].id != tab.id) {
-                    tabs.push(win.tabs[i].id);
-                }
-            }
-            runner.next();
-        });        
-
-        runner.step(function() {
-            manager._findTrackedTab(options.action,runner.listener());
-        });
-        
-        runner.step(function(trackedTab) {
-            // Pre-processing of action
-            var createData = {
-                 focused : false
-            }
-            
-            if (action.duplicate) {
-                createData.url = options.tab.url;
-                delete options.action.duplicate;
-                skipTabsMoving = true; 
-            } else if (action.link) {
-                               
-                var tab = trackedTab;
-                     
-                if (tab) { // Find tracked tab. It should move it.
-                    createData.tabId = tab.id
-                } else {
-                    createData.url = action.link.url;    
-                }
-                
-                delete options.action.link;
-                skipTabsMoving = true; 
-            } else {
-                // Prevent the creation of blank tab in new window
-                var tabId = tabs.shift(); 
-                createData.tabId = tabId;                    
-            }
-
-            chrome.windows.create(createData,runner.listener());
-        });
-
-        runner.step(function(win) {
-            newWin = win;
-            
-            if (link) {
-                manager.events.emit("tabCreated",win.tabs[0]);
-                manager._tracker.add(link.url,win.tabs[0]);
-            }
-            
-            if (tabs.length == 0 ||
-                skipTabsMoving) {
-                runner.next();
-            } else {
-                chrome.tabs.move(tabs,{ windowId : newWin.id,
-                                           index : 0},runner.listener());
-            }
-        });
-
-        runner.run(function() {
-            if (manager._os == "Linux") {
-                // Extra delay for Linux. Otherwise , the newly created window size may not be correct.
-                setTimeout(function() {
-                    callback(newWin);
-                },100);
-            } else {
-                callback(newWin);
-            }
-        });
-		
-/*		
-		if (options.window != undefined && options.tab != undefined) {
-			create(options.window , options.tab);
-		} else {
-//		    console.log("WindowManager._createAndMove - window or tab is not passed. Auto-detect it.");
-			manager.currentWindowTab(create);			
-		}
-*/		
-	};
-
-
-
-	/** Merge all managed windows into current window.
-	 * 
-	 * @param current The current window.
-	 */
-	
-	WindowManager.prototype.merge = function(options) {
-		var manager = this;
-		manager._viewport.detect(options.screen);
-		manager.updateWindows({window:options.window , 
-								  autoMatching: true}, 
-								  function (windows) {
-			toolbox.merge({ windows: windows , 
-			                  tab : options.tab,
-			                  viewport : manager._viewport});
-		});
-	};
-	
-	/** Maximize the size of a window.
-	 */
-	
-	WindowManager.prototype.maximize = function(winId) {
-		var manager = this;
-		chrome.windows.get(winId, function(win) {
-			toolbox.merge({windows:[win],
-						     viewport : manager._viewport 
-							});
-//			manager._viewport.merge({  , tab: []});
-		});
-	};
-	
-	/** Remove a window from managed window list
-	 * 
-	 */
-	
-    WindowManager.prototype.take = function(winId) {
-        for (var i = 0 ; i < this._windows.length;i++) {
-			if (this._windows[i].id == winId) {
-				this._windows.splice(i,1);
-				break;
-			}
-		}
-	}
-
-    WindowManager.prototype._findTrackedTab = function(action,callback) {
-        var action = action || {},
-            link = action.link
-        
-        if (!link) {
-            callback();
+    // Run a task only if there is no task running
+    singleRun(func) {
+        if (this.isRunning) {
             return;
         }
-        
-        this._tracker.tabAsync(link.url,callback);
+        this.enqueue(func);
     }
-    
-	return WindowManager;
-});
+
+    async _process() {
+        if (this.isRunning) {
+            return;
+        }
+
+        this.isRunning = true;
+        while (this.queue.length > 0) {
+            const func = this.queue.shift();
+            try {
+                await func();
+            } catch {
+                error(`RunQueue: error: ${e}`);
+            }
+        }
+        this.isRunning = false;
+    }
+}
+
+
+const MAX_MANAGED_WINDOWS = 2
+
+
+export class WindowManager {
+
+    constructor() {
+        this.os = os();
+        this.viewport = new Viewport();
+        this.managedWindows = []; // Managed windows
+
+        this.events = new EventEmitter();
+
+        this.tracker = new TabTracker();
+        this.tracker.start();
+
+        // this.isRunning = false;
+
+        this.runQueue = new RunQueue();
+
+        this.isRemoveEventFrozen = false;
+        this.resumeRemoveEventDebouncer = debounce(() => {
+            this.isRemoveEventFrozen = false;
+        }, 500);
+        this.isFocusEventFrozen = false;
+        this.resumeFocusEventDebouncer = debounce(() => {
+            this.isFocusEventFrozen = false;
+        }, 500);
+
+        chrome.windows.onRemoved.addListener((winId) => {
+            this.onWindowRemoved(winId);
+        });
+
+        chrome.windows.onFocusChanged.addListener((winId) => {
+            this.onWindowFocused(winId);
+        });
+    }
+
+    isManaged(win) {
+        const id = typeof win === "number" ? win : win.id;
+
+        return this.managedWindows.some(function (w) {
+            return w.id == id;
+        });
+    };
+
+    freezeEvent() {
+        this.freezeFocusEvent();
+        this.freezeRemoveEvent();
+    }
+
+    freezeFocusEvent() {
+        this.isFocusEventFrozen = true;
+        this.resumeFocusEventDebouncer();
+    }
+
+    freezeRemoveEvent() {
+        this.isRemoveEventFrozen = true;
+        this.resumeRemoveEventDebouncer();
+    }
+
+    /// Add current Window to managed windows list as the first window
+    async updateManagedWindows(currentWindow) {
+        // Purge the managed windows list
+        const aliveManagedWindows =
+            (await chrome.windows.getAll({ populate: true })).filter(w => this.isManaged(w.id));
+        this.managedWindows = aliveManagedWindows;
+
+        if (currentWindow) {
+            // Move new window to the first of the list
+            this.managedWindows = this.managedWindows.filter(w => w.id != currentWindow.id);
+            this.managedWindows.unshift(currentWindow);
+        }
+
+        // Find another windows
+        if (this.managedWindows.length < MAX_MANAGED_WINDOWS) {
+            const unmanagedWindows =
+                (await chrome.windows.getAll({ populate: true })).filter(w => !this.isManaged(w.id)).slice(0, 1);
+            this.managedWindows = this.managedWindows.concat(unmanagedWindows);
+        }
+
+        return this.managedWindows;
+    }
+
+    async refreshManagedWindows() {
+        const aliveManagedWindows =
+            (await chrome.windows.getAll({ populate: true })).filter(w => this.isManaged(w.id));
+        this.managedWindows = aliveManagedWindows;
+        return this.managedWindows;
+    }
+
+    removeManagedWindow(winId) {
+        this.managedWindows = this.managedWindows.filter(w => w.id != winId);
+    }
+
+    /**
+     * @param {MergeOptions} mergeOptions
+     */
+
+    async merge(mergeOptions, currentWindow) {
+        this.runQueue.singleRun(async () => {
+            try {
+                // if (this.isRunning)  {
+                //     return;
+                // }
+                // this.isRunning = true;
+                const updatedManagedWindows = await this.updateManagedWindows(currentWindow);
+                const viewport = new Viewport();
+                viewport.update(mergeOptions.screen);
+                this.freezeEvent();
+                log(`merge: viewport ${JSON.stringify(viewport.region.toData())}`);
+                await merge(viewport, updatedManagedWindows);
+            } catch (e) {
+                log(e);
+            } finally {
+                this.isRunning = false;
+            }
+        });
+    }
+
+    /**
+     * @param {SplitCommand} splitCommand
+     */
+
+    async split(splitCommand) {
+        this.runQueue.singleRun(async () => {
+            try {
+                const {
+                    splitOptions
+                } = splitCommand;
+
+                this.viewport.update(splitOptions.screen);
+
+                splitCommand.pairedWindows = await this.updateManagedWindows(splitCommand.currentWindow);
+
+                if (this.managedWindows.length < MAX_MANAGED_WINDOWS ||
+                    splitOptions.openLink !== undefined ||
+                    splitOptions.duplicate) {
+                    await this.createPairedWindow(splitCommand);
+                }
+
+                this.freezeEvent();
+
+                await layout(splitCommand);
+
+                // Run pair window again to make sure the focus is correct
+                await pair(splitCommand.mainWindow.id, splitCommand.pairedWindows);
+            } catch (e) {
+                error(`split: ${e}`);
+            }
+        });
+    };
+
+    /** Create a new window for pairing
+     * 
+     * @param {SplitCommand} splitCommand 
+     * @returns 
+     */
+
+    async createPairedWindow(splitCommand) {
+        // Conditions:
+        // 1) openLink from bookmark -> open link in new window
+        // 2) duplicate -> duplicate current tab in new window
+        // 3) no open link and duplicate -> Move otherTab to new window
+        // 4) only one window and one tab
+
+        // Handle duplcate mode
+        // Handle tracked tab
+        // Futuer: Handle tabs group
+
+        let createOptions = {
+            focused: true,
+            ...splitCommand.mainWindowRect.toData()
+        }
+
+        const {
+            splitOptions
+        } = splitCommand;
+
+        const otherTabs = splitCommand.currentWindow.tabs
+            .map(tab => tab.id)
+            .filter(id => id !== splitCommand.currentTab.id);
+
+        let shouldMoveOtherTabs = false;
+        let shouldSwap = false; // Should swap main and secondary window
+
+        if (splitOptions.duplicate) {
+            createOptions.url = splitCommand.currentTab.url;
+            shouldSwap = true;
+        } else if (splitOptions.openLink !== undefined) {
+            createOptions.url = splitOptions.openLink.url;
+            shouldSwap = true;
+        } else if (otherTabs.length > 0) {
+            createOptions.tabId = otherTabs.shift();
+            shouldMoveOtherTabs = true;
+        }
+
+        if (shouldSwap) {
+            createOptions = { ...createOptions, ...splitCommand.secondaryWindowRect.toData() }
+        }
+
+        log(`split: create new window ${JSON.stringify(createOptions)}`);
+        const newWindow = await chrome.windows.create(createOptions);
+        log(`split: created window: ${newWindow.id}`);
+
+        if (splitCommand.pairedWindows.length > 1) {
+            splitCommand.pairedWindows[1] = newWindow;
+        } else {
+            splitCommand.pairedWindows.push(newWindow);
+        }
+
+        if (shouldMoveOtherTabs && otherTabs.length > 0) {
+            log(`move tabs ${otherTabs} to window ${newWindow.id}`)
+            await chrome.tabs.move(otherTabs, {
+                windowId: newWindow.id,
+                index: 1
+            });
+        }
+
+        if (shouldSwap) {
+            splitCommand.swap();
+        }
+
+        return newWindow;
+    }
+
+    async onWindowRemoved(winId) {
+        log(`window removed: ${winId}`);
+        this.runQueue.enqueue(async () => {
+            try {
+
+                if (!this.isManaged(winId)) {
+                    log(`window removed: skip - Not a managed window`);
+                    return;
+                }
+
+                this.removeManagedWindow(winId);
+
+                if (this.isRemoveEventFrozen) {
+                    log(`window removed: skip - due to pending event frozen`);
+                    return;
+                }
+
+                const autoMaximizeModeEnabled = await perferenceInstance.getAutoMaximzeModeEnalbed();
+
+                if (autoMaximizeModeEnabled && this.managedWindows.length > 0) {
+                    this.maximize(this.managedWindows[0].id);
+                }
+                this.freezeRemoveEvent();
+            } catch (e) {
+                log(`max: error: ${e}`);
+            } finally {
+            }
+        });
+
+    }
+
+    async onWindowFocused(winId) {
+        log(`windows focused(${winId})`);
+
+        this.runQueue.singleRun(async () => {
+            try {
+
+                if (this.isFocusEventFrozen) {
+                    log(`pair(${winId}): skip - event frozen`);
+                    return;
+                }
+
+                if (!this.isManaged(winId)) {
+                    log(`pair(${winId}): skip - not a managed window`);
+                    return;
+                }
+
+                const pairingModeEnabled = await perferenceInstance.getPairingModeEnabled();
+
+                if (!pairingModeEnabled) {
+                    log('pair: pairing mode disabled');
+                    return;
+                }
+
+                this.refreshManagedWindows();
+                if (this.managedWindows.length < 2) {
+                    return;
+                }
+
+                pair(winId, this.managedWindows);
+                this.freezeFocusEvent();
+                log(`pair(${winId}): completed`);
+            } catch (e) {
+                console.trace(e);
+                log(`pair: error: ${e}`);
+            }
+        });
+    }
+
+    async maximize(winId) {
+        const rect = this.viewport.region.toData();
+        log(`maximize: ${winId} ${JSON.stringify(rect)}`);
+        await chrome.windows.update(winId, rect);
+    };
+}

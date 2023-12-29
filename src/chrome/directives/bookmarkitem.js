@@ -1,13 +1,6 @@
 
-define(["module"],
-		function (self) {
-            
-    var uri = self.uri;
-    var arr = uri.split("/");
-    arr.pop();
-    uri = arr.join("/");
-    
-    var sheet = "<link  href='" + uri + "/../directives/bookmarkitem.css' rel='stylesheet'>";
+export function BookmarkItem() {
+    var sheet = "<link  href='directives/bookmarkitem.css' rel='stylesheet'>";
 	$("head").append(sheet);
  
     function Controller($scope,$element) {
@@ -30,24 +23,6 @@ define(["module"],
             $event.stopPropagation();
             $scope.onRemove({});
         };
-
-        /*
-        $scope.select = function($event) {
-            $event.stopPropagation();
-            $scope.onSelect({});
-            $($element).addClass("bookmark-item-selected");
-
-        };
-        
-        $scope.$on("selected",function(event,data) {
-            console.log("selected",data);
-            if (data.code != $scope.code) {
-                $($element).removeClass("bookmark-item-selected");                
-            } else {
-                $($element).addClass("bookmark-item-selected");
-            }
-        });
-        */
 
         $scope.click = function($event) {
             $scope.onClick({});
@@ -80,7 +55,7 @@ define(["module"],
 		var def = {
             replace: true,
             transclude: false,
-            templateUrl : uri + "/bookmarkitem.html",
+            templateUrl : "directives/bookmarkitem.html",
             controller: Controller,
             restrict : 'E',
             scope : { link : "=",
@@ -96,4 +71,4 @@ define(["module"],
 	}
 	
 	return factory; 
-});
+};

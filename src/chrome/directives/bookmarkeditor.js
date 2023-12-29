@@ -1,12 +1,6 @@
 
-define(["module"],
-         function(self) {
-    var uri = self.uri;
-    var arr = uri.split("/");
-    arr.pop();
-    uri = arr.join("/");	
-
-	var sheet = "<link  href='" + uri + "/../directives/bookmarkeditor.css' rel='stylesheet'>";
+export function BookmarkEditor() {
+	var sheet = "<link  href='directives/bookmarkeditor.css' rel='stylesheet'>";
 	$("head").append(sheet);
 
     function Controller($scope,$element) {
@@ -82,7 +76,7 @@ define(["module"],
         var def = {
             replace: true,
             transclude: false,
-            templateUrl : uri + "/bookmarkeditor.html",
+            templateUrl : "directives/bookmarkeditor.html",
             controller: Controller,
             restrict : 'E',
             scope : {
@@ -112,4 +106,4 @@ define(["module"],
     }
 
     return factory;
-});
+}

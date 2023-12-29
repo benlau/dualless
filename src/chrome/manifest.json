@@ -1,18 +1,19 @@
 {
   "name": "Dualless",
-  "version": "0.4",
+  "version": "0.4.1",
   "description": "Dualless - For those who don't have dual monitor.",
-  "manifest_version": 2,
-  "browser_action": {
+  "manifest_version": 3,
+  "action": {
     "default_icon": "logo.png",
-    "default_popup": "popup.html",
-    "default_title" : "Dualless - Split / Merge Windows"
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "worker.js",
+    "type": "module"
   },
   "permissions": [
-    "tabs"
+    "tabs",
+    "storage"
   ],
-  "background" : {
-  	"scripts" : ["lib/jquery-1.7.1.min.js","lib/require.js","background.js"]
-  },
   "options_page": "options.html"
 }

@@ -1,21 +1,11 @@
 /* Information View */
 
-define(["module",
-        "dualless/utils/rect"],
-		function info(self,
-						Rect) {
-	var uri = self.uri;
-	var arr = uri.split("/");
-	arr.pop();
-	uri = arr.join("/");
-	
-	function Controller($scope) { 	
-		var bg = chrome.extension.getBackgroundPage();
-		var manager = bg.manager();
+import {Rect} from "../../utils/rect.js";
+import { windowManageServiceInstance } from "../../sys/service.js";
 
-		$scope.basic = [];
-		$scope.basic.push( ["OS", manager.os() ] );
-		
+export function Information() {
+
+	function Controller($scope) {
 		$scope.screen = [];
         $scope.screen.push([ "window.screen.availLeft", window.screen.availLeft]);
         $scope.screen.push([ "window.screen.availTop", window.screen.availTop]);
@@ -27,55 +17,26 @@ define(["module",
 		$scope.window = {};
 		$scope.window.isMaximized;
 		$scope.window.geometry = "";
-		$scope.window.viewport = manager.viewport().size().toString();
-		
-		$scope.managed = {}; // Managed window information
-		$scope.managed.win1;
-		$scope.managed.win2;
-		$scope.log = bg.fullLog().join("\n");
-			
-		// Update dynamic information
-		function update() {
+		$scope.window.viewport = "";
 
-			manager.updateWindows({},function(windows) {
-			
-				for (var i = 0 ; i < 2;i++) {
-					var exp;
-					var win = windows[i];
-					if (win !=undefined) {
-						var rect = new Rect(win);
-						exp = "managed.win" + (i + 1) + " = '" + rect.toString() +  "'";
-					} else {
-						exp = "managed.win" + (i + 1) + " = ''";
-					}				
-					$scope.$apply(exp);
-				}
-			});
+		$scope.displayInfo = []
+		$scope.log = "";
 
-			manager.currentWindow(function(win) {
-	        	$scope.$apply("window.isMaximized = " + manager.isMaximized(win));
-	        	var geom = new Rect(win);
-	        	$scope.$apply("window.geometry = '" + geom.toString() + "'");        	
-	        	$scope.$apply("window.viewport = '" + manager.viewport().size().toString()+ "'");
-			});
-
-			$scope.log = bg.fullLog().join("\n");
-
-		}
-		
-		update();
-		var timer = setInterval(update,2000);
-		
-		$scope.$on('$destroy',function onDestroy() {
-//			console.log("$destroy");
-			clearInterval(timer);
+		windowManageServiceInstance.currentWindow().then(win => {
+			$scope.$apply("window.isMaximized = " + windowManageServiceInstance.isMaximized(win));
+			var geom = new Rect(win);
+			$scope.$apply("window.geometry = '" + geom.toString() + "'");        	
 		});
 
-		
-	};
-	
+		windowManageServiceInstance.getLog().then(log => {
+			$scope.$apply(function() {
+				$scope.log = log;
+			});
+		});
+	}
+
 	return {
-		templateUrl : uri + "/information.html",
+		templateUrl : "view/information.html",
 		controller: Controller,
 	};
-});
+}

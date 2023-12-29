@@ -1,12 +1,6 @@
 
-define(["module"],
-		function (self) {
-            
-    var uri = self.uri;
-    var arr = uri.split("/");
-    arr.pop();
-    uri = arr.join("/");
-    
+export function BookmarkList() {            
+
     function Controller($scope,$timeout) {       
         $scope.selected = -1;
         $scope.linkCount = 0;
@@ -64,7 +58,7 @@ define(["module"],
 		var def = {
             replace: true,
             transclude: true,
-            templateUrl : uri + "/bookmarklist.html",
+            templateUrl : "directives/bookmarklist.html",
             controller: Controller,
             restrict : 'E',
             scope : { links:"=links",
@@ -76,4 +70,4 @@ define(["module"],
 	}
 	
 	return factory; 
-});
+}
